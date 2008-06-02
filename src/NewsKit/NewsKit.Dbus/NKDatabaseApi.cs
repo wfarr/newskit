@@ -4,9 +4,8 @@ using Mono.Unix;
 
 using NDesk.DBus;
 
-namespace NKDatabaseApi
+namespace NewsKit.Dbus
 {
-    [Interface ("org.gnome.NewsKit.Notifier")]
     public class DBusInterface ()
     {
         public static void Main ()
@@ -15,7 +14,6 @@ namespace NKDatabaseApi
             Console.WriteLine ("I'm an instance of DBusInterface dude!");
             Bus bus = Bus.Session;
             Console.WriteLine ("[finished] NewsKit.DBusInterface.Main");
-
         }
 
         public static void LoadFeed ()
