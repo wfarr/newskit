@@ -25,3 +25,5 @@ dist-hook:
 		fi \
 	done
 
+run:
+	mono --debug src/Summa/summa.exe
