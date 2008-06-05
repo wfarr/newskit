@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec -a 'blam' mono @prefix@/lib/summa/summa.exe $@

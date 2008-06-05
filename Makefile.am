@@ -12,6 +12,9 @@ nkdoc_DATA = \
 
 EXTRA_DIST = $(nkdoc_DATA)
 
+summa: summa.in config.log
+	sed -e "s|\@prefix\@|$(prefix)|" < summa.in > summa
+
 bin_SCRIPTS = summa
 bindir=$(prefix)/bin
 
