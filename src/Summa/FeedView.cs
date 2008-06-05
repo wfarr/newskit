@@ -61,22 +61,25 @@ namespace Summa {
             store = new Gtk.ListStore(typeof(Gdk.Pixbuf),    // the icon
                                       typeof(string),        // the name
                                       typeof(string),        // the url
-                                      typeof(bool));            // unread?
+                                      typeof(bool));         // unread?
             Model = store;
             trender = new Gtk.CellRendererText();
             trender.Ellipsize = Pango.EllipsizeMode.End;
             
             // set up the columns for the view
             TreeViewColumn column_Read = new Gtk.TreeViewColumn("Read", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
-            column_Read.SortColumnId = 0;
+            column_Read.SortColumnId = 3;
             column_Read.SortIndicator = true;
             AppendColumn(column_Read);
-
-            InsertColumn(-1, "Name", trender, "text", 1);
+            
+            TreeViewColumn column_Name = new Gtk.TreeViewColumn("Read", trender, "text", 1);
+            column_Name.SortColumnId = 1;
+            column_Name.SortIndicator = true;
+            AppendColumn(column_Name);
             
             HeadersClickable = true;
             RulesHint = true;
-            store.SetSortColumnId(0, Gtk.SortType.Descending);
+            store.SetSortColumnId(3, Gtk.SortType.Descending);
 
             // set up the icon theme so that we can make stuff pretty
             icon_theme = Gtk.IconTheme.Default;

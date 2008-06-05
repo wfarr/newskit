@@ -46,10 +46,10 @@ namespace Summa {
             LogoIconName = "internet-news-reader";
             Icon = image_window;
             
-            Response += new EventHandler(OnHide);
+            Response += new Gtk.ResponseHandler(OnHide);
         }
         
-        private void OnHide(object obj, EventArgs args) {
+        private void OnHide(object obj, ResponseArgs args) {
             Hide();
         }
     }
