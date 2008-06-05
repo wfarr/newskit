@@ -67,9 +67,17 @@ namespace Summa {
             trender.Ellipsize = Pango.EllipsizeMode.End;
             
             // set up the columns for the view
-            InsertColumn(-1, "Read", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
+            TreeViewColumn column_Read = new Gtk.TreeViewColumn("Read", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
+            column_Read.SortColumnId = 0;
+            column_Read.SortIndicator = true;
+            AppendColumn(column_Read);
+
             InsertColumn(-1, "Name", trender, "text", 1);
             
+            HeadersClickable = true;
+            RulesHint = true;
+            store.SetSortColumnId(0, Gtk.SortType.Descending);
+
             // set up the icon theme so that we can make stuff pretty
             icon_theme = Gtk.IconTheme.Default;
         }
