@@ -46,7 +46,7 @@ namespace Summa {
             LogoIconName = "internet-news-reader";
             Icon = image_window;
             
-            //Response += new EventHandler(OnHide);
+            Response += new EventHandler(OnHide);
         }
         
         private void OnHide(object obj, EventArgs args) {

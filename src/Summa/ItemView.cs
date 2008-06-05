@@ -199,11 +199,8 @@ namespace Summa {
             int rowst = feedobj.GetItems().Count;
             
             while( rowsf < rowst ) {
-                GLib.Value iurl = new GLib.Value("");
-                store.GetValue(iter, 5, ref iurl);
-                NewsKit.Item item = new NewsKit.Item(iurl.ToString(), feeduid);
-                item.Read = true;
-                AppendItem(iter, item);
+                Selected.Read = true;
+                AppendItem(iter, Selected);
                 
                 rowsf++;
                 store.IterNext( ref iter );
