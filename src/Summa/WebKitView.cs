@@ -31,6 +31,8 @@ namespace Summa {
         
         public WebKitView() {
             start_size = 10;
+
+            NavigationRequested += new NavigationRequestedHandler (OnLinkClicked);
             
             string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.</b><br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";            
             Render(starting_content);
@@ -79,14 +81,13 @@ namespace Summa {
 
         public void Render(string data) {
             LoadString(data, "text/html", "utf-8", "http:///");
-
-        //     NavigationRequested += OnLinkClicked();
-        // }
+        }
         
-        // private void OnLinkClicked(WebView view, WebFrame frame, NetworkRequest request) {
+        private void OnLinkClicked(object o, NavigationRequestedArgs args) {
         //     // get uri
         //     // launch externally
-        //     Console.WriteLine ("Not implemented");
+            Console.WriteLine ("Not implemented!");
+            return;
         }
 
         public void Render(NewsKit.Item item) {
