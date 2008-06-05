@@ -27,7 +27,7 @@ using WebKit;
 
 namespace Summa {
     public class WebKitView : WebKit.WebView {
-        private int start_size;
+        private int start_size;            
         
         public WebKitView() {
             start_size = 10;
@@ -69,10 +69,26 @@ namespace Summa {
         public void Print() {
         }
         
+        public bool CanGoBackOrForward() {
+            return false;
+        }
+
+        public bool CanCutClipboard() {
+            return false;
+        }
+
         public void Render(string data) {
             LoadString(data, "text/html", "utf-8", "http:///");
-        }
+
+        //     NavigationRequested += OnLinkClicked();
+        // }
         
+        // private void OnLinkClicked(WebView view, WebFrame frame, NetworkRequest request) {
+        //     // get uri
+        //     // launch externally
+        //     Console.WriteLine ("Not implemented");
+        }
+
         public void Render(NewsKit.Item item) {
             string content = "<b>"+item.Title+"</b>";
             if ( item.Author != "" ) {
