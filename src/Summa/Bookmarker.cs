@@ -16,7 +16,7 @@
 // * along with this library.  If not, see <http://www.gnu.org/licenses/>.
 // *
 // * Author:
-// * 	Ethan Osten <senoki@gmail.com>
+// *     Ethan Osten <senoki@gmail.com>
 // */
 //
 
@@ -24,9 +24,9 @@ using System;
 using System.Collections;
 
 namespace Summa {
-	public interface Bookmarker {
-		void ShowBookmarkWindow(string title, string url, string content, string tags);
-		bool CanBookmark();
-		ArrayList GetBookmarks();
-	}
+    public interface Bookmarker {
+        void ShowBookmarkWindow(string title, string url, string content, string tags);
+        bool CanBookmark();
+        ArrayList GetBookmarks();
+    }
 }

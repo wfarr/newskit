@@ -16,7 +16,7 @@
 // * along with this library.  If not, see <http://www.gnu.org/licenses/>.
 // *
 // * Author:
-// * 	Ethan Osten <senoki@gmail.com>
+// *     Ethan Osten <senoki@gmail.com>
 // */
 //
 

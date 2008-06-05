@@ -16,7 +16,7 @@
 // * along with this library.  If not, see <http://www.gnu.org/licenses/>.
 // *
 // * Author:
-// * 	Ethan Osten <senoki@gmail.com>
+// *     Ethan Osten <senoki@gmail.com>
 // */
 //
 
@@ -25,34 +25,34 @@ using Gtk;
 using NewsKit;
 
 namespace Summa {
-	public class StatusIcon : Gtk.StatusIcon {
-		private bool shown;
+    public class StatusIcon : Gtk.StatusIcon {
+        private bool shown;
         private Browser b;
-		
-		public StatusIcon(Summa.Browser browser) {
-			FromIconName = "internet-news-reader";
+        
+        public StatusIcon(Summa.Browser browser) {
+            FromIconName = "internet-news-reader";
             b = browser;
-	 		if ( IconName == null ) {
-	 			FromIconName = "applications-internet";
-	 		}
-	 		
-	 		shown = true;
-			int unread = NewsKit.Daemon.GetUnreadCount();
-			string us = unread.ToString();
-			
-			Tooltip = us+" unread items.";
-	 		
-	 		Activate += new EventHandler(ToggleBrowserStatus);
-	 	}
-	 	
-	 	private void ToggleBrowserStatus(object obj, EventArgs args) {
-	 		if ( shown ) {
-	 			b.Hide();
-	 			shown = false;
-			} else {
-				b.Show();
-				shown = true;
-			}
-	 	}
-	}
+             if ( IconName == null ) {
+                 FromIconName = "applications-internet";
+             }
+             
+             shown = true;
+            int unread = NewsKit.Daemon.GetUnreadCount();
+            string us = unread.ToString();
+            
+            Tooltip = us+" unread items.";
+             
+             Activate += new EventHandler(ToggleBrowserStatus);
+         }
+         
+         private void ToggleBrowserStatus(object obj, EventArgs args) {
+             if ( shown ) {
+                 b.Hide();
+                 shown = false;
+            } else {
+                b.Show();
+                shown = true;
+            }
+         }
+    }
 }
