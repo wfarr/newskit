@@ -1,9 +1,44 @@
-SUBDIRS = \
-	Summa.Gui \
-	Summa.Data
+CSC = $(MCS)
 
-SOURCES = \
-	Summa.Gui/SummaWindow.cs \
-	Summa.Data/SummaDBus.cs
+FLAGS = /debug
 
-MAINTAINERCLEANFILES = Makefile.in
+ASSEMBLIES = \
+	     -r:gconf-sharp   \
+	     -r:gdk-sharp     \
+	     -r:gnome-sharp   \
+	     -r:gtk-sharp     \
+	     -r:Mono.Posix    \
+	     -r:NDesk.DBus    \
+	     -r:pango-sharp   \
+	     -r:System.Core   \
+	     -r:webkit-sharp
+
+SUMMA_CSFILES = AboutDialog.cs \
+		AddWindow.cs \
+		Application.cs \
+		Bookmarker.cs \
+		Browser.cs \
+		DieuBookmarker.cs \
+		Feed.cs \
+		FeedView.cs \
+		Firstrun.cs \
+		Item.cs \
+		ItemView.cs \
+		NewsKit.cs \
+		OpmlDialog.cs \
+		StatusIcon.cs \
+		TagView.cs \
+		Util.cs \
+		WebKitView.cs
+
+summalibdir = $(prefix)/lib/summa
+summa.exe: $(SUMMA_CSFILES) $(CSC) $(FLAGS) -lib:$(top_srcdir)/lib $(RESOURCES) $(SUMMA_LIBS) $(ASSEMBLIES) $(SUMMA_CSFILES) -out:$@
+
+all: summa.exe
+
+install-data-local: summa.exe
+	$(mkinstalldirs) $(DESTDIR)$(summalibdir)
+	$(INSTALL_DATA) summa.exe $(DESTDIR)$(summalibdir)/summa.exe
+
+CLEANFILES = summa.exe
+

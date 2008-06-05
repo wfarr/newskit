@@ -1,5 +1,4 @@
-SUBDIRS = src \
-        data
+SUBDIRS = src 
 
 nkdocdir = ${prefix}/doc/NewsKit
 nkdoc_DATA = \
@@ -12,6 +11,9 @@ nkdoc_DATA = \
 	TODO
 
 EXTRA_DIST = $(nkdoc_DATA)
+
+bin_SCRIPTS = summa
+bindir=$(prefix)/bin
 
 dist-hook:
 	for specfile in *.spec; do \
