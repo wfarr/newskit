@@ -16,7 +16,7 @@
 // * along with this library.  If not, see <http://www.gnu.org/licenses/>.
 // *
 // * Author:
-// * 	Ethan Osten <senoki@gmail.com>
+// *     Ethan Osten <senoki@gmail.com>
 // */
 //
 
@@ -24,15 +24,15 @@ using System;
 using Gtk;
 
 namespace Summa {
-	public class OpmlDialog : Gtk.FileChooserDialog {
-		public OpmlDialog() {
-			Title = "Select an OPML file";
-			Action = Gtk.FileChooserAction.Open;
-			
-			AddButton(Gtk.Stock.Cancel, Gtk.ResponseType.Cancel);
-			AddButton(Gtk.Stock.Open, Gtk.ResponseType.Ok);
+    public class OpmlDialog : Gtk.FileChooserDialog {
+        public OpmlDialog() {
+            Title = "Select an OPML file";
+            Action = Gtk.FileChooserAction.Open;
+            
+            AddButton(Gtk.Stock.Cancel, Gtk.ResponseType.Cancel);
+            AddButton(Gtk.Stock.Open, Gtk.ResponseType.Ok);
 
-			DefaultResponse = Gtk.ResponseType.Ok;
-		}
-	}
+            DefaultResponse = Gtk.ResponseType.Ok;
+        }
+    }
 }

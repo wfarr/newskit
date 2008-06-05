@@ -16,7 +16,7 @@
 // * along with this library.  If not, see <http://www.gnu.org/licenses/>.
 // *
 // * Author:
-// * 	Ethan Osten <senoki@gmail.com>
+// *     Ethan Osten <senoki@gmail.com>
 // */
 //
 
@@ -30,25 +30,25 @@ public interface Dieu {
 }
 
 namespace Summa {
-	public class DieuBookmarker : Summa.Bookmarker {
-		private Dieu dieu;
-		private bool possible;
-		
-		public DieuBookmarker() {
-			Dieu dieu = Bus.Session.GetObject<Dieu>("org.gnome.Dieu", new ObjectPath("/org/gnome/Dieu"));
-			possible = true;
-		}
-		
-		public void ShowBookmarkWindow(string title, string url, string content, string tags) {
-			dieu.AddBookmark(title, url, content, tags);
-		}
-		
-		public bool CanBookmark() {
-			return possible;
-		}
-		
-		public ArrayList GetBookmarks() {
-			return new ArrayList();
-		}
-	}
+    public class DieuBookmarker : Summa.Bookmarker {
+        private Dieu dieu;
+        private bool possible;
+        
+        public DieuBookmarker() {
+            Dieu dieu = Bus.Session.GetObject<Dieu>("org.gnome.Dieu", new ObjectPath("/org/gnome/Dieu"));
+            possible = true;
+        }
+        
+        public void ShowBookmarkWindow(string title, string url, string content, string tags) {
+            dieu.AddBookmark(title, url, content, tags);
+        }
+        
+        public bool CanBookmark() {
+            return possible;
+        }
+        
+        public ArrayList GetBookmarks() {
+            return new ArrayList();
+        }
+    }
 }
