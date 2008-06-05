@@ -32,9 +32,7 @@ SUMMA_CSFILES = AboutDialog.cs \
 		WebKitView.cs
 
 summalibdir = $(prefix)/lib/summa
-summa.exe: $(SUMMA_CSFILES) $(CSC) $(FLAGS) -lib:$(top_srcdir)/lib $(RESOURCES) $(SUMMA_LIBS) $(ASSEMBLIES) $(SUMMA_CSFILES) -out:$@
-
-all: summa.exe
+all: $(SUMMA_CSFILES) $(CSC) $(FLAGS) -lib:$(top_srcdir)/lib $(RESOURCES) $(SUMMA_LIBS) $(ASSEMBLIES) $(SUMMA_CSFILES) -out:summa.exe
 
 install-data-local: summa.exe
 	$(mkinstalldirs) $(DESTDIR)$(summalibdir)
