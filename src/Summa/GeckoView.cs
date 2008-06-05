@@ -16,7 +16,7 @@
 // * along with this library.  If not, see <http://www.gnu.org/licenses/>.
 // *
 // * Author:
-// *     Ethan Osten <senoki@gmail.com>
+// * 	Ethan Osten <senoki@gmail.com>
 // */
 //
 
@@ -60,37 +60,37 @@ namespace Summa {
         }
         
         public void Render(NewsKit.Item item) {
-            string content = "<b>"+item.Title+"</b>";
-            if ( item.Author != "" ) {
-                content += " by "+item.Author+"<br />";
-            } else {
-                content += "<br />";
-            }
-            content += "<b>URL</b>: <a href=\""+item.Uri+"\">"+item.Uri+"</a><br />";
-            if ( item.EncUri != "" ) {
-                content += "<b>Enclosure</b>: <a href=\""+item.EncUri+"\">"+item.EncUri+"</a><br />";
-            }
-            content += "<hr/>";
-            content += item.Contents;
-            
-            wbc.RenderData(content, "http://google.com", "text/html");
+    		string content = "<b>"+item.Title+"</b>";
+    		if ( item.Author != "" ) {
+    			content += " by "+item.Author+"<br />";
+    		} else {
+    			content += "<br />";
+    		}
+    		content += "<b>URL</b>: <a href=\""+item.Uri+"\">"+item.Uri+"</a><br />";
+    		if ( item.EncUri != "" ) {
+    			content += "<b>Enclosure</b>: <a href=\""+item.EncUri+"\">"+item.EncUri+"</a><br />";
+    		}
+    		content += "<hr/>";
+    		content += item.Contents;
+    		
+    		wbc.RenderData(content, "http://google.com", "text/html");
         }
         
         public void Render(NewsKit.Feed feed) {
             string content = "<b>"+feed.Name+"</b>";
-            if ( feed.Author != "" ) {
-                content += " by "+feed.Author+"<br />";
-            } else {
-                content += "<br />";
-            }
-            if ( feed.Subtitle != "" ) {
-                content += "<b>Subtitle</b>: "+feed.Subtitle+"<br />";
-            }
-            content += "<b>URL</b>: <a href=\""+feed.Url+"\">"+feed.Url+"</a><br />";
-            content += "<hr/>";
-            content += "<img src=\""+feed.Image+"\">";
-            
-            wbc.RenderData(content, "http://google.com", "text/html");
+    		if ( feed.Author != "" ) {
+    			content += " by "+feed.Author+"<br />";
+    		} else {
+    			content += "<br />";
+    		}
+    		if ( feed.Subtitle != "" ) {
+    			content += "<b>Subtitle</b>: "+feed.Subtitle+"<br />";
+    		}
+    		content += "<b>URL</b>: <a href=\""+feed.Url+"\">"+feed.Url+"</a><br />";
+    		content += "<hr/>";
+    		content += "<img src=\""+feed.Image+"\">";
+    		
+    		wbc.RenderData(content, "http://google.com", "text/html");
         }
         
         private void OnOpenUri(object Object, Gecko.OpenUriArgs args) {

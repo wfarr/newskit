@@ -16,7 +16,7 @@
 // * along with this library.  If not, see <http://www.gnu.org/licenses/>.
 // *
 // * Author:
-// *     Ethan Osten <senoki@gmail.com>
+// * 	Ethan Osten <senoki@gmail.com>
 // */
 //
 
@@ -28,29 +28,29 @@ namespace Summa {
     public class AboutDialog : Gtk.AboutDialog {
         public AboutDialog() {
             Version = "0.0.0";
-            Website = "http://code.google.com/p/newskit/";
-            WebsiteLabel = "http://code.google.com/p/newskit/";
-            License = "LGPL";
-            
-            string[] authors = new string[2];
-            authors[0] = "Ethan Osten";
+	    	Website = "http://code.google.com/p/newskit/";
+	    	WebsiteLabel = "http://code.google.com/p/newskit/";
+	    	License = "LGPL";
+	    	
+	    	string[] authors = new string[2];
+	    	authors[0] = "Ethan Osten";
             authors[1] = "Will Farrington";
-            
-            Authors = authors;
-            Comments = "Aggregate and read RSS feeds";
-            
-            IconTheme i = Gtk.IconTheme.Default;
-            
-            Gdk.Pixbuf image_window = i.LoadIcon("add", 0, Gtk.IconLookupFlags.NoSvg);
-            
-            LogoIconName = "internet-news-reader";
-            Icon = image_window;
-            
-            //Response += new EventHandler(OnHide);
+	    	
+	    	Authors = authors;
+	    	Comments = "Aggregate and read RSS feeds";
+	    	
+	    	IconTheme i = Gtk.IconTheme.Default;
+	    	
+	    	Gdk.Pixbuf image_window = i.LoadIcon("add", 0, Gtk.IconLookupFlags.NoSvg);
+	    	
+	    	LogoIconName = "internet-news-reader";
+	    	Icon = image_window;
+	    	
+	    	//Response += new EventHandler(OnHide);
         }
-        
-        private void OnHide(object obj, EventArgs args) {
-            Hide();
-        }
+		
+		private void OnHide(object obj, EventArgs args) {
+			Hide();
+		}
     }
 }

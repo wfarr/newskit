@@ -16,7 +16,7 @@
 // * along with this library.  If not, see <http://www.gnu.org/licenses/>.
 // *
 // * Author:
-// *     Ethan Osten <senoki@gmail.com>
+// * 	Ethan Osten <senoki@gmail.com>
 // */
 //
 
@@ -30,9 +30,9 @@ namespace Summa {
         private int start_size;
         
         public WebKitView() {
-            start_size = 10;
-            
-            string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.</b><br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";            
+    		start_size = 10;
+    		
+    		string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.</b><br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";            
             Render(starting_content);
         }
         
@@ -42,24 +42,24 @@ namespace Summa {
         
         public void ZoomIn() {
             WebSettings settings = new WebKit.WebSettings();
-            
-            if ( start_size > 4 ) {
-                start_size++;
+    		
+    		if ( start_size > 4 ) {
+    			start_size++;
                 /*settings.DefaultFontSize = start_size;*/
-                
+    			
                 Settings = settings;
-            }
+    		}
         }
         
         public void ZoomOut() {
             WebSettings settings = new WebKit.WebSettings();
-            
-            if ( start_size-1 > 4 ) {
-                start_size--;
+    		
+    		if ( start_size-1 > 4 ) {
+    			start_size--;
                 /*settings.DefaultFontSize = start_size;*/
-                
+    			
                 Settings = settings;
-            }
+    		}
         }
         
         public bool CanPrint() {
@@ -74,37 +74,37 @@ namespace Summa {
         }
         
         public void Render(NewsKit.Item item) {
-            string content = "<b>"+item.Title+"</b>";
-            if ( item.Author != "" ) {
-                content += " by "+item.Author+"<br />";
-            } else {
-                content += "<br />";
-            }
-            content += "<b>URL</b>: <a href=\""+item.Uri+"\">"+item.Uri+"</a><br />";
-            if ( item.EncUri != "" ) {
-                content += "<b>Enclosure</b>: <a href=\""+item.EncUri+"\">"+item.EncUri+"</a><br />";
-            }
-            content += "<hr/>";
-            content += item.Contents;
-            
-            Render(content);
+    		string content = "<b>"+item.Title+"</b>";
+    		if ( item.Author != "" ) {
+    			content += " by "+item.Author+"<br />";
+    		} else {
+    			content += "<br />";
+    		}
+    		content += "<b>URL</b>: <a href=\""+item.Uri+"\">"+item.Uri+"</a><br />";
+    		if ( item.EncUri != "" ) {
+    			content += "<b>Enclosure</b>: <a href=\""+item.EncUri+"\">"+item.EncUri+"</a><br />";
+    		}
+    		content += "<hr/>";
+    		content += item.Contents;
+    		
+    		Render(content);
         }
         
         public void Render(NewsKit.Feed feed) {
             string content = "<b>"+feed.Name+"</b>";
-            if ( feed.Author != "" ) {
-                content += " by "+feed.Author+"<br />";
-            } else {
-                content += "<br />";
-            }
-            if ( feed.Subtitle != "" ) {
-                content += "<b>Subtitle</b>: "+feed.Subtitle+"<br />";
-            }
-            content += "<b>URL</b>: <a href=\""+feed.Url+"\">"+feed.Url+"</a><br />";
-            content += "<hr/>";
-            content += "<img src=\""+feed.Image+"\">";
-            
-            Render(content);
+    		if ( feed.Author != "" ) {
+    			content += " by "+feed.Author+"<br />";
+    		} else {
+    			content += "<br />";
+    		}
+    		if ( feed.Subtitle != "" ) {
+    			content += "<b>Subtitle</b>: "+feed.Subtitle+"<br />";
+    		}
+    		content += "<b>URL</b>: <a href=\""+feed.Url+"\">"+feed.Url+"</a><br />";
+    		content += "<hr/>";
+    		content += "<img src=\""+feed.Image+"\">";
+    		
+    		Render(content);
         }
     }
 }

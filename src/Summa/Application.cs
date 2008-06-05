@@ -30,9 +30,9 @@ namespace Summa {
         
         public static void Main() {
             Application.Init();
-            
+			
             Summa.Browser browse = new Summa.Browser();
-            Summa.StatusIcon si = new Summa.StatusIcon(browse);
+			Summa.StatusIcon si = new Summa.StatusIcon(browse);
             
             browse.ShowAll();
             
