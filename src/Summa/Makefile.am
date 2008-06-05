@@ -1,17 +1,15 @@
 CSC = $(MCS)
 
-FLAGS = /debug
+FLAGS = -debug
 
 ASSEMBLIES = \
-	     -r:gconf-sharp   \
-	     -r:gdk-sharp     \
-	     -r:gnome-sharp   \
-	     -r:gtk-sharp     \
+	     -pkg:gconf-sharp-2.0   \
+	     -pkg:gnome-sharp-2.0   \
+	     -pkg:gtk-sharp-2.0     \
 	     -r:Mono.Posix    \
-	     -r:NDesk.DBus    \
-	     -r:pango-sharp   \
+	     -r:/usr/lib/mono/ndesk-dbus-1.0/NDesk.DBus.dll   \
 	     -r:System.Core   \
-	     -r:webkit-sharp
+	     -r:/usr/lib/mono/webkit-sharp/webkit-sharp.dll
 
 SUMMA_CSFILES = AboutDialog.cs \
 		AddWindow.cs \
@@ -32,7 +30,8 @@ SUMMA_CSFILES = AboutDialog.cs \
 		WebKitView.cs
 
 summalibdir = $(prefix)/lib/summa
-all: $(SUMMA_CSFILES) $(CSC) $(FLAGS) -lib:$(top_srcdir)/lib $(RESOURCES) $(SUMMA_LIBS) $(ASSEMBLIES) $(SUMMA_CSFILES) -out:summa.exe
+all:
+	$(CSC) $(FLAGS) $(ASSEMBLIES) $(SUMMA_CSFILES) -out:summa.exe 
 
 install-data-local: summa.exe
 	$(mkinstalldirs) $(DESTDIR)$(summalibdir)
