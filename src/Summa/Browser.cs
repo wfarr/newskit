@@ -40,6 +40,7 @@ namespace Summa  {
         const string KEY_MAIN_PANE_POSITION = "/apps/summa/main_pane_pos";
         const string KEY_LEFT_PANE_POSITION = "/apps/summa/left_pane_pos";
         const string KEY_RIGHT_PANE_POSITION = "/apps/summa/right_pane_pos";
+        const string KEY_SHOULD_SORT_FEEDVIEW = "/apps/summa/sort_feedview";
         public bool show_notifications;
         
         public Gtk.Table table;
@@ -235,11 +236,13 @@ namespace Summa  {
             //client.AddDir(SUMMA_PATH, GConf.ClientPreloadType.None);
             show_notifications = not;
             
-               Resize((int)client.Get(KEY_WIN_WIDTH), (int)client.Get(KEY_WIN_HEIGHT));
-           
-               main_paned.Position  = (int)client.Get(KEY_MAIN_PANE_POSITION);
-               left_paned.Position  = (int)client.Get(KEY_LEFT_PANE_POSITION);
-               right_paned.Position  = (int)client.Get(KEY_RIGHT_PANE_POSITION);
+            Resize((int)client.Get(KEY_WIN_WIDTH), (int)client.Get(KEY_WIN_HEIGHT));
+        
+            main_paned.Position  = (int)client.Get(KEY_MAIN_PANE_POSITION);
+            left_paned.Position  = (int)client.Get(KEY_LEFT_PANE_POSITION);
+            right_paned.Position  = (int)client.Get(KEY_RIGHT_PANE_POSITION);
+            
+            feedview.FeedSort = (bool)client.Get(KEY_SHOULD_SORT_FEEDVIEW);
         }
         
         public void CloseWindow(object obj, EventArgs args) {
@@ -264,6 +267,10 @@ namespace Summa  {
             client.Set(KEY_MAIN_PANE_POSITION, main_size);
             client.Set(KEY_LEFT_PANE_POSITION, left_size);
             client.Set(KEY_RIGHT_PANE_POSITION, right_size);
+            
+            if ( feedview.FeedSort ) {
+                client.Set(KEY_SHOULD_SORT_FEEDVIEW, true);
+            }
             
             Gtk.Main.Quit();
         }
