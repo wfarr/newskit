@@ -24,6 +24,7 @@ using System;
 using Gtk;
 using NewsKit;
 using WebKit;
+using Gnome;
 
 namespace Summa {
     public class WebKitView : WebKit.WebView {
@@ -78,16 +79,15 @@ namespace Summa {
         public bool CanCutClipboard() {
             return false;
         }
+        
+        private void OnLinkClicked(object o, NavigationRequestedArgs args) {
+            Gnome.Url.Show(args.Request.Uri);
+            
+            return;
+        }
 
         public void Render(string data) {
             LoadString(data, "text/html", "utf-8", "http:///");
-        }
-        
-        private void OnLinkClicked(object o, NavigationRequestedArgs args) {
-        //     // get uri
-        //     // launch externally
-            Console.WriteLine ("Not implemented!");
-            return;
         }
 
         public void Render(NewsKit.Item item) {
