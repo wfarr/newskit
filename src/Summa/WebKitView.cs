@@ -83,7 +83,7 @@ namespace Summa {
         private void OnLinkClicked(object o, NavigationRequestedArgs args) {
             Gnome.Url.Show(args.Request.Uri);
             
-            return;
+            args.RetVal = WebKit.NavigationResponse.Ignore;
         }
 
         public void Render(string data) {
