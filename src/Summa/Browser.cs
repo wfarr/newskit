@@ -415,12 +415,8 @@ namespace Summa  {
         }
         
         public void DeleteFeed(object obj, EventArgs args) {
-            NewsKit.Daemon.DeleteFeed(curfeed.Url);
-            
-            feedview.DeleteFeed(curfeed);
-            
-            htmlview.Render("");
-            itemview.store.Clear();
+            Window del = new Summa.DeleteConfirmationDialog(this, curfeed);
+            del.ShowAll();
         }
         
         public void MarkItemFlagged(object obj, EventArgs args) {
@@ -428,9 +424,8 @@ namespace Summa  {
         }
         
         public void MarkAllItemsRead(object obj, EventArgs args) {
-            curfeed.MarkItemsRead();
-            feedview.UpdateSelected();
             itemview.MarkItemsRead();
+            feedview.UpdateSelected();
             UpdateName();
         }
         

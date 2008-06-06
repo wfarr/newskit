@@ -47,11 +47,7 @@ namespace Summa {
                     Selection.GetSelected(out selectmodel, out iter);
                 } else { store.GetIterFirst(out iter); }
                 
-                string val = (string)store.GetValue(iter, 5);
-                System.Console.WriteLine(val);
-                
-                NewsKit.Item item = new NewsKit.Item(val, feeduid);
-                return item;
+                return ItemFromIter(iter);
             }
         }
         
@@ -194,17 +190,30 @@ namespace Summa {
         }
         
         public void MarkItemsRead() {
-            store.GetIterFirst( out iter );
-            int rowsf = 0;
-            int rowst = feedobj.GetItems().Count;
+            store.GetIterFirst(out iter);
             
-            while( rowsf < rowst ) {
-                Selected.Read = true;
-                AppendItem(iter, Selected);
+            while ( true ) {
+                GLib.Value readvalue = new GLib.Value(false);
+                if (!store.IterIsValid(iter)) {
+                    break;
+                }
+                store.GetValue(iter, 1, ref readvalue);
                 
-                rowsf++;
-                store.IterNext( ref iter );
+                if ((bool)readvalue.Val) {
+                    store.IterNext(ref iter);
+                } else {
+                    NewsKit.Item item = ItemFromIter(iter);
+                    item.Read = true;
+                    AppendItem(iter, item);
+                }
             }
+        }
+        
+        private NewsKit.Item ItemFromIter(Gtk.TreeIter treeiter) {
+            string val = (string)store.GetValue(iter, 5);
+                
+            NewsKit.Item item = new NewsKit.Item(val, feeduid);
+            return item;
         }
         
         public string MakePrettyDate(string date) {
