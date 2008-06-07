@@ -40,7 +40,7 @@ namespace Summa {
         }
         
         public bool CanZoom() {
-            return false;
+            return true;
         }
         
         public void ZoomIn() {
@@ -48,7 +48,7 @@ namespace Summa {
             
             if ( start_size > 4 ) {
                 start_size++;
-                /*settings.DefaultFontSize = start_size;*/
+                settings.SetProperty("default-font-size", new GLib.Value(start_size));
                 
                 Settings = settings;
             }
@@ -59,7 +59,7 @@ namespace Summa {
             
             if ( start_size-1 > 4 ) {
                 start_size--;
-                /*settings.DefaultFontSize = start_size;*/
+                settings.SetProperty("default-font-size", new GLib.Value(start_size));
                 
                 Settings = settings;
             }
