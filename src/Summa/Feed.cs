@@ -89,7 +89,7 @@ namespace NewsKit {
                 return stags;
             }
             set {
-                string tags = value.Join(',');
+                string tags = String.Join(",", value);
                 feed.SetProperty("tags", tags);
             }
         }
