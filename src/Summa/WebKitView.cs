@@ -37,15 +37,12 @@ namespace Summa {
     }
     
     public class WebKitView : WebKit.WebView {
-        public int start_size;            
-        
-        public WebKitView() {
-            start_size = 10;
-
-            NavigationRequested += new NavigationRequestedHandler (OnLinkClicked);
+        public WebKitView() {NavigationRequested += new NavigationRequestedHandler (OnLinkClicked);
             
-            string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.</b><br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";            
+            string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.<br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";            
             Render(starting_content);
+            
+            ZoomTo(Summa.Config.DefaultZoomLevel);
         }
         
         public bool CanZoom() {
@@ -55,9 +52,9 @@ namespace Summa {
         public void ZoomIn() {
             Summa.WebSettings settings = new Summa.WebSettings();
             
-            if ( start_size > 4 ) {
-                start_size++;
-                settings.DefaultFontSize = start_size;
+            if ( Summa.Config.DefaultZoomLevel > 4 ) {
+                Summa.Config.DefaultZoomLevel++;
+                settings.DefaultFontSize = Summa.Config.DefaultZoomLevel;
                 
                 Settings = settings;
             }
@@ -66,19 +63,19 @@ namespace Summa {
         public void ZoomOut() {
             Summa.WebSettings settings = new Summa.WebSettings();
             
-            if ( start_size-1 > 4 ) {
-                start_size--;
-                settings.DefaultFontSize = start_size;
+            if ( Summa.Config.DefaultZoomLevel-1 > 4 ) {
+                Summa.Config.DefaultZoomLevel--;
+                settings.DefaultFontSize = Summa.Config.DefaultZoomLevel;
                 
                 Settings = settings;
             }
         }
         
         public void ZoomTo(int size) {
-            start_size = size;
+            Summa.Config.DefaultZoomLevel = size;
             
             Summa.WebSettings settings = new Summa.WebSettings();
-            settings.DefaultFontSize = start_size;
+            settings.DefaultFontSize = Summa.Config.DefaultZoomLevel;
             
             Settings = settings;
         }

@@ -54,15 +54,15 @@ namespace Summa {
             }
         }
         
-        private bool _feedsort;
         public bool FeedSort {
-            get { return _feedsort; }
-            set { _feedsort = value;
+            get { return Summa.Config.SortFeedview; }
+            set { 
                 if ( value ) {
                     store.SetSortColumnId(3, Gtk.SortType.Descending);
                 }
-                }
+                Summa.Config.SortFeedview = value;
             }
+        }
         
         private Gtk.CellRendererText trender;
         

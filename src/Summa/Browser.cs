@@ -32,18 +32,6 @@ namespace Summa  {
         public Gtk.IconFactory factory;
         public Gtk.UIManager uimanager;
         
-        public GConf.Client client;
-        const string SUMMA_PATH = "/apps/summa";
-        const string KEY_LIBNOTIFY = "/apps/summa/show_notifications";
-        const string KEY_WIN_WIDTH = "/apps/summa/win_width";
-        const string KEY_WIN_HEIGHT = "/apps/summa/win_height";
-        const string KEY_MAIN_PANE_POSITION = "/apps/summa/main_pane_pos";
-        const string KEY_LEFT_PANE_POSITION = "/apps/summa/left_pane_pos";
-        const string KEY_RIGHT_PANE_POSITION = "/apps/summa/right_pane_pos";
-        const string KEY_SHOULD_SORT_FEEDVIEW = "/apps/summa/sort_feedview";
-        const string KEY_DEFAULT_ZOOM_LEVEL = "/apps/summa/default_zoom_level";
-        public bool show_notifications;
-        
         public Gtk.Table table;
         
         //menus
@@ -198,8 +186,8 @@ namespace Summa  {
             GLib.Timeout.Add(3600000, new GLib.TimeoutHandler(ScheduledUpdateAll));
             should_update = true;
             
-            client = new GConf.Client();
-            UpdateFromGconf();
+            UpdateFromConfig();
+            
             //client.Notify(KEY_LIBNOTIFY); //FIXME
             //client.ValueChanged += b => { update_from_gconf(); };
         }
@@ -231,21 +219,12 @@ namespace Summa  {
             add_dialog.Show();
         }
         
-        public void UpdateFromGconf() {
-            bool not = (bool)client.Get(KEY_LIBNOTIFY);
-            
-            //client.AddDir(SUMMA_PATH, GConf.ClientPreloadType.None);
-            show_notifications = not;
-            
-            Resize((int)client.Get(KEY_WIN_WIDTH), (int)client.Get(KEY_WIN_HEIGHT));
+        public void UpdateFromConfig() {
+            Resize(Summa.Config.WindowWidth, Summa.Config.WindowHeight);
         
-            main_paned.Position  = (int)client.Get(KEY_MAIN_PANE_POSITION);
-            left_paned.Position  = (int)client.Get(KEY_LEFT_PANE_POSITION);
-            right_paned.Position  = (int)client.Get(KEY_RIGHT_PANE_POSITION);
-            
-            feedview.FeedSort = (bool)client.Get(KEY_SHOULD_SORT_FEEDVIEW);
-            
-            htmlview.ZoomTo((int)client.Get(KEY_DEFAULT_ZOOM_LEVEL));
+            main_paned.Position  = Summa.Config.MainPanePosition;
+            left_paned.Position  = Summa.Config.LeftPanePosition;
+            right_paned.Position  = Summa.Config.RightPanePosition;
         }
         
         public void CloseWindow(object obj, EventArgs args) {
@@ -255,8 +234,8 @@ namespace Summa  {
             
             GetSize(out width, out height);
             
-            client.Set(KEY_WIN_WIDTH, width);
-            client.Set(KEY_WIN_HEIGHT, height);
+            Summa.Config.WindowWidth = width;
+            Summa.Config.WindowHeight = height;
             
             /* get pane positions */
             int main_size;
@@ -267,13 +246,9 @@ namespace Summa  {
             left_size = left_paned.Position;
             right_size = right_paned.Position;
             
-            client.Set(KEY_MAIN_PANE_POSITION, main_size);
-            client.Set(KEY_LEFT_PANE_POSITION, left_size);
-            client.Set(KEY_RIGHT_PANE_POSITION, right_size);
-            
-            if ( feedview.FeedSort ) {
-                client.Set(KEY_SHOULD_SORT_FEEDVIEW, true);
-            }
+            Summa.Config.MainPanePosition = main_size;
+            Summa.Config.LeftPanePosition = left_size;
+            Summa.Config.RightPanePosition = right_size;
             
             Gtk.Main.Quit();
         }
@@ -315,12 +290,10 @@ namespace Summa  {
         
         public void ZoomIn(object obj, EventArgs args) {
             htmlview.ZoomIn();
-            client.Set(KEY_DEFAULT_ZOOM_LEVEL, htmlview.start_size);
         }
         
         public void ZoomOut(object obj, EventArgs args) {
             htmlview.ZoomOut();
-            client.Set(KEY_DEFAULT_ZOOM_LEVEL, htmlview.start_size);
         }
         
         public void UpdateSelectedFeed(object obj, EventArgs args) {
@@ -380,7 +353,7 @@ namespace Summa  {
         }
         
         public void ShowNotification(NewsKit.Feed feed) {
-            /*if (show_notifications) {
+            /*if (Summa.Config.ShowNotifications) {
                 var not = new Notify.Notification("New feed items", "Feed \""+feed.name+"\" has new unread items.", "internet-news-reader", null);
                 not.set_urgency(Notify.Urgency.NORMAL);
                 not.show();

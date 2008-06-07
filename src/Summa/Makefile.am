@@ -16,6 +16,7 @@ SUMMA_CSFILES = AboutDialog.cs \
 		Application.cs \
 		Bookmarker.cs \
 		Browser.cs \
+		Config.cs \
 		DeleteConfirmationDialog.cs \
 		DieuBookmarker.cs \
 		Feed.cs \
