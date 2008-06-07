@@ -37,7 +37,7 @@ namespace Summa {
     }
     
     public class WebKitView : WebKit.WebView {
-        private int start_size;            
+        public int start_size;            
         
         public WebKitView() {
             start_size = 10;

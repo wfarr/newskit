@@ -41,6 +41,7 @@ namespace Summa  {
         const string KEY_LEFT_PANE_POSITION = "/apps/summa/left_pane_pos";
         const string KEY_RIGHT_PANE_POSITION = "/apps/summa/right_pane_pos";
         const string KEY_SHOULD_SORT_FEEDVIEW = "/apps/summa/sort_feedview";
+        const string KEY_DEFAULT_ZOOM_LEVEL = "/apps/summa/default_zoom_level";
         public bool show_notifications;
         
         public Gtk.Table table;
@@ -243,6 +244,8 @@ namespace Summa  {
             right_paned.Position  = (int)client.Get(KEY_RIGHT_PANE_POSITION);
             
             feedview.FeedSort = (bool)client.Get(KEY_SHOULD_SORT_FEEDVIEW);
+            
+            htmlview.ZoomTo((int)client.Get(KEY_DEFAULT_ZOOM_LEVEL));
         }
         
         public void CloseWindow(object obj, EventArgs args) {
@@ -312,10 +315,12 @@ namespace Summa  {
         
         public void ZoomIn(object obj, EventArgs args) {
             htmlview.ZoomIn();
+            client.Set(KEY_DEFAULT_ZOOM_LEVEL, htmlview.start_size);
         }
         
         public void ZoomOut(object obj, EventArgs args) {
             htmlview.ZoomOut();
+            client.Set(KEY_DEFAULT_ZOOM_LEVEL, htmlview.start_size);
         }
         
         public void UpdateSelectedFeed(object obj, EventArgs args) {
