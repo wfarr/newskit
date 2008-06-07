@@ -82,12 +82,15 @@ namespace NewsKit {
                 feed.SetProperty("status", value);
             }
         }
-        public string Tags {
+        public string[] Tags {
             get {
-                return feed.GetProperty("tags");
+                string tags = feed.GetProperty("tags");
+                string[] stags = tags.Split(',');
+                return stags;
             }
             set {
-                feed.SetProperty("tags", value);
+                string tags = value.Join(',');
+                feed.SetProperty("tags", tags);
             }
         }
         public string Favicon {
