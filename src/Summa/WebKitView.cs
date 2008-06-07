@@ -27,6 +27,15 @@ using WebKit;
 using Gnome;
 
 namespace Summa {
+    public class WebSettings : WebKit.WebSettings {
+        public WebSettings() {}
+        
+        public int DefaultFontSize {
+            get { return (int)GetProperty("default-font-size").Val; }
+            set { SetProperty("default-font-size", new GLib.Value(value)); }
+        }
+    }
+    
     public class WebKitView : WebKit.WebView {
         private int start_size;            
         
@@ -44,25 +53,34 @@ namespace Summa {
         }
         
         public void ZoomIn() {
-            WebSettings settings = new WebKit.WebSettings();
+            Summa.WebSettings settings = new Summa.WebSettings();
             
             if ( start_size > 4 ) {
                 start_size++;
-                settings.SetProperty("default-font-size", new GLib.Value(start_size));
+                settings.DefaultFontSize = start_size;
                 
                 Settings = settings;
             }
         }
         
         public void ZoomOut() {
-            WebSettings settings = new WebKit.WebSettings();
+            Summa.WebSettings settings = new Summa.WebSettings();
             
             if ( start_size-1 > 4 ) {
                 start_size--;
-                settings.SetProperty("default-font-size", new GLib.Value(start_size));
+                settings.DefaultFontSize = start_size;
                 
                 Settings = settings;
             }
+        }
+        
+        public void ZoomTo(int size) {
+            start_size = size;
+            
+            Summa.WebSettings settings = new Summa.WebSettings();
+            settings.DefaultFontSize = start_size;
+            
+            Settings = settings;
         }
         
         public bool CanPrint() {
