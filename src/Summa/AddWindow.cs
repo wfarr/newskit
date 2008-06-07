@@ -41,6 +41,7 @@ namespace Summa {
             Title = "Add subscription";
             IconName = "add";
             browser = browse;
+            TransientFor = browser;
             
             DeleteEvent += OnCancel;
             
