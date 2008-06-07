@@ -20,6 +20,7 @@ namespace Summa {
         public DeleteConfirmationDialog(Summa.Browser browse, NewsKit.Feed delfeed) : base(Gtk.WindowType.Toplevel) {
             browser = browse;
             feed = delfeed;
+            TransientFor = browser;
             
             Title = "Delete feed?";
             IconName = "edit-delete";
