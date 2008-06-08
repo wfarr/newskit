@@ -41,6 +41,16 @@ namespace Summa {
         private Gtk.TreeModel selectmodel;
         private Gtk.TreeIter iter;
         
+        public bool HasSelected {
+            get {
+                if ( Selection.CountSelectedRows() != 0 ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        
         public NewsKit.Item Selected {
             get {
                 if ( Selection.CountSelectedRows() != 0 ) {
@@ -157,11 +167,13 @@ namespace Summa {
                 store.GetIterFirst(out iter);
                 Selection.SelectIter(iter);
             }
-            TreePath path = store.GetPath(iter);
-            
-            path.Prev();
-            
-            Selection.SelectPath(path);
+            if ( store.IterIsValid(iter) ) {
+                TreePath path = store.GetPath(iter);
+                
+                path.Prev();
+                
+                Selection.SelectPath(path);
+            }
         }
         
         public bool GoToNextItem() {

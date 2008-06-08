@@ -264,7 +264,9 @@ namespace Summa  {
         }
         
         public void BookmarkItem(object obj, EventArgs args) {
-            bookmarker.ShowBookmarkWindow(curitem.Title, curitem.Uri, curitem.Contents, "");
+            if ( itemview.HasSelected ) {
+                bookmarker.ShowBookmarkWindow(curitem.Title, curitem.Uri, curitem.Contents, "");
+            }
         }
         
         public void GoToNextItem(object obj, EventArgs args) {
@@ -291,7 +293,9 @@ namespace Summa  {
         
         public void GoToPreviousItem(object obj, EventArgs args) {
             itemview.GoToPreviousItem();
-            UpdateHtmlview();
+            if ( itemview.HasSelected ) {
+                UpdateHtmlview();
+            }
         }
         
         public void ZoomIn(object obj, EventArgs args) {
@@ -303,13 +307,15 @@ namespace Summa  {
         }
         
         public void UpdateSelectedFeed(object obj, EventArgs args) {
-            bool updated = feedview.Selected.Update();
-            
-            if ( updated ) {
-                feedview.UpdateSelected();
-                itemview.Update();
-                UpdateName();
-                ShowNotification(feedview.Selected);
+            if ( feedview.HasSelected ) {
+                bool updated = feedview.Selected.Update();
+                
+                if ( updated ) {
+                    feedview.UpdateSelected();
+                    itemview.Update();
+                    UpdateName();
+                    ShowNotification(feedview.Selected);
+                }
             }
         }
         
@@ -341,9 +347,11 @@ namespace Summa  {
                 bool newitems = feed.Update();
                 
                 if ( newitems ) {
-                    if ( feed.Url == feedview.Selected.Url ) {
-                        itemview.Update();
-                        UpdateName();
+                    if ( feedview.HasSelected ) {
+                        if ( feed.Url == feedview.Selected.Url ) {
+                            itemview.Update();
+                            UpdateName();
+                        }
                     }
                     feedview.UpdateFeed(feed);
                     statusbar.Push(contextid, "Feed \""+feed.Name+"\" has new items.");
@@ -399,18 +407,24 @@ namespace Summa  {
         }
         
         public void DeleteFeed(object obj, EventArgs args) {
-            Window del = new Summa.DeleteConfirmationDialog(this, curfeed);
-            del.ShowAll();
+            if ( feedview.HasSelected ) {
+                Window del = new Summa.DeleteConfirmationDialog(this, curfeed);
+                del.ShowAll();
+            }
         }
         
         public void MarkItemFlagged(object obj, EventArgs args) {
-            itemview.MarkSelectedFlagged();
+            if ( itemview.HasSelected ) {
+                itemview.MarkSelectedFlagged();
+            }
         }
         
         public void MarkAllItemsRead(object obj, EventArgs args) {
-            itemview.MarkItemsRead();
-            feedview.UpdateSelected();
-            UpdateName();
+            if ( feedview.HasSelected ) {
+                itemview.MarkItemsRead();
+                feedview.UpdateSelected();
+                UpdateName();
+            }
         }
         
         public void UpdateName() {

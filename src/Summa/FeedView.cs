@@ -42,6 +42,16 @@ namespace Summa {
         // a NewsKitFeed representing the feed selected
         // note that if no feed is selected, trying to get this will cause you
         // some problems.
+        public bool HasSelected {
+            get {
+                if ( Selection.CountSelectedRows() != 0 ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        
         public NewsKit.Feed Selected {
             get {
                 if ( Selection.CountSelectedRows() != 0 ) {
