@@ -14,6 +14,7 @@ namespace Summa {
         private static string KEY_RIGHT_PANE_POSITION = "/apps/summa/right_pane_pos";
         private static string KEY_SHOULD_SORT_FEEDVIEW = "/apps/summa/sort_feedview";
         private static string KEY_DEFAULT_ZOOM_LEVEL = "/apps/summa/default_zoom_level";
+        private static string KEY_GLOBAL_UPDATE_INTERVAL = "/apps/summa/global_update_interval";
         
         public static bool ShowNotifications {
             get {
@@ -84,6 +85,16 @@ namespace Summa {
             }
             set {
                 client.Set(KEY_DEFAULT_ZOOM_LEVEL, value);
+            }
+        }
+        
+        public static uint GlobalUpdateInterval {
+            get {
+                int a = (int)client.Get(KEY_GLOBAL_UPDATE_INTERVAL);
+                return (uint)a;
+            }
+            set {
+                client.Set(KEY_GLOBAL_UPDATE_INTERVAL, (int)value);
             }
         }
     }
