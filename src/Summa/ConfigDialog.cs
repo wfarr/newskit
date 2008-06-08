@@ -57,12 +57,12 @@ namespace Summa {
             interface_vbox.Spacing = 6;
             interface_alignment.Add(interface_vbox);
             
-            CheckButton cb_notifications = new Gtk.CheckButton("Show notifications on feed updates");
+            cb_notifications = new Gtk.CheckButton("Show notifications on feed updates");
             cb_notifications.Active = Summa.Config.ShowNotifications;
             cb_notifications.Toggled += new EventHandler(OnCbNotificationsToggled);
             interface_vbox.PackStart(cb_notifications, false, false, 0);
             
-            CheckButton cb_sortfeedview = new Gtk.CheckButton("Sort feeds according to unread items");
+            cb_sortfeedview = new Gtk.CheckButton("Sort feeds according to unread items");
             cb_sortfeedview.Active = Summa.Config.SortFeedview;
             cb_sortfeedview.Toggled += new EventHandler(OnCbSortFeedViewToggled);
             interface_vbox.PackStart(cb_sortfeedview, false, false, 0);
