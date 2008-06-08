@@ -320,9 +320,11 @@ namespace Summa  {
         }
         
         public void UpdateAll(object obj, EventArgs args) {
-            should_update = false;
-            UpdateAllPriv();
-            GLib.Timeout.Add(Summa.Config.GlobalUpdateInterval, new GLib.TimeoutHandler(ScheduledUpdateAll));
+            if (should_update) {
+                should_update = false;
+                UpdateAllPriv();
+                GLib.Timeout.Add(Summa.Config.GlobalUpdateInterval, new GLib.TimeoutHandler(ScheduledUpdateAll));
+            }
         }
         
         private bool ScheduledUpdateAll() {
@@ -372,6 +374,13 @@ namespace Summa  {
                 not.set_urgency(Notify.Urgency.NORMAL);
                 not.show();
             }*/
+        }
+        
+        public void ShowPropertiesDialog(object obj, EventArgs args) {
+            if ( feedview.HasSelected ) {
+                Window dialog = new Summa.FeedPropertiesDialog(this, feedview.Selected);
+                dialog.ShowAll();
+            }
         }
         
         public void UpdateHtmlview() {
@@ -525,8 +534,7 @@ namespace Summa  {
             action_group.Add(delete_action);
             
             props_action = new Gtk.Action("Properties", "_Properties", "Properties of the selected feed", Gtk.Stock.Properties);
-            props_action.Activated += new EventHandler(stub); //FIXME
-            props_action.Sensitive = false;
+            props_action.Activated += new EventHandler(ShowPropertiesDialog);
             action_group.Add(props_action);
             
             // item menu

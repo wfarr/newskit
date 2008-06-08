@@ -82,15 +82,26 @@ namespace NewsKit {
                 feed.SetProperty("status", value);
             }
         }
-        public string[] Tags {
+        public ArrayList Tags {
             get {
                 string tags = feed.GetProperty("tags");
-                string[] stags = tags.Split(',');
-                return stags;
+                ArrayList al = new System.Collections.ArrayList();
+                foreach ( string tag in tags.Split(',') ) {
+                    al.Add(tag);
+                }
+                
+                return al;
             }
             set {
-                string tags = String.Join(",", value);
-                feed.SetProperty("tags", tags);
+                string[] tags = new string[value.Count];
+                int index = 0;
+                foreach ( string tag in value ) {
+                    tags[index] = tag;
+                    index++;
+                }
+                
+                string jtags = String.Join(",", tags);
+                feed.SetProperty("tags", jtags);
             }
         }
         public string Favicon {
@@ -108,6 +119,38 @@ namespace NewsKit {
         public Feed(string feeduid) {
             feed = Bus.Session.GetObject<NewsKitFeed>("org.gnome.NewsKit.Feeds", new ObjectPath("/org/gnome/NewsKit/"+feeduid));
             Uid = feeduid;
+        }
+        
+        public void AppendTag(string tag) {
+            bool found = false;
+            foreach ( string stag in Tags ) {
+                if ( stag == tag ) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (!found) {
+                ArrayList tags = Tags;
+                tags.Add(tag);
+                Tags = tags;
+            }
+        }
+        
+        public void RemoveTag(string tag) {
+            bool found = false;
+            foreach ( string stag in Tags ) {
+                if ( stag == tag ) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (found) {
+                ArrayList tags = Tags;
+                tags.Remove(tag);
+                Tags = tags;
+            }
         }
         
         public ArrayList GetItems() {

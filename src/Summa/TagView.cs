@@ -85,11 +85,13 @@ namespace Summa {
             string[] utags = NewsKit.Daemon.GetTags();
             
             foreach ( string tag in utags ) {
-                if ( Tags.Contains(tag) ) {
-                    Gtk.TreeIter tagiter;
-                    tagiter = store.Append();
-                    store.SetValue(tagiter, 0, null);
-                    store.SetValue(tagiter, 1, tag);
+                if ( tag != "All" ) {
+                    if ( !Tags.Contains(tag) ) {
+                        Gtk.TreeIter tagiter;
+                        tagiter = store.Append();
+                        store.SetValue(tagiter, 0, null);
+                        store.SetValue(tagiter, 1, tag);
+                    }
                 }
             }
             Tags = NewsKit.Daemon.GetTags();

@@ -84,7 +84,7 @@ namespace NewsKit {
             return new NewsKit.Feed(uid);
         }
         
-        public static NewsKit.Feed RegisterFeedWithAuth(string uri, string username, string password) {
+        public static NewsKit.Feed RegisterFeed(string uri, string username, string password) {
             string uid = daemon.RegisterFeedSourceWithAuth(uri, username, password);
             
             return new NewsKit.Feed(uid);
@@ -104,7 +104,7 @@ namespace NewsKit {
             return feeds;
         }
         
-        public static ArrayList GetFeedsByTag(string tag) {
+        public static ArrayList GetFeeds(string tag) {
             string[] uids = daemon.GetFeedsByTag(tag);
             ArrayList feeds = new ArrayList();
             

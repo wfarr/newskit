@@ -118,7 +118,7 @@ namespace Summa {
         }
         
         public void Update() {
-            ArrayList ufeeds = NewsKit.Daemon.GetFeedsByTag(SetTag);
+            ArrayList ufeeds = NewsKit.Daemon.GetFeeds(SetTag);
             
             foreach (NewsKit.Feed feed in ufeeds) {
                 if ( !feeds.Contains(feed.Url) ) {
@@ -128,7 +128,7 @@ namespace Summa {
                     AppendFeed(feed, iter);
                 }
             }
-            feeds = NewsKit.Daemon.GetFeedsByTag(SetTag);
+            feeds = NewsKit.Daemon.GetFeeds(SetTag);
         }
         
         public void UpdateSelected() {
@@ -231,7 +231,7 @@ namespace Summa {
         private void PopulateWithFeeds(string tag) {            
             store.Clear();
             
-            feeds = NewsKit.Daemon.GetFeedsByTag(tag);
+            feeds = NewsKit.Daemon.GetFeeds(tag);
             
             SetTag = tag;
             

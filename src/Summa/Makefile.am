@@ -12,6 +12,7 @@ ASSEMBLIES = \
 	     -r:/usr/lib/mono/webkit-sharp/webkit-sharp.dll
 
 SUMMA_CSFILES = AboutDialog.cs \
+        AddTagDialog.cs \
 		AddWindow.cs \
 		Application.cs \
 		Bookmarker.cs \
@@ -21,6 +22,7 @@ SUMMA_CSFILES = AboutDialog.cs \
 		DeleteConfirmationDialog.cs \
 		DieuBookmarker.cs \
 		Feed.cs \
+		FeedPropertiesDialog.cs \
 		FeedView.cs \
 		Firstrun.cs \
 		Item.cs \
