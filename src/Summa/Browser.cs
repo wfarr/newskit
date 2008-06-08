@@ -58,6 +58,7 @@ namespace Summa  {
         public Gtk.Action select_all_action;
         public Gtk.Action find_action;
         public Gtk.Action prefs_action;
+        public Summa.ConfigDialog config_dialog;
         
         // subscription menu
         public Gtk.Action update_action;
@@ -180,6 +181,7 @@ namespace Summa  {
             table.Attach(statusbar, 0, 5, 3, 4, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
             
             about_dialog = new Summa.AboutDialog();
+            config_dialog = new Summa.ConfigDialog(this);
             bookmarker = new Summa.DieuBookmarker();
             //Notify.init("Summa");
             
@@ -255,6 +257,10 @@ namespace Summa  {
         
         public void ShowAboutDialog(object obj, EventArgs args) {
             about_dialog.ShowAll();
+        }
+        
+        public void ShowConfigDialog(object obj, EventArgs args) {
+            config_dialog.ShowAll();
         }
         
         public void BookmarkItem(object obj, EventArgs args) {
@@ -488,8 +494,7 @@ namespace Summa  {
             action_group.Add(find_action, "<ctrl>F");
             
             prefs_action = new Gtk.Action("Preferences", "_Preferences", "Preferences for Summa", Gtk.Stock.Preferences);
-            prefs_action.Activated += new EventHandler(stub); //FIXME
-            prefs_action.Sensitive = false;
+            prefs_action.Activated += new EventHandler(ShowConfigDialog);
             action_group.Add(prefs_action);
             
             // subscription menu
