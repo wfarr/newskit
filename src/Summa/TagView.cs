@@ -73,10 +73,7 @@ namespace Summa {
             
             foreach (string tag in Tags) {
                 if ( tag != "All" ) {
-                    Gtk.TreeIter iter;
-                    iter = store.Append();
-                    store.SetValue(iter, 0, null);
-                    store.SetValue(iter, 1, tag);
+                    AppendTag(tag);
                 }
             }
         }
@@ -87,14 +84,18 @@ namespace Summa {
             foreach ( string tag in utags ) {
                 if ( tag != "All" ) {
                     if ( !Tags.Contains(tag) ) {
-                        Gtk.TreeIter tagiter;
-                        tagiter = store.Append();
-                        store.SetValue(tagiter, 0, null);
-                        store.SetValue(tagiter, 1, tag);
+                        AppendTag(tag);
                     }
                 }
             }
             Tags = NewsKit.Daemon.GetTags();
+        }
+        
+        public void AppendTag(string tag) {
+            Gtk.TreeIter iter;
+            iter = store.Append();
+            store.SetValue(iter, 0, new Gdk.Pixbuf("/home/eosten/Desktop/tag.png"));
+            store.SetValue(iter, 1, tag);
         }
     }
 }

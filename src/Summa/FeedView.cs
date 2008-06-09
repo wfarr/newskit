@@ -75,6 +75,7 @@ namespace Summa {
         }
         
         private Gtk.CellRendererText trender;
+        private Hashtable feedhash;
         
         public FeedView() {
             // set up the liststore for the view
@@ -97,7 +98,9 @@ namespace Summa {
             column_Name.SortIndicator = true;
             AppendColumn(column_Name);
             
-            HeadersClickable = true;
+            HeadersVisible = false;
+            
+            feedhash = new Hashtable();
 
             // set up the icon theme so that we can make stuff pretty
             icon_theme = Gtk.IconTheme.Default;
@@ -136,52 +139,17 @@ namespace Summa {
         }
         
         public void UpdateFeed(NewsKit.Feed feed) {
-            store.GetIterFirst(out iter);
-            
-            bool found_the_feed = false;
-            
-            while ( !found_the_feed ) {
-                GLib.Value urlvalue = new GLib.Value("");
-                if ( !store.IterIsValid(iter) ) {
-                    break;
-                }
-                store.GetValue(iter, 2, ref urlvalue);
-                
-                if ( urlvalue.ToString() == feed.Url ) {
-                    found_the_feed = true;
-                    break;
-                } else {
-                    store.IterNext(ref iter);
-                }
-            }
-            
-            if ( found_the_feed ) {
-                AppendFeed(feed, iter);
-            }
+            TreePath path = (TreePath)feedhash[feed.Url];
+            TreeIter iter;
+            store.GetIter(out iter, path);
+            AppendFeed(feed, iter);
         }
         
         public void DeleteFeed(NewsKit.Feed feed) {
-            store.GetIterFirst(out iter);
-            
-            bool found_the_feed = false;
-            
-            while ( !found_the_feed ) {
-                GLib.Value urlvalue = new GLib.Value("");
-                if ( !store.IterIsValid(iter) ) {
-                    break;
-                }
-                store.GetValue(iter, 2, ref urlvalue);
-                if ( urlvalue.ToString() == feed.Url ) {
-                    found_the_feed = true;
-                    break;
-                } else {
-                    store.IterNext( ref iter );
-                }
-            }
-            
-            if ( found_the_feed ) {
-                store.Remove(ref iter);
-            }
+            TreePath path = (TreePath)feedhash[feed.Url];
+            TreeIter iter;
+            store.GetIter(out iter, path);
+            store.Remove(ref iter);
         }
         
         public void AppendFeed(NewsKit.Feed feed, Gtk.TreeIter titer) {
@@ -204,6 +172,10 @@ namespace Summa {
             store.SetValue(titer, 1, feedname);
             store.SetValue(titer, 2, feedurl);
             store.SetValue(titer, 3, unread);
+            
+            try {
+                feedhash.Add(feedurl, store.GetPath(titer));
+            } catch ( System.ArgumentException e ) {}
             
             while ( Gtk.Application.EventsPending() ) {
                 Gtk.Main.Iteration();
