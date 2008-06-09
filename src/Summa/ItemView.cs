@@ -116,12 +116,16 @@ namespace Summa {
             store.Clear();
             
             foreach ( NewsKit.Item item in items ) {
-                TreeIter iter = store.Append();
-                
-                AppendItem(iter, item);
-                
-                while ( Gtk.Application.EventsPending() ) {
-                    Gtk.Main.Iteration();
+                if ( feed.Uid == feedobj.Uid ) {
+                    TreeIter iter = store.Append();
+                    
+                    AppendItem(iter, item);
+                    
+                    while ( Gtk.Application.EventsPending() ) {
+                        Gtk.Main.Iteration();
+                    }
+                } else {
+                    return;
                 }
             }
         }
