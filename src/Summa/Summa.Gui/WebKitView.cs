@@ -37,10 +37,13 @@ namespace Summa {
         }
         
         public class WebKitView : WebKit.WebView {
-            public WebKitView() {
+            private Statusbar statusbar;
+            
+            public WebKitView(Gtk.Statusbar sb) {
+                statusbar = sb;
 
-                NavigationRequested += new NavigationRequestedHandler (OnNavigationRequested);
-                HoveringOverLink += new HoveringOverLinkHandler (OnHoveringOverLink);
+                NavigationRequested += new NavigationRequestedHandler(OnNavigationRequested);
+                HoveringOverLink += new HoveringOverLinkHandler(OnHoveringOverLink);
                 
                 string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.<br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";
                 Render(starting_content);
@@ -98,13 +101,13 @@ namespace Summa {
                 return false;
             }
             
-            private void OnNavigationRequested(object o, NavigationRequestedArgs args) {
+            private void OnNavigationRequested(object obj, NavigationRequestedArgs args) {
                 Gnome.Url.Show(args.Request.Uri);
                 
                 args.RetVal = WebKit.NavigationResponse.Ignore;
             }
 
-            private void OnHoveringOverLink(object o, HoveringOverLinkArgs args) {
+            private void OnHoveringOverLink(object obj, HoveringOverLinkArgs args) {
                 string text;
 
                 if ((args.Title == String.Empty) && (args.Link == String.Empty))
@@ -115,11 +118,14 @@ namespace Summa {
                     text = args.Title;
 
                 if (text != String.Empty) {
-                    // do nothing
-                    ;
+                    if ( text != null ) {
+                        statusbar.Push(statusbar.GetContextId(text), text);
+                    } else {
+                        statusbar.Push(statusbar.GetContextId(""), "");
+                    }
                 }
             }
-
+            
             public void Render(string data) {
                 LoadString(data, "text/html", "utf-8", "http:///");
             }

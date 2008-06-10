@@ -168,16 +168,16 @@ namespace Summa  {
                 itemview_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
                 right_paned.Pack1(itemview_swin, true, true);
                 
-                htmlview = new Summa.Gui.WebKitView();
+                statusbar = new Gtk.Statusbar();
+                contextid = 0;
+                table.Attach(statusbar, 0, 5, 3, 4, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
+                
+                htmlview = new Summa.Gui.WebKitView(statusbar);
                 htmlview_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
                 htmlview_swin.Add(htmlview);
                 htmlview_swin.ShadowType = Gtk.ShadowType.In;
                 htmlview_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
                 right_paned.Pack2(htmlview_swin, true, true);
-                
-                statusbar = new Gtk.Statusbar();
-                contextid = 0;
-                table.Attach(statusbar, 0, 5, 3, 4, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
                 
                 about_dialog = new Summa.Gui.AboutDialog();
                 config_dialog = new Summa.Gui.ConfigDialog(this);
