@@ -46,7 +46,7 @@ public interface NewsKitObj {
 public delegate void NewFeedHandler();
 public delegate void FeedDeletedHandler();
 
-[Interface ("org.gnome.Summa.Data.Feeds")]
+[Interface ("org.gnome.NewsKit.Feeds")]
 public interface NewsKitFeed {
     string[] GetFullItem (string url);
     string GetItemProperty (string url, string property);
