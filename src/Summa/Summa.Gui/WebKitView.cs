@@ -95,10 +95,23 @@ namespace Summa {
                 return false;
             }
             
-            private void OnLinkClicked(object o, NavigationRequestedArgs args) {
+            private void OnNavigationRequested(object o, NavigationRequestedArgs args) {
                 Gnome.Url.Show(args.Request.Uri);
                 
                 args.RetVal = WebKit.NavigationResponse.Ignore;
+            }
+
+            private void OnHoveringOverLink(object o, HoveringOverLinkArgs args) {
+                string tooltip_text;
+                Gtk.Tooltips url_tooltips;
+
+                if (args.Title == String.Empty)
+                    tooltip_text = args.Link;
+                else
+                    tooltip_text = args.Title;
+
+                url_tooltips = new Gtk.Tooltips();
+                url_tooltips.SetTip(this, args.Link, "Click to visit: " + tooltip_text);
             }
 
             public void Render(string data) {
@@ -106,15 +119,16 @@ namespace Summa {
             }
 
             public void Render(Summa.Data.Item item) {
-                string content = "<b>"+item.Title+"</b>";
-                if ( item.Author != "" ) {
-                    content += " by "+item.Author+"<br />";
+                string content = String.Format("<b>{0}</b>", item.Title);
+
+                if ( item.Author != String.Empty ) {
+                    content += String.Format(" by {0}<br />", item.Author);
                 } else {
                     content += "<br />";
                 }
-                content += "<b>URL</b>: <a href=\""+item.Uri+"\">"+item.Uri+"</a><br />";
-                if ( item.EncUri != "" ) {
-                    content += "<b>Enclosure</b>: <a href=\""+item.EncUri+"\">"+item.EncUri+"</a><br />";
+                content += String.Format("<b>URL</b>: <a href=\"{0}\">{0}</a><br />", item.Uri);
+                if ( item.EncUri != String.Empty ) {
+                    content += String.Format("<b>Enclosure</b>: <a href=\"{0}\">{0}</a><br />", item.EncUri);
                 }
                 content += "<hr/>";
                 content += item.Contents;
@@ -123,18 +137,21 @@ namespace Summa {
             }
             
             public void Render(Summa.Data.Feed feed) {
-                string content = "<b>"+feed.Name+"</b>";
-                if ( feed.Author != "" ) {
-                    content += " by "+feed.Author+"<br />";
+                string content = String.Format("<b>{0}</b>", feed.Name);
+
+                if ( feed.Author != String.Empty ) {
+                    content += String.Format(" by {0}<br />", feed.Author);
                 } else {
                     content += "<br />";
                 }
-                if ( feed.Subtitle != "" ) {
-                    content += "<b>Subtitle</b>: "+feed.Subtitle+"<br />";
+
+                if ( feed.Subtitle != String.Empty ) {
+                    content += String.Format("<b>Subtitle</b>: {0}<br />", feed.Subtitle);
                 }
-                content += "<b>URL</b>: <a href=\""+feed.Url+"\">"+feed.Url+"</a><br />";
+
+                content += String.Format("<b>URL</b>: <a href=\"{0}\">{0}</a><br />", feed.Url);
                 content += "<hr/>";
-                content += "<img src=\""+feed.Image+"\">";
+                content += String.Format("<img src=\"{0}\">", feed.Image);
                 
                 Render(content);
             }
