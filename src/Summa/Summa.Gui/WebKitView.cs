@@ -105,16 +105,19 @@ namespace Summa {
             }
 
             private void OnHoveringOverLink(object o, HoveringOverLinkArgs args) {
-                string tooltip_text;
-                Gtk.Tooltips url_tooltips;
+                string text;
 
+                if ((args.Title == String.Empty) && (args.Link == String.Empty))
+                    text = String.Empty;
                 if (args.Title == String.Empty)
-                    tooltip_text = args.Link;
+                    text = args.Link;
                 else
-                    tooltip_text = args.Title;
+                    text = args.Title;
 
-                url_tooltips = new Gtk.Tooltips();
-                url_tooltips.SetTip(this, args.Link, "Click to visit: " + tooltip_text);
+                if (text != String.Empty) {
+                    // do nothing
+                    ;
+                }
             }
 
             public void Render(string data) {
