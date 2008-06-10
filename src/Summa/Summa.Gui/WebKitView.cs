@@ -37,7 +37,10 @@ namespace Summa {
         }
         
         public class WebKitView : WebKit.WebView {
-            public WebKitView() {NavigationRequested += new NavigationRequestedHandler (OnLinkClicked);
+            public WebKitView() {
+
+                NavigationRequested += new NavigationRequestedHandler (OnNavigationRequested);
+                HoveringOverLink += new HoveringOverLinkHandler (OnHoveringOverLink);
                 
                 string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.<br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";
                 Render(starting_content);
