@@ -39,7 +39,7 @@ namespace Summa {
         public class WebKitView : WebKit.WebView {
             public WebKitView() {NavigationRequested += new NavigationRequestedHandler (OnLinkClicked);
                 
-                string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.<br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";            
+                string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.<br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";
                 Render(starting_content);
                 
                 ZoomTo(Summa.Core.Config.DefaultZoomLevel);
