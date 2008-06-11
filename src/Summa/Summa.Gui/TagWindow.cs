@@ -45,6 +45,7 @@ namespace Summa {
                 Add(vbox);
                 
                 table = new Gtk.Table(2, 2, false);
+                table.RowSpacing = 6;
                 vbox.PackStart(table, false, false, 0);
                 
                 bbox = new Gtk.HButtonBox();
@@ -59,7 +60,9 @@ namespace Summa {
             private void AddTagsCombobox() {
                 cbx = Gtk.ComboBox.NewText();
                 foreach ( string tag in Summa.Data.Core.GetTags() ) {
-                    cbx.AppendText(tag);
+                    if ( tag != "All" ) {
+                        cbx.AppendText(tag);
+                    }
                 }
                 
                 cbx.Changed += new EventHandler(OnCbUpdateIntervalChanged);
