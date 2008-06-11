@@ -121,7 +121,7 @@ namespace Summa {
 
                 if (text != String.Empty) {
                     if ( text != null ) {
-                        statusbar.Push(statusbar.GetContextId(text), text);
+                        statusbar.Push(statusbar.GetContextId(text), "Click to visit " + text);
                     } else {
                         statusbar.Push(statusbar.GetContextId(""), "");
                     }
