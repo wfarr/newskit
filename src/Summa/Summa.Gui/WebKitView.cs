@@ -21,6 +21,7 @@
 //
 
 using System;
+using System.Text;
 using Gtk;
 using WebKit;
 using Gnome;
@@ -35,9 +36,10 @@ namespace Summa {
                 set { SetProperty("default-font-size", new GLib.Value(value)); }
             }
         }
-        
+
         public class WebKitView : WebKit.WebView {
             private Statusbar statusbar;
+            private StringBuilder content = new StringBuilder();
             
             public WebKitView(Gtk.Statusbar sb) {
                 statusbar = sb;
@@ -131,41 +133,51 @@ namespace Summa {
             }
 
             public void Render(Summa.Data.Item item) {
-                string content = String.Format("<b>{0}</b>", item.Title);
+                if (content.ToString() != String.Empty) {
+                    // Empties the StringBuilder if it has more than ""
+                    content.Remove(0, content.Length);
+                }
+
+                content.AppendFormat("<b>{0}</b>", item.Title);
 
                 if ( item.Author != String.Empty ) {
-                    content += String.Format(" by {0}<br />", item.Author);
+                    content.AppendFormat(" by {0}<br />", item.Author);
                 } else {
-                    content += "<br />";
+                    content.Append("<br />");
                 }
-                content += String.Format("<b>URL</b>: <a href=\"{0}\">{0}</a><br />", item.Uri);
+                content.AppendFormat("<b>URL</b>: <a href=\"{0}\">{0}</a><br />", item.Uri);
                 if ( item.EncUri != String.Empty ) {
-                    content += String.Format("<b>Enclosure</b>: <a href=\"{0}\">{0}</a><br />", item.EncUri);
+                    content.AppendFormat("<b>Enclosure</b>: <a href=\"{0}\">{0}</a><br />", item.EncUri);
                 }
-                content += "<hr/>";
-                content += item.Contents;
+                content.Append("<hr/>");
+                content.Append(item.Contents);
                 
-                Render(content);
+                Render(content.ToString());
             }
             
             public void Render(Summa.Data.Feed feed) {
-                string content = String.Format("<b>{0}</b>", feed.Name);
+                if (content.ToString() != String.Empty) {
+                    // Empties the StringBuilder if it has more than ""
+                    content.Remove(0, content.Length);
+                }
+
+                content.AppendFormat("<b>{0}</b>", feed.Name);
 
                 if ( feed.Author != String.Empty ) {
-                    content += String.Format(" by {0}<br />", feed.Author);
+                    content.AppendFormat(" by {0}<br />", feed.Author);
                 } else {
-                    content += "<br />";
+                    content.Append("<br />");
                 }
 
                 if ( feed.Subtitle != String.Empty ) {
-                    content += String.Format("<b>Subtitle</b>: {0}<br />", feed.Subtitle);
+                    content.AppendFormat("<b>Subtitle</b>: {0}<br />", feed.Subtitle);
                 }
 
-                content += String.Format("<b>URL</b>: <a href=\"{0}\">{0}</a><br />", feed.Url);
-                content += "<hr/>";
-                content += String.Format("<img src=\"{0}\">", feed.Image);
+                content.AppendFormat("<b>URL</b>: <a href=\"{0}\">{0}</a><br />", feed.Url);
+                content.Append("<hr/>");
+                content.AppendFormat("<img src=\"{0}\">", feed.Image);
                 
-                Render(content);
+                Render(content.ToString());
             }
         }
     }
