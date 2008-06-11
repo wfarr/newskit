@@ -153,6 +153,13 @@ namespace Summa {
                 store.Remove(ref iter);
             }
             
+            public void AddNewFeed(Summa.Data.Feed feed) {
+                Gtk.TreeIter iter;
+                iter = store.Append();
+                
+                AppendFeed(feed, iter);
+            }
+            
             public void AppendFeed(Summa.Data.Feed feed, Gtk.TreeIter titer) {
                 int count = feed.GetUnreadCount();
                 bool unread = false;

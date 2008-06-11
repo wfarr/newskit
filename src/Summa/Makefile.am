@@ -33,6 +33,7 @@ SUMMA_CSFILES = \
         Summa.Gui/OpmlDialog.cs \
         Summa.Gui/StatusIcon.cs \
         Summa.Gui/TagView.cs \
+        Summa.Gui/TagWindow.cs \
         Summa.Gui/WebKitView.cs
 
 summalibdir = $(prefix)/lib/summa

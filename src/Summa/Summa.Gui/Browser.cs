@@ -64,6 +64,7 @@ namespace Summa  {
             public Gtk.Action read_action;
             public Gtk.Action delete_action;
             public Gtk.Action props_action;
+            public Gtk.Action tags_action;
             
             // item menu
             public Gtk.Action zoom_in_action;
@@ -382,6 +383,11 @@ namespace Summa  {
                 }
             }
             
+            public void ShowTagsWindow(object obj, EventArgs args) {
+                Window dialog = new Summa.Gui.TagWindow(this);
+                dialog.ShowAll();
+            }
+            
             public void UpdateHtmlview() {
                 curitem = itemview.Selected;
                 htmlview.Render(curitem);
@@ -536,6 +542,10 @@ namespace Summa  {
                 props_action.Activated += new EventHandler(ShowPropertiesDialog);
                 action_group.Add(props_action);
                 
+                tags_action = new Gtk.Action("Tags", "Edit subscription _tags", "Edit the tags of your feeds by tag", null);
+                tags_action.Activated += new EventHandler(ShowTagsWindow);
+                action_group.Add(tags_action);
+                
                 // item menu
                 zoom_in_action = new Gtk.Action("ZoomIn", "_Increase text size", "Increase text size", Gtk.Stock.ZoomIn);
                 zoom_in_action.Activated += new EventHandler(ZoomIn);
@@ -562,7 +572,6 @@ namespace Summa  {
                 // help menu
                 help_action = new Gtk.Action("Contents", "_Contents", "Get help", Gtk.Stock.Help);
                 help_action.Activated += new EventHandler(stub); //FIXME
-                help_action.Sensitive = false;
                 help_action.Sensitive = false;
                 action_group.Add(help_action, "F11");
                 
@@ -628,6 +637,7 @@ namespace Summa  {
             <menuitem action='Mark_read'/>
             <menuitem action='Delete'/>
             <menuitem action='Properties'/>
+            <menuitem action='Tags'/>
             </menu>
             <menu action='ItemMenu'>
             <menuitem action='ZoomIn'/>
