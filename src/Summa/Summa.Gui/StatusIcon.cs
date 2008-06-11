@@ -28,7 +28,6 @@ namespace Summa {
         public class StatusIcon : Gtk.StatusIcon {
             private bool shown;
             private Browser b;
-            private Gtk.Menu menu;
             
             public StatusIcon(Summa.Gui.Browser browser) {
                 FromIconName = "internet-news-reader";
