@@ -28,23 +28,25 @@ namespace Summa {
         public class StatusIcon : Gtk.StatusIcon {
             private bool shown;
             private Browser b;
+            private Gtk.Menu menu;
             
             public StatusIcon(Summa.Gui.Browser browser) {
                 FromIconName = "internet-news-reader";
                 b = browser;
-                 if ( IconName == null ) {
-                     FromIconName = "applications-internet";
-                 }
+                if ( IconName == null ) {
+                    FromIconName = "applications-internet";
+                }
                  
-                 shown = true;
+                shown = true;
                 int unread = Summa.Data.Core.GetUnreadCount();
                 string us = unread.ToString();
                 
-                Tooltip = us+" unread items.";
-                 
-                 Activate += new EventHandler(ToggleBrowserStatus);
-             }
-             
+                Tooltip = us + " unread items.";
+                
+                Activate += new EventHandler(ToggleBrowserStatus);
+                PopupMenu += RightClickMenu;
+            }
+            
              private void ToggleBrowserStatus(object obj, EventArgs args) {
                  if ( shown ) {
                      b.Hide();
@@ -53,6 +55,42 @@ namespace Summa {
                     b.Show();
                     shown = true;
                 }
+             }
+
+             private void RightClickMenu(object obj, EventArgs args) {
+                 Gtk.Menu menu = new Gtk.Menu();
+
+                 // Add Button
+                 ImageMenuItem add_button = new ImageMenuItem("Add New Feed");
+                 Gtk.Image add_button_img = new Gtk.Image(Gtk.Stock.Add, Gtk.IconSize.Menu);
+                 add_button.Image = add_button_img;
+                 menu.Append(add_button);
+                 
+                 // Refresh Button
+                 ImageMenuItem refresh_button = new ImageMenuItem("Refresh Feeds");
+                 Gtk.Image refresh_button_img = new Gtk.Image(Gtk.Stock.Refresh, Gtk.IconSize.Menu);
+                 refresh_button.Image = refresh_button_img;
+                 menu.Append(refresh_button);
+
+                 // Preferences Button
+                 ImageMenuItem prefs_button = new ImageMenuItem("Preferences");
+                 Gtk.Image prefs_button_img = new Gtk.Image(Gtk.Stock.Preferences, Gtk.IconSize.Menu);
+                 prefs_button.Image = prefs_button_img;
+                 menu.Append(prefs_button);
+
+                 // Quit Button
+                 ImageMenuItem quit_button = new ImageMenuItem("Quit");
+                 Gtk.Image quit_button_img = new Gtk.Image(Gtk.Stock.Quit, Gtk.IconSize.Menu);
+                 quit_button.Image = quit_button_img;
+                 menu.Append(quit_button);
+
+                 menu.ShowAll();
+                 menu.Popup();
+
+                 add_button.Activated += new EventHandler(b.ShowAddWindow);
+                 refresh_button.Activated += new EventHandler(b.UpdateAll);
+                 prefs_button.Activated += new EventHandler(b.ShowConfigDialog);
+                 quit_button.Activated += new EventHandler(b.CloseWindow);
              }
         }
     }
