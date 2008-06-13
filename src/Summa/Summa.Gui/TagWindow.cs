@@ -11,7 +11,7 @@ namespace Summa {
             private Gtk.ListStore store;
             private Gtk.TreeView treeview;
             
-            private Gtk.ComboBox cbx;
+            public Gtk.ComboBox ComboBox;
             
             private Gtk.TreeModel selectmodel;
             private Gtk.TreeIter iter;
@@ -48,25 +48,25 @@ namespace Summa {
                 
                 AddTagsCombobox();
                 AddFeedTreeView();
-                AddCloseButton();
+                AddButtons();
                 vbox.PackStart(bbox, false, false, 0);
             }
             
             private void AddTagsCombobox() {
-                cbx = Gtk.ComboBox.NewText();
+                ComboBox = Gtk.ComboBox.NewText();
                 foreach ( string tag in Summa.Data.Core.GetTags() ) {
                     if ( tag != "All" ) {
-                        cbx.AppendText(tag);
+                        ComboBox.AppendText(tag);
                     }
                 }
                 
-                cbx.Changed += new EventHandler(OnCbUpdateIntervalChanged);
+                ComboBox.Changed += new EventHandler(OnCbUpdateIntervalChanged);
                 
-                table.Attach(cbx, 0, 1, 0, 1, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
+                table.Attach(ComboBox, 0, 1, 0, 1, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
             }
             
             private void OnCbUpdateIntervalChanged(object obj, EventArgs args) {
-                Populate(cbx.ActiveText);
+                Populate(ComboBox.ActiveText);
             }
             
             private void AddFeedTreeView() {
@@ -105,21 +105,23 @@ namespace Summa {
                     store.SetValue(iter, 0, false);
                     Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed((string)store.GetValue(iter, 2));
                     
-                    if ( Summa.Core.Application.Browser.FeedView.SetTag == cbx.ActiveText ) {
+                    if ( Summa.Core.Application.Browser.FeedView.SetTag == ComboBox.ActiveText ) {
                         Summa.Core.Application.Browser.FeedView.DeleteFeed(feed);
                     }
                     
-                    feed.RemoveTag(cbx.ActiveText);
+                    feed.RemoveTag(ComboBox.ActiveText);
                 } else {
                     store.SetValue(iter, 0, true);
                     Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed((string)store.GetValue(iter, 2));
                     
-                    if ( Summa.Core.Application.Browser.FeedView.SetTag == cbx.ActiveText ) {
+                    if ( Summa.Core.Application.Browser.FeedView.SetTag == ComboBox.ActiveText ) {
                         Summa.Core.Application.Browser.FeedView.AddNewFeed(feed);
                     }
+                    Summa.Core.Application.Browser.TagView.Update();
                     
-                    feed.AppendTag(cbx.ActiveText);
+                    feed.AppendTag(ComboBox.ActiveText);
                 }
+                Summa.Core.Application.Browser.TagView.Update();
             }
             
             private void Populate(string tag) {
@@ -128,16 +130,25 @@ namespace Summa {
                 foreach ( Summa.Data.Feed feed in Summa.Data.Core.GetFeeds() ) {
                     Gtk.TreeIter iter = store.Append();
                     
-                    store.SetValue(iter, 0, feed.Tags.Contains(cbx.ActiveText));
+                    store.SetValue(iter, 0, feed.Tags.Contains(ComboBox.ActiveText));
                     store.SetValue(iter, 1, feed.Name);
                     store.SetValue(iter, 2, feed.Url);
                 }
             }
             
-            private void AddCloseButton() {
+            private void AddButtons() {
+                Button add_button = new Gtk.Button(Gtk.Stock.Add);
+                add_button.Clicked += new EventHandler(OnAdd);
+                bbox.PackStart(add_button);
+                
                 Button close_button = new Gtk.Button(Gtk.Stock.Close);
                 close_button.Clicked  += new EventHandler(OnClose);
                 bbox.PackStart(close_button);
+            }
+            
+            private void OnAdd(object obj, EventArgs args) {
+                Window t = new Summa.Gui.AddTagDialog(this);
+                t.ShowAll();
             }
             
             private void OnClose(object obj, EventArgs args) {

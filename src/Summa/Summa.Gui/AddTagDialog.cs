@@ -5,6 +5,7 @@ namespace Summa {
     namespace Gui {
         public class AddTagDialog : Gtk.Window {
             private Summa.Gui.FeedPropertiesDialog propdialog;
+            private Summa.Gui.TagWindow twindow;
             
             private Gtk.VBox vbox;
             private Gtk.HBox hbox;
@@ -20,7 +21,21 @@ namespace Summa {
                 TransientFor = dialog;
                 propdialog = dialog;
                 
-                Title = "Add tag";
+                DialogConstructPriv();
+                
+                add_button.Clicked += new EventHandler(OnAdd);
+            }
+            
+            public AddTagDialog(Summa.Gui.TagWindow dialog) : base(Gtk.WindowType.Toplevel) {
+                TransientFor = dialog;
+                twindow = dialog;
+                
+                DialogConstructPriv();
+                
+                add_button.Clicked += new EventHandler(OnAddForWindow);
+            }
+            
+            private void DialogConstructPriv() {Title = "Add tag";
                 IconName = "add";
                 
                 DeleteEvent += OnCancel;
@@ -58,7 +73,6 @@ namespace Summa {
                 bbox.PackStart(cancel_button);
                 
                 add_button = new Gtk.Button(Gtk.Stock.Add);
-                add_button.Clicked += new EventHandler(OnAdd);
                 bbox.PackEnd(add_button);
             }
             
@@ -78,6 +92,12 @@ namespace Summa {
                 if ( Summa.Core.Application.Browser.TagView.Selected == entry.Text ) {
                     Summa.Core.Application.Browser.FeedView.Update();
                 }
+                
+                Destroy();
+            }
+            
+            private void OnAddForWindow(object obj, EventArgs args) {
+                twindow.ComboBox.AppendText(entry.Text);
                 
                 Destroy();
             }
