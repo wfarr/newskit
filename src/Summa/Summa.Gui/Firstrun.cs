@@ -37,12 +37,10 @@ namespace Summa {
             private Gtk.FileChooserButton fcbutton;
             private Gtk.Button cancel_button;
             private Gtk.Button add_button;
-            private Summa.Gui.Browser browser;
             
-            public Firstrun(Summa.Gui.Browser browse) : base(Gtk.WindowType.Toplevel) {
+            public Firstrun() : base(Gtk.WindowType.Toplevel) {
                 IconName = Gtk.Stock.Convert;
-                browser = browse;
-                TransientFor = browser;
+                TransientFor = Summa.Core.Application.Browser;
                 Title = "Import OPML file";
                 
                 Resizable = false;
@@ -93,7 +91,7 @@ namespace Summa {
                 bbox.Sensitive = false;
                 image.Sensitive = false;
                 label.Sensitive = false;
-                browser.Sensitive = false;
+                Summa.Core.Application.Browser.Sensitive = false;
                 
                 ProgressBar pb = new Gtk.ProgressBar();
                 table.Attach(pb, 1, 2, 1, 2);
@@ -106,7 +104,7 @@ namespace Summa {
                     double progress = 0.0;
                     
                     foreach ( string feed in feeds ) {
-                        browser.statusbar.Push(browser.contextid, "Importing feed \""+feed+"\"");
+                        Summa.Core.Application.Browser.statusbar.Push(Summa.Core.Application.Browser.contextid, "Importing feed \""+feed+"\"");
                         while ( Gtk.Application.EventsPending() ) {
                             Gtk.Main.Iteration();
                         }
@@ -117,8 +115,8 @@ namespace Summa {
                         Summa.Data.Feed uid = Summa.Data.Core.RegisterFeed(feed);
                         it_worked = true;
                         /*} catch ( Error ex ) {
-                            browser.statusbar.push(browser.contextid, "Import of feed \""+feed+"\" failed.");
-                            browser.contextid++;
+                            Summa.Core.Application.Browser.statusbar.push(Summa.Core.Application.Browser.contextid, "Import of feed \""+feed+"\" failed.");
+                            Summa.Core.Application.Browser.contextid++;
                             it_worked = false;
                             string uid = "0";
                         }*/
@@ -127,7 +125,7 @@ namespace Summa {
                         progress += step;
                         
                         if ( it_worked ) {
-                            //browser.contextid++;
+                            //Summa.Core.Application.Browser.contextid++;
                             
                             while ( Gtk.Application.EventsPending() ) {
                                 Gtk.Main.Iteration();
@@ -135,8 +133,8 @@ namespace Summa {
                         }
                     }
                 }
-                /*browser.feedview.update();
-                browser.set_sensitive(true);*/
+                /*Summa.Core.Application.Browser.feedview.update();
+                Summa.Core.Application.Browser.set_sensitive(true);*/
                 Destroy();
             }
         }

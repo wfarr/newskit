@@ -3,10 +3,7 @@ using Gtk;
 
 namespace Summa {
     namespace Gui {
-        public class TagWindow : Gtk.Window {
-            private Summa.Gui.Browser browser;
-            
-            private Gtk.VBox vbox;
+        public class TagWindow : Gtk.Window {private Gtk.VBox vbox;
             private Gtk.Table table;
             private Gtk.ButtonBox bbox;
             
@@ -31,10 +28,8 @@ namespace Summa {
                 }
             }
             
-            public TagWindow(Summa.Gui.Browser browse) : base(Gtk.WindowType.Toplevel) {
-                browser = browse;
-                
-                TransientFor = browser;
+            public TagWindow() : base(Gtk.WindowType.Toplevel) {
+                TransientFor = Summa.Core.Application.Browser;
                 Title = "Manage your tags";
                 BorderWidth = 5;
                 DeleteEvent += OnClose;
@@ -110,8 +105,8 @@ namespace Summa {
                     store.SetValue(iter, 0, false);
                     Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed((string)store.GetValue(iter, 2));
                     
-                    if ( browser.feedview.SetTag == cbx.ActiveText ) {
-                        browser.feedview.DeleteFeed(feed);
+                    if ( Summa.Core.Application.Browser.FeedView.SetTag == cbx.ActiveText ) {
+                        Summa.Core.Application.Browser.FeedView.DeleteFeed(feed);
                     }
                     
                     feed.RemoveTag(cbx.ActiveText);
@@ -119,8 +114,8 @@ namespace Summa {
                     store.SetValue(iter, 0, true);
                     Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed((string)store.GetValue(iter, 2));
                     
-                    if ( browser.feedview.SetTag == cbx.ActiveText ) {
-                        browser.feedview.AddNewFeed(feed);
+                    if ( Summa.Core.Application.Browser.FeedView.SetTag == cbx.ActiveText ) {
+                        Summa.Core.Application.Browser.FeedView.AddNewFeed(feed);
                     }
                     
                     feed.AppendTag(cbx.ActiveText);

@@ -35,13 +35,11 @@ namespace Summa {
             private Gtk.Entry entry;
             private Gtk.Button cancel_button;
             private Gtk.Button add_button;
-            private Summa.Gui.Browser browser;
             
-            public AddWindow(Summa.Gui.Browser browse) : base(Gtk.WindowType.Toplevel) {
+            public AddWindow() : base(Gtk.WindowType.Toplevel) {
                 Title = "Add subscription";
                 IconName = "add";
-                browser = browse;
-                TransientFor = browser;
+                TransientFor = Summa.Core.Application.Browser;
                 
                 DeleteEvent += OnCancel;
                 
@@ -93,8 +91,8 @@ namespace Summa {
             private void OnAdd(object obj, EventArgs args) {
                 Summa.Data.Core.RegisterFeed(entry.Text);
                 
-                browser.tagview.Update();
-                browser.feedview.Update();
+                Summa.Core.Application.Browser.TagView.Update();
+                Summa.Core.Application.Browser.FeedView.Update();
                 
                 Destroy();
             }

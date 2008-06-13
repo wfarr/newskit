@@ -38,12 +38,9 @@ namespace Summa {
         }
 
         public class WebKitView : WebKit.WebView {
-            private Statusbar statusbar;
             private StringBuilder content = new StringBuilder();
             
-            public WebKitView(Gtk.Statusbar sb) {
-                statusbar = sb;
-
+            public WebKitView() {
                 NavigationRequested += new NavigationRequestedHandler(OnNavigationRequested);
                 HoveringOverLink += new HoveringOverLinkHandler(OnHoveringOverLink);
                 
@@ -121,9 +118,9 @@ namespace Summa {
 
                 if (text != String.Empty) {
                     if ( text != null ) {
-                        statusbar.Push(statusbar.GetContextId(text), "Click to visit " + text);
+                        Summa.Core.Application.Browser.statusbar.Push(Summa.Core.Application.Browser.statusbar.GetContextId(text), "Click to visit " + text);
                     } else {
-                        statusbar.Push(statusbar.GetContextId(""), "");
+                        Summa.Core.Application.Browser.statusbar.Push(Summa.Core.Application.Browser.statusbar.GetContextId(""), "");
                     }
                 }
             }

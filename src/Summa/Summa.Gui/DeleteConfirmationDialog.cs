@@ -4,7 +4,6 @@ using Gtk;
 namespace Summa {
     namespace Gui {
         public class DeleteConfirmationDialog : Gtk. Window {
-            private Browser browser;
             private Summa.Data.Feed feed;
             
             private Gtk.VBox vbox;
@@ -17,10 +16,9 @@ namespace Summa {
             private Gtk.Button cancel_button;
             private Gtk.Button delete_button;
             
-            public DeleteConfirmationDialog(Summa.Gui.Browser browse, Summa.Data.Feed delfeed) : base(Gtk.WindowType.Toplevel) {
-                browser = browse;
+            public DeleteConfirmationDialog(Summa.Data.Feed delfeed) : base(Gtk.WindowType.Toplevel) {
                 feed = delfeed;
-                TransientFor = browser;
+                TransientFor = Summa.Core.Application.Browser;
                 
                 Title = "Delete feed?";
                 IconName = "edit-delete";
@@ -75,10 +73,10 @@ namespace Summa {
             private void OnDelete(object obj, EventArgs args) {
                 Summa.Data.Core.DeleteFeed(feed.Url);
                 
-                browser.feedview.DeleteFeed(feed);
+                Summa.Core.Application.Browser.FeedView.DeleteFeed(feed);
                 
-                browser.htmlview.Render("");
-                browser.itemview.store.Clear();
+                Summa.Core.Application.Browser.HtmlView.Render("");
+                Summa.Core.Application.Browser.ItemView.store.Clear();
             }
         }
     }

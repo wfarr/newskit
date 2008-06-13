@@ -27,11 +27,9 @@ namespace Summa {
     namespace Gui {
         public class StatusIcon : Gtk.StatusIcon {
             private bool shown;
-            private Browser b;
             
-            public StatusIcon(Summa.Gui.Browser browser) {
+            public StatusIcon() {
                 FromIconName = "internet-news-reader";
-                b = browser;
                 if ( IconName == null ) {
                     FromIconName = "applications-internet";
                 }
@@ -48,10 +46,10 @@ namespace Summa {
             
             private void ToggleBrowserStatus(object obj, EventArgs args) {
                 if ( shown ) {
-                    b.Hide();
+                    Summa.Core.Application.Browser.Hide();
                     shown = false;
                 } else {
-                    b.Show();
+                    Summa.Core.Application.Browser.Show();
                     shown = true;
                 }
             }
@@ -95,11 +93,11 @@ namespace Summa {
                 menu.ShowAll();
                 menu.Popup();
 
-                add_button.Activated += new EventHandler(b.ShowAddWindow);
-                refresh_button.Activated += new EventHandler(b.UpdateAll);
-                prefs_button.Activated += new EventHandler(b.ShowConfigDialog);
+                add_button.Activated += new EventHandler(Summa.Core.Application.Browser.ShowAddWindow);
+                refresh_button.Activated += new EventHandler(Summa.Core.Application.Browser.UpdateAll);
+                prefs_button.Activated += new EventHandler(Summa.Core.Application.Browser.ShowConfigDialog);
                 show_button.Activated += new EventHandler(ToggleBrowserStatus);
-                quit_button.Activated += new EventHandler(b.CloseWindow);
+                quit_button.Activated += new EventHandler(Summa.Core.Application.Browser.CloseWindow);
             }
         }
     }

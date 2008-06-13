@@ -4,7 +4,6 @@ using Gtk;
 namespace Summa {
     namespace Gui {
         public class FeedPropertiesDialog : Gtk.Window {
-            public Summa.Gui.Browser browser;
             public Summa.Data.Feed feed;
             
             private Gtk.VBox vbox;
@@ -22,11 +21,11 @@ namespace Summa {
             public Gtk.ListStore store_tags;
             private Gtk.CellRendererToggle cr_toggle;
             
-            public FeedPropertiesDialog(Summa.Gui.Browser browse, Summa.Data.Feed f) : base(Gtk.WindowType.Toplevel) {
-                browser = browse;
+            public FeedPropertiesDialog(Summa.Data.Feed f) : base(Gtk.WindowType.Toplevel) {
+                Summa.Core.Application.Browser = Summa.Core.Application.Browser;
                 feed = f;
                 
-                TransientFor = browser;
+                TransientFor = Summa.Core.Application.Browser;
                 Title = "\""+feed.Name+"\" Properties";
                 BorderWidth = 5;
                 DeleteEvent += OnClose;
@@ -210,7 +209,7 @@ namespace Summa {
                 feed.Author = entry_author.Text;
                 feed.Subtitle = entry_subtitle.Text;
                 feed.Image = entry_image.Text;
-                browser.feedview.UpdateSelected();
+                Summa.Core.Application.Browser.FeedView.UpdateSelected();
                 Destroy();
             }
         }

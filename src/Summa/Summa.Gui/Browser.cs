@@ -91,15 +91,15 @@ namespace Summa  {
             public Gtk.Paned left_paned;
             public Gtk.Paned right_paned;
             
-            public Summa.Gui.TagView tagview;
-            public Gtk.ScrolledWindow tagview_swin;
-            public Summa.Gui.FeedView feedview;
-            public Gtk.ScrolledWindow feedview_swin;
-            public Summa.Gui.ItemView itemview;
-            public Gtk.ScrolledWindow itemview_swin;
+            public Summa.Gui.TagView TagView;
+            public Gtk.ScrolledWindow TagView_swin;
+            public Summa.Gui.FeedView FeedView;
+            public Gtk.ScrolledWindow FeedView_swin;
+            public Summa.Gui.ItemView ItemView;
+            public Gtk.ScrolledWindow ItemView_swin;
             
-            public Summa.Gui.WebKitView htmlview;
-            public Gtk.ScrolledWindow htmlview_swin;
+            public Summa.Gui.WebKitView HtmlView;
+            public Gtk.ScrolledWindow HtmlView_swin;
             public Summa.Data.Item item;
             
             public Gtk.Button connection_button;
@@ -142,46 +142,46 @@ namespace Summa  {
                 left_paned = new Gtk.VPaned();
                 main_paned.Pack1(left_paned, true, true);
                 
-                tagview = new Summa.Gui.TagView();
-                tagview.CursorChanged += new EventHandler(TagviewChanged);
-                tagview_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
-                tagview_swin.Add(tagview);
-                tagview_swin.ShadowType = Gtk.ShadowType.In;
-                tagview_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
-                left_paned.Pack1(tagview_swin, true, true);
+                TagView = new Summa.Gui.TagView();
+                TagView.CursorChanged += new EventHandler(TagviewChanged);
+                TagView_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+                TagView_swin.Add(TagView);
+                TagView_swin.ShadowType = Gtk.ShadowType.In;
+                TagView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+                left_paned.Pack1(TagView_swin, true, true);
                 
-                feedview = new Summa.Gui.FeedView();
-                feedview.CursorChanged += new EventHandler(FeedviewChanged);
-                feedview_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
-                feedview_swin.Add(feedview);
-                feedview_swin.ShadowType = Gtk.ShadowType.In;
-                feedview_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
-                left_paned.Pack2(feedview_swin, true, true);
+                FeedView = new Summa.Gui.FeedView();
+                FeedView.CursorChanged += new EventHandler(FeedviewChanged);
+                FeedView_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+                FeedView_swin.Add(FeedView);
+                FeedView_swin.ShadowType = Gtk.ShadowType.In;
+                FeedView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+                left_paned.Pack2(FeedView_swin, true, true);
                 
                 right_paned = new Gtk.VPaned();
                 main_paned.Pack2(right_paned, true, true);
                 
-                itemview = new Summa.Gui.ItemView();
-                itemview.CursorChanged += new EventHandler(ItemviewChanged);
-                itemview_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
-                itemview_swin.Add(itemview);
-                itemview_swin.ShadowType = Gtk.ShadowType.In;
-                itemview_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
-                right_paned.Pack1(itemview_swin, true, true);
+                ItemView = new Summa.Gui.ItemView();
+                ItemView.CursorChanged += new EventHandler(ItemviewChanged);
+                ItemView_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+                ItemView_swin.Add(ItemView);
+                ItemView_swin.ShadowType = Gtk.ShadowType.In;
+                ItemView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+                right_paned.Pack1(ItemView_swin, true, true);
                 
                 statusbar = new Gtk.Statusbar();
                 contextid = 0;
                 table.Attach(statusbar, 0, 5, 3, 4, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
                 
-                htmlview = new Summa.Gui.WebKitView(statusbar);
-                htmlview_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
-                htmlview_swin.Add(htmlview);
-                htmlview_swin.ShadowType = Gtk.ShadowType.In;
-                htmlview_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
-                right_paned.Pack2(htmlview_swin, true, true);
+                HtmlView = new Summa.Gui.WebKitView();
+                HtmlView_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+                HtmlView_swin.Add(HtmlView);
+                HtmlView_swin.ShadowType = Gtk.ShadowType.In;
+                HtmlView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+                right_paned.Pack2(HtmlView_swin, true, true);
                 
                 about_dialog = new Summa.Gui.AboutDialog();
-                config_dialog = new Summa.Gui.ConfigDialog(this);
+                config_dialog = new Summa.Gui.ConfigDialog();
                 bookmarker = new Summa.Gui.DieuBookmarker();
                 //Notify.init("Summa");
                 
@@ -195,16 +195,16 @@ namespace Summa  {
             }
             
             public void TagviewChanged(object obj, EventArgs args) {
-                feedview.Sensitive = false;
-                feedview.Populate(tagview.Selected);
-                feedview.Sensitive = true;
+                FeedView.Sensitive = false;
+                FeedView.Populate(TagView.Selected);
+                FeedView.Sensitive = true;
             }
             
             public void FeedviewChanged(object obj, EventArgs args) {
                 UpdateName();
-                curfeed = feedview.Selected;
-                htmlview.Render(curfeed);
-                itemview.Populate(curfeed);
+                curfeed = FeedView.Selected;
+                HtmlView.Render(curfeed);
+                ItemView.Populate(curfeed);
             }
             
             public void ItemviewChanged(object obj, EventArgs args) {
@@ -217,7 +217,7 @@ namespace Summa  {
             }
             
             public void ShowAddWindow(object obj, EventArgs args) {
-                AddWindow add_dialog = new Summa.Gui.AddWindow(this);
+                AddWindow add_dialog = new Summa.Gui.AddWindow();
                 add_dialog.Show();
             }
             
@@ -264,23 +264,23 @@ namespace Summa  {
             }
             
             public void BookmarkItem(object obj, EventArgs args) {
-                if ( itemview.HasSelected ) {
+                if ( ItemView.HasSelected ) {
                     bookmarker.ShowBookmarkWindow(curitem.Title, curitem.Uri, curitem.Contents, "");
                 }
             }
             
             public void GoToNextItem(object obj, EventArgs args) {
-                bool win = itemview.GoToNextItem();
+                bool win = ItemView.GoToNextItem();
                 if (!win) {
-                    bool nextfeed = feedview.GoToNextUnreadFeed();
+                    bool nextfeed = FeedView.GoToNextUnreadFeed();
                     
                     if ( nextfeed ) {
                         UpdateName();
-                        curfeed = feedview.Selected;
-                        itemview.Populate(curfeed);
-                        htmlview.Render(curfeed);
+                        curfeed = FeedView.Selected;
+                        ItemView.Populate(curfeed);
+                        HtmlView.Render(curfeed);
                         
-                        itemview.GoToPreviousItem();
+                        ItemView.GoToPreviousItem();
                         UpdateHtmlview();
                     } else {
                         statusbar.Push(contextid, "There are no more unread items.");
@@ -292,29 +292,29 @@ namespace Summa  {
             }
             
             public void GoToPreviousItem(object obj, EventArgs args) {
-                itemview.GoToPreviousItem();
-                if ( itemview.HasSelected ) {
+                ItemView.GoToPreviousItem();
+                if ( ItemView.HasSelected ) {
                     UpdateHtmlview();
                 }
             }
             
             public void ZoomIn(object obj, EventArgs args) {
-                htmlview.ZoomIn();
+                HtmlView.ZoomIn();
             }
             
             public void ZoomOut(object obj, EventArgs args) {
-                htmlview.ZoomOut();
+                HtmlView.ZoomOut();
             }
             
             public void UpdateSelectedFeed(object obj, EventArgs args) {
-                if ( feedview.HasSelected ) {
-                    bool updated = feedview.Selected.Update();
+                if ( FeedView.HasSelected ) {
+                    bool updated = FeedView.Selected.Update();
                     
                     if ( updated ) {
-                        feedview.UpdateSelected();
-                        itemview.Update();
+                        FeedView.UpdateSelected();
+                        ItemView.Update();
                         UpdateName();
-                        ShowNotification(feedview.Selected);
+                        ShowNotification(FeedView.Selected);
                     }
                 }
             }
@@ -349,13 +349,13 @@ namespace Summa  {
                     bool newitems = feed.Update();
                     
                     if ( newitems ) {
-                        if ( feedview.HasSelected ) {
-                            if ( feed.Url == feedview.Selected.Url ) {
-                                itemview.Update();
+                        if ( FeedView.HasSelected ) {
+                            if ( feed.Url == FeedView.Selected.Url ) {
+                                ItemView.Update();
                                 UpdateName();
                             }
                         }
-                        feedview.UpdateFeed(feed);
+                        FeedView.UpdateFeed(feed);
                         statusbar.Push(contextid, "Feed \""+feed.Name+"\" has new items.");
                         ShowNotification(feed);
                         contextid++;
@@ -377,22 +377,22 @@ namespace Summa  {
             }
             
             public void ShowPropertiesDialog(object obj, EventArgs args) {
-                if ( feedview.HasSelected ) {
-                    Window dialog = new Summa.Gui.FeedPropertiesDialog(this, feedview.Selected);
+                if ( FeedView.HasSelected ) {
+                    Window dialog = new Summa.Gui.FeedPropertiesDialog(FeedView.Selected);
                     dialog.ShowAll();
                 }
             }
             
             public void ShowTagsWindow(object obj, EventArgs args) {
-                Window dialog = new Summa.Gui.TagWindow(this);
+                Window dialog = new Summa.Gui.TagWindow();
                 dialog.ShowAll();
             }
             
             public void UpdateHtmlview() {
-                curitem = itemview.Selected;
-                htmlview.Render(curitem);
+                curitem = ItemView.Selected;
+                HtmlView.Render(curitem);
                 
-                if ( htmlview.CanPrint() ) {
+                if ( HtmlView.CanPrint() ) {
                     item_print_action.Sensitive = true;
                 }
                 
@@ -400,54 +400,54 @@ namespace Summa  {
                     item_bookmark_action.Sensitive = true;
                 }
                 
-                if ( htmlview.CanZoom() ) {
+                if ( HtmlView.CanZoom() ) {
                     zoom_in_action.Sensitive = true;
                     item_zoom_in_action.Sensitive = true;
                     zoom_out_action.Sensitive = true;
                     item_zoom_out_action.Sensitive = true;
                 }
                 
-                itemview.MarkSelectedRead();
+                ItemView.MarkSelectedRead();
                 UpdateName();
                 
                 if ( curfeed.GetUnreadCount() == 0 ) {
-                    feedview.UpdateSelected();
+                    FeedView.UpdateSelected();
                 }
             }
             
             public void OnImport(object obj, EventArgs args) {
-                Firstrun fr = new Summa.Gui.Firstrun(this);
+                Firstrun fr = new Summa.Gui.Firstrun();
                 fr.ShowAll();
             }
             
             public void DeleteFeed(object obj, EventArgs args) {
-                if ( feedview.HasSelected ) {
-                    Window del = new Summa.Gui.DeleteConfirmationDialog(this, curfeed);
+                if ( FeedView.HasSelected ) {
+                    Window del = new Summa.Gui.DeleteConfirmationDialog(curfeed);
                     del.ShowAll();
                 }
             }
             
             public void MarkItemFlagged(object obj, EventArgs args) {
-                if ( itemview.HasSelected ) {
-                    itemview.MarkSelectedFlagged();
+                if ( ItemView.HasSelected ) {
+                    ItemView.MarkSelectedFlagged();
                 }
             }
             
             public void MarkAllItemsRead(object obj, EventArgs args) {
-                if ( feedview.HasSelected ) {
-                    itemview.MarkItemsRead();
-                    feedview.UpdateSelected();
+                if ( FeedView.HasSelected ) {
+                    ItemView.MarkItemsRead();
+                    FeedView.UpdateSelected();
                     UpdateName();
                 }
             }
             
             public void UpdateName() {
-                Summa.Data.Feed feed = feedview.Selected;
+                Summa.Data.Feed feed = FeedView.Selected;
                 Title = feed.Name+" ("+feed.GetUnreadCount().ToString()+" unread) - Summa";
             }
             
             public void Print(object obj, EventArgs args) {
-                htmlview.Print();
+                HtmlView.Print();
             }
             
             public void stub(object obj, EventArgs args) { System.Console.WriteLine("FIXME\n"); }

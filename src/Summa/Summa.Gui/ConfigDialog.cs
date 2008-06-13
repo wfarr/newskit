@@ -14,8 +14,8 @@ namespace Summa {
             private Gtk.ComboBox cb_updateinterval;
             private string[] updateinterval_options;
             
-            public ConfigDialog(Summa.Gui.Browser browser) : base(Gtk.WindowType.Toplevel) {
-                TransientFor = browser;
+            public ConfigDialog() : base(Gtk.WindowType.Toplevel) {
+                TransientFor = Summa.Core.Application.Browser;
                 Title = "Summa Preferences";
                 BorderWidth = 5;
                 DeleteEvent += OnClose;
