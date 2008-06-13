@@ -161,7 +161,7 @@ namespace Summa {
             }
             
             public void AppendFeed(Summa.Data.Feed feed, Gtk.TreeIter titer) {
-                int count = feed.GetUnreadCount();
+                int count = feed.GetUnreadCount(); // optimize this!
                 bool unread = false;
                 
                 Gdk.Pixbuf icon;

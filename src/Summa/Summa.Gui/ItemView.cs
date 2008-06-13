@@ -92,11 +92,10 @@ namespace Summa {
                 
                 if ( !read ) {
                     icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");
+                } else if ( flagged ) {
+                    icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-flagged.png");
                 } else {
                     icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");
-                }
-                if ( flagged ) {
-                    icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-flagged.png");
                 }
                 
                 store.SetValue(titer, 0, icon);

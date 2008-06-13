@@ -185,9 +185,6 @@ namespace Summa  {
                 bookmarker = new Summa.Gui.DieuBookmarker();
                 //Notify.init("Summa");
                 
-                GLib.Timeout.Add(Summa.Core.Config.GlobalUpdateInterval, new GLib.TimeoutHandler(ScheduledUpdateAll));
-                should_update = true;
-                
                 UpdateFromConfig();
                 
                 //client.Notify(KEY_LIBNOTIFY); //FIXME
@@ -320,11 +317,12 @@ namespace Summa  {
             }
             
             public void UpdateAll(object obj, EventArgs args) {
-                if (should_update) {
+                /*if (should_update) {
                     should_update = false;
                     UpdateAllPriv();
                     GLib.Timeout.Add(Summa.Core.Config.GlobalUpdateInterval, new GLib.TimeoutHandler(ScheduledUpdateAll));
-                }
+                }*/
+                Summa.Core.Application.Updater.Update();
             }
             
             private bool ScheduledUpdateAll() {

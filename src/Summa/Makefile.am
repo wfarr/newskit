@@ -15,6 +15,7 @@ SUMMA_CSFILES = \
         Summa.Core/Application.cs \
         Summa.Core/Bookmarker.cs \
         Summa.Core/Config.cs \
+        Summa.Core/Updater.cs \
         Summa.Core/Util.cs \
         Summa.Data/Core.cs \
         Summa.Data/Feed.cs \
