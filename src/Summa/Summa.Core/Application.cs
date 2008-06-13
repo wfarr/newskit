@@ -25,11 +25,16 @@ using Gtk;
 namespace Summa {
     namespace Core {
         public static class Application {
-            public static Summa.Gui.Browser Browser = new Summa.Gui.Browser();
-            public static Summa.Gui.StatusIcon StatusIcon = new Summa.Gui.StatusIcon();
+            public static Summa.Gui.Browser Browser;
+            public static Summa.Gui.StatusIcon StatusIcon;
+            public static Summa.Core.Updater Updater;
             
             public static void Main() {
                 Gtk.Application.Init();
+                
+                Browser = new Summa.Gui.Browser();
+                StatusIcon = new Summa.Gui.StatusIcon();
+                Updater = new Summa.Core.Updater();
                 
                 Browser.ShowAll();
                 
