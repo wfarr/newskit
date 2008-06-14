@@ -72,6 +72,8 @@ namespace Summa  {
             public Gtk.Action next_item_action;
             public Gtk.Action prev_item_action;
             public Gtk.Action flag_action;
+            public Gtk.Action play_action;
+            public Summa.Core.MediaPlayer mediaplayer;
             
             // help menu
             public Gtk.Action help_action;
@@ -183,6 +185,7 @@ namespace Summa  {
                 about_dialog = new Summa.Gui.AboutDialog();
                 config_dialog = new Summa.Gui.ConfigDialog();
                 bookmarker = new Summa.Gui.DieuBookmarker();
+                mediaplayer = new Summa.Gui.TotemMediaPlayer();
                 //Notify.init("Summa");
                 
                 UpdateFromConfig();
@@ -200,12 +203,20 @@ namespace Summa  {
             public void FeedviewChanged(object obj, EventArgs args) {
                 UpdateName();
                 curfeed = FeedView.Selected;
+                play_action.Sensitive = false;
                 HtmlView.Render(curfeed);
                 ItemView.Populate(curfeed);
             }
             
             public void ItemviewChanged(object obj, EventArgs args) {
                 UpdateHtmlview();
+                play_action.StockId = Gtk.Stock.MediaPlay;
+                
+                if ( ItemView.Selected.EncUri != "" ) {
+                    play_action.Sensitive = true;
+                } else {
+                    play_action.Sensitive = false;
+                }
             }
             
             public void SetStatusbarText(string text, string text1) {
@@ -431,6 +442,16 @@ namespace Summa  {
                 }
             }
             
+            public void EnclosurePlay(object obj, EventArgs args) {
+                if ( play_action.StockId == Gtk.Stock.MediaPause ) {
+                    mediaplayer.Pause();
+                    play_action.StockId = Gtk.Stock.MediaPlay;
+                } else {
+                    mediaplayer.Play(ItemView.Selected.EncUri);
+                    play_action.StockId = Gtk.Stock.MediaPause;
+                }
+            }
+            
             public void MarkAllItemsRead(object obj, EventArgs args) {
                 if ( FeedView.HasSelected ) {
                     ItemView.MarkItemsRead();
@@ -567,6 +588,11 @@ namespace Summa  {
                 flag_action.Activated += new EventHandler(MarkItemFlagged);
                 action_group.Add(flag_action);
                 
+                play_action = new Gtk.Action("Play_pause", "_Play/pause enclosed media", "Play or pause the media enclosed", Gtk.Stock.MediaPlay);
+                play_action.Activated += new EventHandler(EnclosurePlay);
+                play_action.Sensitive = false;
+                action_group.Add(play_action);
+                
                 // help menu
                 help_action = new Gtk.Action("Contents", "_Contents", "Get help", Gtk.Stock.Help);
                 help_action.Activated += new EventHandler(stub); //FIXME
@@ -645,6 +671,7 @@ namespace Summa  {
             <menuitem action='Next_item'/>
             <separator/>
             <menuitem action='Flag_item'/>
+            <menuitem action='Play_pause'/>
             </menu>
             <menu action='HelpMenu'>
             <menuitem action='Contents'/>
@@ -664,6 +691,8 @@ namespace Summa  {
             <toolitem action='ItemBookmark'/>
             <toolitem action='ItemZoomIn'/>
             <toolitem action='ItemZoomOut'/>
+            <separator/>
+            <toolitem action='Play_pause'/>
         </toolbar>
         </ui>";
                 uimanager.AddUiFromString(ui);

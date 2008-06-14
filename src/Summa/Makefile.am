@@ -15,6 +15,7 @@ SUMMA_CSFILES = \
         Summa.Core/Application.cs \
         Summa.Core/Bookmarker.cs \
         Summa.Core/Config.cs \
+        Summa.Core/MediaPlayer.cs \
         Summa.Core/Updater.cs \
         Summa.Core/Util.cs \
         Summa.Data/Core.cs \
@@ -35,6 +36,7 @@ SUMMA_CSFILES = \
         Summa.Gui/StatusIcon.cs \
         Summa.Gui/TagView.cs \
         Summa.Gui/TagWindow.cs \
+        Summa.Gui/TotemMediaPlayer.cs \
         Summa.Gui/WebKitView.cs
 
 summalibdir = $(prefix)/lib/summa
