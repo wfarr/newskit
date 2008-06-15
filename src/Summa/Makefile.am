@@ -7,6 +7,8 @@ ASSEMBLIES = \
 	     -pkg:gnome-sharp-2.0   \
 	     -pkg:gtk-sharp-2.0     \
 	     -r:Mono.Posix    \
+	     -r:System.Data \
+	     -r:Mono.Data.SqliteClient \
 	     -r:/usr/lib/mono/ndesk-dbus-1.0/NDesk.DBus.dll   \
 	     -r:System.Core   \
 	     -r:/usr/lib/mono/webkit-sharp/webkit-sharp.dll
@@ -21,6 +23,10 @@ SUMMA_CSFILES = \
         Summa.Data/Core.cs \
         Summa.Data/Feed.cs \
         Summa.Data/Item.cs \
+        Summa.Data/Summa.Data.Parser/FeedParser.cs \
+        Summa.Data/Summa.Data.Parser/Item.cs \
+        Summa.Data/Summa.Data.Parser/MigoRfc822DateTime.cs \
+        Summa.Data/Summa.Data.Parser/RssParser.cs \
         Summa.Gui/AboutDialog.cs \
         Summa.Gui/AddTagDialog.cs \
         Summa.Gui/AddWindow.cs \

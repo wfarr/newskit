@@ -25,7 +25,7 @@ using NDesk.DBus;
 namespace Summa {
     namespace Data {
         public class Item {
-            public string Title{
+            public string Title {
                 get {
                     return feed.GetItemProperty(Uri, "title");
                 }

@@ -25,6 +25,9 @@ using System;
 namespace Summa {
     namespace Core {
         public static class Util {
+            public static void Log(string errortext, System.Exception e) {
+                System.Console.WriteLine(errortext);
+            }
         }
     }
 }
