@@ -23,6 +23,7 @@ SUMMA_CSFILES = \
         Summa.Data/Core.cs \
         Summa.Data/Feed.cs \
         Summa.Data/Item.cs \
+        Summa.Data/Summa.Data.Storage/Database.cs \
         Summa.Data/Summa.Data.Parser/AtomParser.cs \
         Summa.Data/Summa.Data.Parser/FeedParser.cs \
         Summa.Data/Summa.Data.Parser/Item.cs \
