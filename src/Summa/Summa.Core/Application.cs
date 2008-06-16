@@ -38,6 +38,11 @@ namespace Summa {
                 Updater = new Summa.Core.Updater();
                 Database = new Summa.Data.Storage.Database();
                 
+                Summa.Net.Request request = new Summa.Net.Request("http://senoki.blogspot.com/atom.xml");
+                Summa.Data.Parser.FeedParser p = new Summa.Data.Parser.AtomParser(request.Uri, request.Xml);
+                
+                System.Console.WriteLine(p.Name);
+                
                 Browser.ShowAll();
                 
                 Gtk.Application.Run();

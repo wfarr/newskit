@@ -29,6 +29,7 @@ SUMMA_CSFILES = \
         Summa.Data/Summa.Data.Parser/Item.cs \
         Summa.Data/Summa.Data.Parser/MigoRfc822DateTime.cs \
         Summa.Data/Summa.Data.Parser/RssParser.cs \
+        Summa.Net/Request.cs \
         Summa.Gui/AboutDialog.cs \
         Summa.Gui/AddTagDialog.cs \
         Summa.Gui/AddWindow.cs \

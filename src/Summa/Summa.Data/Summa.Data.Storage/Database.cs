@@ -9,7 +9,7 @@ namespace Summa {
     namespace Data {
         namespace Storage {
             public class Database {
-                private string uri = "file:///home/eosten/.config/newskit/database.db";
+                private string uri = "/home/eosten/.config/newskit/database.db";
                 private const string Uri = "URI=file:///home/eosten/.config/newskit/database.db";
                 private IDbConnection db;
                 
