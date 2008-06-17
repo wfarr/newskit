@@ -22,52 +22,6 @@
 
 using System;
 using System.Collections;
-using NDesk.DBus;
-
-[Interface ("org.gnome.NewsKit")]
-public interface NewsKitObj {
-    string[] GetTags ();
-    int GetUnreadCount ();
-    void DeleteSearch (string name);
-    string[] GetFeedsByTag (string tag);
-    void AppInit (string name);
-    void SetConnected (bool value);
-    string[] GetFeeds ();
-    string RegisterFeedSourceWithAuth(string uri, string username, string password);
-    void DeleteFeedSource (string uri);
-    string[] GetSearches ();
-    string[] ImportOPML (string uri);
-    string RegisterSearchSource (string name);
-    bool GetConnected ();
-    string RegisterFeedSource (string uri);
-    event NewFeedHandler NewFeed;
-    event FeedDeletedHandler FeedDeleted;
-}
-public delegate void NewFeedHandler();
-public delegate void FeedDeletedHandler();
-
-[Interface ("org.gnome.NewsKit.Feeds")]
-public interface NewsKitFeed {
-    string[] GetFullItem (string url);
-    string GetItemProperty (string url, string property);
-    int GetUnreadCount ();
-    bool Update ();
-    string[] GetItems ();
-    void SetProperty (string property, string val);
-    string GetProperty (string property);
-    void MarkItemsRead ();
-    void SetItemProperty (string url, string property, string val);
-    event NoNewItemsHandler NoNewItems;
-    event ItemChangedHandler ItemChanged;
-    event NewItemsHandler NewItems;
-    event NameChangedHandler NameChanged;
-    event TagsChangedHandler TagsChanged;
-}
-public delegate void NoNewItemsHandler();
-public delegate void ItemChangedHandler();
-public delegate void NewItemsHandler();
-public delegate void NameChangedHandler();
-public delegate void TagsChangedHandler();
 
 namespace Summa {
     namespace Data {

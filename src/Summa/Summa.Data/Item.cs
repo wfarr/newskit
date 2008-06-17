@@ -20,7 +20,6 @@
  */
 
 using System;
-using NDesk.DBus;
 
 namespace Summa {
     namespace Data {

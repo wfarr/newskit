@@ -23,7 +23,6 @@
 using System;
 using System.Collections;
 using System.Linq;
-using NDesk.DBus;
 
 namespace Summa {
     namespace Data {
