@@ -36,8 +36,6 @@ namespace Summa {
             private Summa.Data.Feed feedobj;
             private ArrayList items;
             
-            public string feeduid;
-            
             private Gtk.TreeModel selectmodel;
             private Gtk.TreeIter iter;
             
@@ -108,14 +106,13 @@ namespace Summa {
             
             public void Populate(Summa.Data.Feed feed) {
                 feedobj = feed;
-                feeduid = feedobj.Uid;
                 items = feed.GetItems();
                 items.Reverse();
                 
                 store.Clear();
                 
                 foreach ( Summa.Data.Item item in items ) {
-                    if ( feed.Uid == feedobj.Uid ) {
+                    if ( feed.Url == feedobj.Url ) {
                         TreeIter iter = store.Append();
                         
                         AppendItem(iter, item);
@@ -227,7 +224,7 @@ namespace Summa {
             private Summa.Data.Item ItemFromIter(Gtk.TreeIter treeiter) {
                 string val = (string)store.GetValue(iter, 5);
                     
-                Summa.Data.Item item = new Summa.Data.Item(val, feeduid);
+                Summa.Data.Item item = new Summa.Data.Item(val, feedobj.Url);
                 return item;
             }
             

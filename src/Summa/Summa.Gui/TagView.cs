@@ -31,7 +31,7 @@ namespace Summa {
         public class TagView : Gtk.TreeView {
             private Gtk.ListStore store;
             private Gtk.IconTheme icon_theme;
-            public string[] Tags;
+            public ArrayList Tags;
             
             private Gtk.TreeModel selectmodel;
             private Gtk.TreeIter tagiter;
@@ -79,7 +79,7 @@ namespace Summa {
             }
             
             public void Update() {
-                string[] utags = Summa.Data.Core.GetTags();
+                ArrayList utags = Summa.Data.Core.GetTags();
                 
                 foreach ( string tag in utags ) {
                     if ( tag != "All" ) {

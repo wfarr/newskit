@@ -30,7 +30,7 @@ namespace Summa {
         public class Feed {
             public string Name {
                 get {
-                    string[] feed = Summa.Core.Application.Database.GetFeed(Uri);
+                    string[] feed = Summa.Core.Application.Database.GetFeed(Url);
                     return feed[3];
                 }
                 set {
@@ -40,7 +40,7 @@ namespace Summa {
             public string Url;
             public string Author {
                 get {
-                    string[] feed = Summa.Core.Application.Database.GetFeed(Uri);
+                    string[] feed = Summa.Core.Application.Database.GetFeed(Url);
                     return feed[3];
                 }
                 set {
@@ -49,7 +49,7 @@ namespace Summa {
             }
             public string Subtitle {
                 get {
-                    string[] feed = Summa.Core.Application.Database.GetFeed(Uri);
+                    string[] feed = Summa.Core.Application.Database.GetFeed(Url);
                     return feed[4];
                 }
                 set {
@@ -58,7 +58,7 @@ namespace Summa {
             }
             public string License {
                 get {
-                    string[] feed = Summa.Core.Application.Database.GetFeed(Uri);
+                    string[] feed = Summa.Core.Application.Database.GetFeed(Url);
                     return feed[7];
                 }
                 set {
@@ -67,7 +67,7 @@ namespace Summa {
             }
             public string Image {
                 get {
-                    string[] feed = Summa.Core.Application.Database.GetFeed(Uri);
+                    string[] feed = Summa.Core.Application.Database.GetFeed(Url);
                     return feed[6];
                 }
                 set {
@@ -76,7 +76,7 @@ namespace Summa {
             }
             public string Status {
                 get {
-                    string[] feed = Summa.Core.Application.Database.GetFeed(Uri);
+                    string[] feed = Summa.Core.Application.Database.GetFeed(Url);
                     return feed[10];
                 }
                 set {
@@ -85,7 +85,7 @@ namespace Summa {
             }
             public ArrayList Tags {
                 get {
-                    string[] feed = Summa.Core.Application.Database.GetFeed(Uri);
+                    string[] feed = Summa.Core.Application.Database.GetFeed(Url);
                     string tags = feed[6];
                     ArrayList al = new System.Collections.ArrayList();
                     foreach ( string tag in tags.Split(',') ) {
@@ -108,7 +108,7 @@ namespace Summa {
             }
             public string Favicon {
                 get {
-                    string[] feed = Summa.Core.Application.Database.GetFeed(Uri);
+                    string[] feed = Summa.Core.Application.Database.GetFeed(Url);
                     return feed[12];
                 }
                 set {
@@ -179,9 +179,11 @@ namespace Summa {
                 foreach ( Summa.Data.Parser.Item item in parser.Items ) {
                     if ( !urls.Contains(item.Uri) ) {
                         update = true;
-                        Summa.Core.Application.Database.AddItem(Uri, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+                        Summa.Core.Application.Database.AddItem(Url, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
                     }
                 }
+                
+                return update;
             }
             
             public int GetUnreadCount() {
