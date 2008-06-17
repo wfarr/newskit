@@ -190,7 +190,7 @@ namespace Summa {
                 int count = 0;
                 
                 foreach (string[] item in Summa.Core.Application.Database.GetPosts(Url)) {
-                    if ( item[8] == "True" ) {
+                    if ( item[8] == "False" ) {
                         count++;
                     }
                 }

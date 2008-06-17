@@ -89,57 +89,101 @@ namespace Summa {
                     dbcmd.Parameters.Add(uri_parameter);
                     
                     SqliteParameter genname_parameter = new SqliteParameter();
-                    genname_parameter.Value = EscapeParam(generated_name);
+                    if ( generated_name != null ) {
+                        genname_parameter.Value = EscapeParam(generated_name);
+                    } else {
+                        genname_parameter.Value = "";
+                    }
                     genname_parameter.ParameterName = @":genname";
                     dbcmd.Parameters.Add(genname_parameter);
                     
                     SqliteParameter name_parameter = new SqliteParameter();
-                    name_parameter.Value = EscapeParam(name);
+                    if ( name != null ) {
+                        name_parameter.Value = EscapeParam(name);
+                    } else {
+                        name_parameter.Value = "";
+                    }
                     name_parameter.ParameterName = @":name";
                     dbcmd.Parameters.Add(name_parameter);
                     
                     SqliteParameter author_parameter = new SqliteParameter();
-                    author_parameter.Value = EscapeParam(author);
+                    if ( author != null ) {
+                        author_parameter.Value = EscapeParam(author);
+                    } else {
+                        author_parameter.Value = "";
+                    }
                     author_parameter.ParameterName = @":author";
                     dbcmd.Parameters.Add(author_parameter);
                     
                     SqliteParameter sub_parameter = new SqliteParameter();
-                    sub_parameter.Value = EscapeParam(subtitle);
+                    if ( subtitle != null ) {
+                        sub_parameter.Value = EscapeParam(subtitle);
+                    } else {
+                        sub_parameter.Value = "";
+                    }
                     sub_parameter.ParameterName = @":subtitle";
                     dbcmd.Parameters.Add(sub_parameter);
                     
                     SqliteParameter image_parameter = new SqliteParameter();
-                    image_parameter.Value = EscapeParam(image);
+                    if ( image != null ) {
+                        image_parameter.Value = EscapeParam(image);
+                    } else {
+                        image_parameter.Value = "";
+                    }
                     image_parameter.ParameterName = @":image";
                     dbcmd.Parameters.Add(image_parameter);
                     
                     SqliteParameter license_parameter = new SqliteParameter();
-                    license_parameter.Value = EscapeParam(license);
+                    if ( license!= null ) {
+                        license_parameter.Value = EscapeParam(license);
+                    } else {
+                        license_parameter.Value = "";
+                    }
                     license_parameter.ParameterName = @":license";
                     dbcmd.Parameters.Add(license_parameter);
                     
                     SqliteParameter etag_parameter = new SqliteParameter();
-                    etag_parameter.Value = EscapeParam(etag);
+                    if ( etag != null ) {
+                        etag_parameter.Value = EscapeParam(etag);
+                    } else {
+                        etag_parameter.Value = "";
+                    }
                     etag_parameter.ParameterName = @":etag";
                     dbcmd.Parameters.Add(etag_parameter);
                     
                     SqliteParameter hmodified_parameter = new SqliteParameter();
-                    hmodified_parameter.Value = EscapeParam(hmodified);
+                    if ( hmodified != null ) {
+                        hmodified_parameter.Value = EscapeParam(hmodified);
+                    } else {
+                        hmodified_parameter.Value = "";
+                    }
                     hmodified_parameter.ParameterName = @":hmodified";
                     dbcmd.Parameters.Add(hmodified_parameter);
                     
                     SqliteParameter status_parameter = new SqliteParameter();
-                    status_parameter.Value = EscapeParam(status);
+                    if ( status != null ) {
+                        status_parameter.Value = EscapeParam(status);
+                    } else {
+                        status_parameter.Value = "";
+                    }
                     status_parameter.ParameterName = @":status";
                     dbcmd.Parameters.Add(status_parameter);
                     
                     SqliteParameter tags_parameter = new SqliteParameter();
-                    tags_parameter.Value = EscapeParam(tags);
+                    if ( tags != null ) {
+                        tags_parameter.Value = EscapeParam(tags);
+                    } else {
+                        tags_parameter.Value = "";
+                    }
                     tags_parameter.ParameterName = @":tags";
                     dbcmd.Parameters.Add(tags_parameter);
                     
                     SqliteParameter fav_parameter = new SqliteParameter();
-                    fav_parameter.Value = EscapeParam(favicon);
+                    if ( favicon != null ) {
+                        fav_parameter.Value = EscapeParam(favicon);
+                    } else {
+                        fav_parameter.Value = "";
+                    }
                     fav_parameter.ParameterName = @":favicon";
                     dbcmd.Parameters.Add(fav_parameter);
                     
@@ -262,52 +306,92 @@ namespace Summa {
                     dbcmd.CommandText = @"insert into "+generated_name+" values (null, :title, :uri, :date, :lastup, :author, :tags, :content, :encuri, :read, :flagged)";
                     
                     SqliteParameter title_parameter = new SqliteParameter();
-                    title_parameter.Value = EscapeParam(title);
+                    if ( title != null ) {
+                        title_parameter.Value = EscapeParam(title);
+                    } else {
+                        title_parameter.Value = "";
+                    }
                     title_parameter.ParameterName = @":title";
                     dbcmd.Parameters.Add(title_parameter);
                     
                     SqliteParameter uri_parameter = new SqliteParameter();
-                    uri_parameter.Value = EscapeParam(uri);
+                    if ( uri != null ) {
+                        uri_parameter.Value = EscapeParam(uri);
+                    } else {
+                        uri_parameter.Value = "";
+                    }
                     uri_parameter.ParameterName = @":uri";
                     dbcmd.Parameters.Add(uri_parameter);
                     
                     SqliteParameter date_parameter = new SqliteParameter();
-                    date_parameter.Value = EscapeParam(date);
+                    if ( date != null ) {
+                        date_parameter.Value = EscapeParam(date);
+                    } else {
+                        date_parameter.Value = "";
+                    }
                     date_parameter.ParameterName = @":date";
                     dbcmd.Parameters.Add(date_parameter);
                     
                     SqliteParameter lu_parameter = new SqliteParameter();
-                    lu_parameter.Value = EscapeParam(last_updated);
+                    if ( last_updated != null ) {
+                        lu_parameter.Value = EscapeParam(last_updated);
+                    } else {
+                        lu_parameter.Value = "";
+                    }
                     lu_parameter.ParameterName = @":lastup";
                     dbcmd.Parameters.Add(lu_parameter);
                     
                     SqliteParameter author_parameter = new SqliteParameter();
-                    author_parameter.Value = EscapeParam(author);
+                    if ( author != null ) {
+                        author_parameter.Value = EscapeParam(author);
+                    } else {
+                        author_parameter.Value = "";
+                    }
                     author_parameter.ParameterName = @":author";
                     dbcmd.Parameters.Add(author_parameter);
                     
                     SqliteParameter tags_parameter = new SqliteParameter();
-                    tags_parameter.Value = EscapeParam(tags);
+                    if ( tags != null ) {
+                        tags_parameter.Value = EscapeParam(tags);
+                    } else {
+                        tags_parameter.Value = "";
+                    }
                     tags_parameter.ParameterName = @":tags";
                     dbcmd.Parameters.Add(tags_parameter);
                     
                     SqliteParameter content_parameter = new SqliteParameter();
-                    content_parameter.Value = EscapeParam(content);
+                    if ( content!= null ) {
+                        content_parameter.Value = EscapeParam(content);
+                    } else {
+                        content_parameter.Value = "";
+                    }
                     content_parameter.ParameterName = @":content";
                     dbcmd.Parameters.Add(content_parameter);
                     
                     SqliteParameter encuri_parameter = new SqliteParameter();
-                    encuri_parameter.Value = EscapeParam(encuri);
+                    if ( encuri != null ) {
+                        encuri_parameter.Value = EscapeParam(encuri);
+                    } else {
+                        encuri_parameter.Value = "";
+                    }
                     encuri_parameter.ParameterName = @":encuri";
                     dbcmd.Parameters.Add(encuri_parameter);
                     
                     SqliteParameter read_parameter = new SqliteParameter();
-                    read_parameter.Value = EscapeParam("False");
+                    if ( read != null ) {
+                        read_parameter.Value = EscapeParam("False");
+                    } else {
+                        read_parameter.Value = "";
+                    }
                     read_parameter.ParameterName = @":read";
                     dbcmd.Parameters.Add(read_parameter);
                     
                     SqliteParameter flagged_parameter = new SqliteParameter();
-                    flagged_parameter.Value = EscapeParam("False");
+                    if ( flagged != null ) {
+                        flagged_parameter.Value = EscapeParam("False");
+                    } else {
+                        flagged_parameter.Value = "";
+                    }
                     flagged_parameter.ParameterName = @":flagged";
                     dbcmd.Parameters.Add(flagged_parameter);
                     
