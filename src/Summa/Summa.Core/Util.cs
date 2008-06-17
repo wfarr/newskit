@@ -28,6 +28,9 @@ namespace Summa {
             public static void Log(string errortext, System.Exception e) {
                 //System.Console.WriteLine(errortext);
             }
+            
+            public static void Log(string errortext) {
+            }
         }
     }
 }

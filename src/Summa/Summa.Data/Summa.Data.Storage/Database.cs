@@ -76,7 +76,7 @@ namespace Summa {
                 public string CreateFeed(string uri, string name, string author, string subtitle, string image, string license, string etag, string hmodified, string status, string tags, string favicon) {
                     string generated_name = GenerateRandomName();
                     
-                    NonQueryCommand(String.Format("insert into Feeds values (null, {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12})", EscapeParam(uri), EscapeParam(generated_name), EscapeParam(name), EscapeParam(author), EscapeParam(subtitle), EscapeParam(image), EscapeParam(license), EscapeParam(etag), EscapeParam(hmodified), EscapeParam(status), EscapeParam(tags), EscapeParam(favicon)));
+                    NonQueryCommand(String.Format("insert into Feeds values (null, {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11})", EscapeParam(uri), EscapeParam(generated_name), EscapeParam(name), EscapeParam(author), EscapeParam(subtitle), EscapeParam(image), EscapeParam(license), EscapeParam(etag), EscapeParam(hmodified), EscapeParam(status), EscapeParam(tags), EscapeParam(favicon)));
                     
                     NonQueryCommand("create table "+generated_name+" (id INTEGER PRIMARY KEY, title VARCHAR(50), uri VARCHAR(50), date VARCHAR(50), last_updated VARCHAR(50), author VARCHAR(50), tags VARCHAR(50), content VARCHAR(50), encuri VARCHAR(50), read VARCHAR(50), flagged VARCHAR(50))");
                     
@@ -89,26 +89,25 @@ namespace Summa {
                 }
                 
                 public string[] GetFeed(string uri) {
-                    string[] feed = new string[12];
+                    string[] feed = new string[13];
                     
                     IDbCommand dbcmd = db.CreateCommand();
                     dbcmd.CommandText = "select * from Feeds where uri='"+uri+"'";
                     IDataReader reader = dbcmd.ExecuteReader();
                     while(reader.Read()) {
-                        feed[0] = reader.GetString(0).ToString();
-                        feed[1] = reader.GetString(1);
-                        feed[2] = reader.GetString(2);
-                        feed[3] = reader.GetString(3);
-                        feed[4] = reader.GetString(4);
-                        feed[5] = reader.GetString(5);
-                        feed[6] = reader.GetString(6);
-                        feed[7] = reader.GetString(7);
-                        feed[8] = reader.GetString(8);
-                        feed[9] = reader.GetString(9);
-                        feed[10] = reader.GetString(10);
-                        feed[11] = reader.GetString(11);
-                        feed[12] = reader.GetString(12);
-                        feed[13] = reader.GetString(13);
+                        feed[0] = reader.GetString(0).ToString(); // integer primary key
+                        feed[1] = reader.GetString(1); // uri
+                        feed[2] = reader.GetString(2); // generated_name
+                        feed[3] = reader.GetString(3); // name
+                        feed[4] = reader.GetString(4); // author
+                        feed[5] = reader.GetString(5); // subtitle
+                        feed[6] = reader.GetString(6); // image
+                        feed[7] = reader.GetString(7); // license
+                        feed[8] = reader.GetString(8); // etag
+                        feed[9] = reader.GetString(9); // hmodified
+                        feed[10] = reader.GetString(10); // status
+                        feed[11] = reader.GetString(11); // tags
+                        feed[12] = reader.GetString(12); //favicon
                     }
                     reader.Close();
                     reader = null;
@@ -133,6 +132,16 @@ namespace Summa {
                     return list;
                 }
                 
+                public bool FeedExists(string url) {
+                    bool exists = false;
+                    foreach (string[] feed in GetFeeds()) {
+                        if ( feed[1] == url ) {
+                            exists = true;
+                        }
+                    }
+                    return exists;
+                }
+                
                 public ArrayList GetPosts(string feeduri) {
                     ArrayList list = new ArrayList();
                     
@@ -140,18 +149,17 @@ namespace Summa {
                     dbcmd.CommandText = "select * from "+GetGeneratedName(feeduri);
                     IDataReader reader = dbcmd.ExecuteReader();
                     while(reader.Read()) {
-                        string[] item = new string[11];
-                        item[0] = reader.GetString(0);
-                        item[1] = reader.GetString(1);
-                        item[2] = reader.GetString(2);
-                        item[3] = reader.GetString(3);
-                        item[4] = reader.GetString(4);
-                        item[5] = reader.GetString(5);
-                        item[6] = reader.GetString(6);
-                        item[7] = reader.GetString(7);
-                        item[8] = reader.GetString(8);
-                        item[9] = reader.GetString(9);
-                        item[10] = reader.GetString(10);
+                        string[] item = new string[10];
+                        item[0] = reader.GetString(1); //title
+                        item[1] = reader.GetString(2); //uri
+                        item[2] = reader.GetString(3); //date
+                        item[3] = reader.GetString(4); //last_updated
+                        item[4] = reader.GetString(5); //author
+                        item[5] = reader.GetString(6); //tags
+                        item[6] = reader.GetString(7); //content
+                        item[7] = reader.GetString(8); //encuri
+                        item[8] = reader.GetString(9); //read
+                        item[9] = reader.GetString(10); //flagged
                         
                         list.Add(item);
                     }
@@ -171,6 +179,12 @@ namespace Summa {
                         }
                     }
                     return null;
+                }
+                
+                public void AddItem(string feeduri, string title, string uri, string date, string last_updated, string author, string tags, string content, string encuri, string read, string flagged) {
+                    string generated_name = GetGeneratedName(feeduri);
+                    
+                    NonQueryCommand(String.Format("insert into "+generated_name+" values (null, {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})", EscapeParam(title), EscapeParam(uri), EscapeParam(date), EscapeParam(last_updated), EscapeParam(author), EscapeParam(tags), EscapeParam(content), EscapeParam(encuri), EscapeParam(read), EscapeParam(flagged)));
                 }
                 
                 public void ChangeFeedInfo(string feeduri, string property, string intended_value) {

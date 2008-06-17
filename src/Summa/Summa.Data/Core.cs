@@ -72,58 +72,96 @@ public delegate void TagsChangedHandler();
 namespace Summa {
     namespace Data {
         public static class Core {
-            static NewsKitObj daemon = Bus.Session.GetObject<NewsKitObj>("org.gnome.NewsKit", new ObjectPath("/org/gnome/NewsKit"));
-            
             public static void ApplicationInit(string name) {
-                daemon.AppInit(name);
+                Summa.Core.Util.Log(String.Format("{0} registered.", name));
             }
             
             public static Summa.Data.Feed RegisterFeed(string uri) {
-                string uid = daemon.RegisterFeedSource(uri);
+                ArrayList urls = new ArrayList();
                 
-                return new Summa.Data.Feed(uid);
+                foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+                    urls.Add(feed.Url);
+                }
+                
+                Summa.Data.Feed retfeed = null;
+                
+                if ( !urls.Contains(uri) ) {
+                    Summa.Net.Request request = new Summa.Net.Request(uri);
+                    Summa.Data.Parser.FeedParser parser = Summa.Net.Feed.Sniff(request);
+                    
+                    Summa.Core.Application.Database.CreateFeed(parser.Uri, parser.Name, parser.Author, parser.Subtitle, parser.Image, parser.License, request.Etag, request.LastModified, "", "All", parser.Favicon);
+                    
+                    foreach ( Summa.Data.Parser.Item item in parser.Items ) {
+                        Summa.Core.Application.Database.AddItem(uri, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+                    }
+                }
+                
+                foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+                    if ( feed.Url == uri ) {
+                        retfeed = feed;
+                        break;
+                    }
+                }
+                return retfeed;
             }
             
             public static Summa.Data.Feed RegisterFeed(string uri, string username, string password) {
-                string uid = daemon.RegisterFeedSourceWithAuth(uri, username, password);
-                
-                return new Summa.Data.Feed(uid);
+                return null; //not implemented
             }
             
             public static void DeleteFeed(string uri) {
-                daemon.DeleteFeedSource(uri);
+                Summa.Core.Application.Database.DeleteFeed(uri);
             }
             
             public static ArrayList GetFeeds() {
-                string[] uids = daemon.GetFeeds();
-                ArrayList feeds = new ArrayList();
+                ArrayList feeds = Summa.Core.Application.Database.GetFeeds();
+                ArrayList retfeeds = new ArrayList();
                 
-                foreach (string uid in uids) {
-                    feeds.Add(new Summa.Data.Feed(uid));
+                foreach (string[] feed in feeds) {
+                    retfeeds.Add(new Summa.Data.Feed(feed[1]));
                 }
-                return feeds;
+                return retfeeds;
             }
             
             public static ArrayList GetFeeds(string tag) {
-                string[] uids = daemon.GetFeedsByTag(tag);
-                ArrayList feeds = new ArrayList();
+                ArrayList retfeeds = new ArrayList();
                 
-                foreach (string uid in uids) {
-                    feeds.Add(new Summa.Data.Feed(uid));
+                foreach (Summa.Data.Feed feed  in GetFeeds()) {
+                    if (feed.Tags.Contains(tag)) {
+                        retfeeds.Add(feed);
+                    }
                 }
-                return feeds;
+                return retfeeds;
             }
             
-            public static string[] GetTags() {
-                return daemon.GetTags();
+            public static ArrayList GetTags() {
+                ArrayList list = new ArrayList();
+                
+                foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+                    foreach ( string tag in feed.Tags ) {
+                        if ( !list.Contains(tag) ) {
+                            list.Add(tag);
+                        }
+                    }
+                }
+                
+                return list;
             }
             
             public static int GetUnreadCount() {
-                return daemon.GetUnreadCount();
+                int count = 0;
+                foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+                    foreach ( Summa.Data.Item item in feed.GetItems() ) {
+                        if ( item.Read == false ) {
+                            count++;
+                        }
+                    }
+                }
+                return count;
             }
             
             public static string[] ImportOpml(string filename) {
-                return daemon.ImportOPML(filename);
+                return null; //not implemented
             }
             
             // FIXME - should have the Search stuff
