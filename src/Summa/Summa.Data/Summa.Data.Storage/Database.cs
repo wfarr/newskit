@@ -16,7 +16,7 @@ namespace Summa {
                 public Database() {
                     bool exists = System.IO.File.Exists(uri);
                     
-                    db = new SqliteConnection(Uri);
+                    db = new SqliteConnection("Version=3,"+Uri);
                     db.Open();
                     
                     if (!exists) {
@@ -33,11 +33,12 @@ namespace Summa {
                 }
                 
                 private string EscapeParam(string parameter) {
-                    string to_insert = @"''{0}''";
-                    
-                    string param = System.Security.SecurityElement.Escape(parameter);
-                    
-                    return String.Format(to_insert, param);
+                    try {
+                        return parameter;
+                    } catch ( Exception e ) {
+                        Summa.Core.Util.Log("Null reference", e);
+                        return "";
+                    }
                 }
                 
                 private void Initialize() {
@@ -60,11 +61,14 @@ namespace Summa {
                 
                 private string GetGeneratedName(string uri) {
                     IDbCommand dbcmd = db.CreateCommand();
-                    dbcmd.CommandText = "select generated_name from Feeds where uri='"+uri+"'";
+                    dbcmd.CommandText = @"select * from Feeds";
                     IDataReader reader = dbcmd.ExecuteReader();
                     string name = null;
                     while(reader.Read()) {
-                        name = reader.GetString(0);
+                        if ( reader.GetString(1) == uri ) {
+                            name = reader.GetString(2);
+                            break;
+                        }
                     }
                     reader.Close();
                     reader = null;
@@ -76,7 +80,72 @@ namespace Summa {
                 public string CreateFeed(string uri, string name, string author, string subtitle, string image, string license, string etag, string hmodified, string status, string tags, string favicon) {
                     string generated_name = GenerateRandomName();
                     
-                    NonQueryCommand(String.Format("insert into Feeds values (null, {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11})", EscapeParam(uri), EscapeParam(generated_name), EscapeParam(name), EscapeParam(author), EscapeParam(subtitle), EscapeParam(image), EscapeParam(license), EscapeParam(etag), EscapeParam(hmodified), EscapeParam(status), EscapeParam(tags), EscapeParam(favicon)));
+                    IDbCommand dbcmd = db.CreateCommand();
+                    dbcmd.CommandText = @"insert into Feeds values (null, :uri, :genname, :name, :author, :subtitle, :image, :license, :etag, :hmodified, :status, :tags, :favicon)";
+                    
+                    SqliteParameter uri_parameter = new SqliteParameter();
+                    uri_parameter.Value = EscapeParam(uri);
+                    uri_parameter.ParameterName = @":uri";
+                    dbcmd.Parameters.Add(uri_parameter);
+                    
+                    SqliteParameter genname_parameter = new SqliteParameter();
+                    genname_parameter.Value = EscapeParam(generated_name);
+                    genname_parameter.ParameterName = @":genname";
+                    dbcmd.Parameters.Add(genname_parameter);
+                    
+                    SqliteParameter name_parameter = new SqliteParameter();
+                    name_parameter.Value = EscapeParam(name);
+                    name_parameter.ParameterName = @":name";
+                    dbcmd.Parameters.Add(name_parameter);
+                    
+                    SqliteParameter author_parameter = new SqliteParameter();
+                    author_parameter.Value = EscapeParam(author);
+                    author_parameter.ParameterName = @":author";
+                    dbcmd.Parameters.Add(author_parameter);
+                    
+                    SqliteParameter sub_parameter = new SqliteParameter();
+                    sub_parameter.Value = EscapeParam(subtitle);
+                    sub_parameter.ParameterName = @":subtitle";
+                    dbcmd.Parameters.Add(sub_parameter);
+                    
+                    SqliteParameter image_parameter = new SqliteParameter();
+                    image_parameter.Value = EscapeParam(image);
+                    image_parameter.ParameterName = @":image";
+                    dbcmd.Parameters.Add(image_parameter);
+                    
+                    SqliteParameter license_parameter = new SqliteParameter();
+                    license_parameter.Value = EscapeParam(license);
+                    license_parameter.ParameterName = @":license";
+                    dbcmd.Parameters.Add(license_parameter);
+                    
+                    SqliteParameter etag_parameter = new SqliteParameter();
+                    etag_parameter.Value = EscapeParam(etag);
+                    etag_parameter.ParameterName = @":etag";
+                    dbcmd.Parameters.Add(etag_parameter);
+                    
+                    SqliteParameter hmodified_parameter = new SqliteParameter();
+                    hmodified_parameter.Value = EscapeParam(hmodified);
+                    hmodified_parameter.ParameterName = @":hmodified";
+                    dbcmd.Parameters.Add(hmodified_parameter);
+                    
+                    SqliteParameter status_parameter = new SqliteParameter();
+                    status_parameter.Value = EscapeParam(status);
+                    status_parameter.ParameterName = @":status";
+                    dbcmd.Parameters.Add(status_parameter);
+                    
+                    SqliteParameter tags_parameter = new SqliteParameter();
+                    tags_parameter.Value = EscapeParam(tags);
+                    tags_parameter.ParameterName = @":tags";
+                    dbcmd.Parameters.Add(tags_parameter);
+                    
+                    SqliteParameter fav_parameter = new SqliteParameter();
+                    fav_parameter.Value = EscapeParam(favicon);
+                    fav_parameter.ParameterName = @":favicon";
+                    dbcmd.Parameters.Add(fav_parameter);
+                    
+                    dbcmd.ExecuteNonQuery();
+                    dbcmd.Dispose();
+                    dbcmd = null;
                     
                     NonQueryCommand("create table "+generated_name+" (id INTEGER PRIMARY KEY, title VARCHAR(50), uri VARCHAR(50), date VARCHAR(50), last_updated VARCHAR(50), author VARCHAR(50), tags VARCHAR(50), content VARCHAR(50), encuri VARCHAR(50), read VARCHAR(50), flagged VARCHAR(50))");
                     
@@ -92,8 +161,13 @@ namespace Summa {
                     string[] feed = new string[13];
                     
                     IDbCommand dbcmd = db.CreateCommand();
-                    dbcmd.CommandText = "select * from Feeds where uri='"+uri+"'";
+                    dbcmd.CommandText = "select * from Feeds where uri=:uri";
+                    SqliteParameter param = new SqliteParameter();
+                    param.Value = uri;
+                    param.ParameterName = @":uri";
+                    dbcmd.Parameters.Add(param);
                     IDataReader reader = dbcmd.ExecuteReader();
+                    
                     while(reader.Read()) {
                         feed[0] = reader.GetString(0).ToString(); // integer primary key
                         feed[1] = reader.GetString(1); // uri
@@ -123,7 +197,7 @@ namespace Summa {
                     dbcmd.CommandText = "select * from Feeds";
                     IDataReader reader = dbcmd.ExecuteReader();
                     while(reader.Read()) {
-                        list.Add(GetFeed(reader.GetString(0)));
+                        list.Add(GetFeed(reader.GetString(1)));
                     }
                     reader.Close();
                     reader = null;
@@ -174,7 +248,7 @@ namespace Summa {
                     ArrayList list = GetPosts(feeduri);
                     
                     foreach (string[] item in list) {
-                        if ( item[0] == uri ) {
+                        if ( item[1] == uri ) {
                             return item;
                         }
                     }
@@ -184,7 +258,62 @@ namespace Summa {
                 public void AddItem(string feeduri, string title, string uri, string date, string last_updated, string author, string tags, string content, string encuri, string read, string flagged) {
                     string generated_name = GetGeneratedName(feeduri);
                     
-                    NonQueryCommand(String.Format("insert into "+generated_name+" values (null, {0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})", EscapeParam(title), EscapeParam(uri), EscapeParam(date), EscapeParam(last_updated), EscapeParam(author), EscapeParam(tags), EscapeParam(content), EscapeParam(encuri), EscapeParam(read), EscapeParam(flagged)));
+                    IDbCommand dbcmd = db.CreateCommand();
+                    dbcmd.CommandText = @"insert into "+generated_name+" values (null, :title, :uri, :date, :lastup, :author, :tags, :content, :encuri, :read, :flagged)";
+                    
+                    SqliteParameter title_parameter = new SqliteParameter();
+                    title_parameter.Value = EscapeParam(title);
+                    title_parameter.ParameterName = @":title";
+                    dbcmd.Parameters.Add(title_parameter);
+                    
+                    SqliteParameter uri_parameter = new SqliteParameter();
+                    uri_parameter.Value = EscapeParam(uri);
+                    uri_parameter.ParameterName = @":uri";
+                    dbcmd.Parameters.Add(uri_parameter);
+                    
+                    SqliteParameter date_parameter = new SqliteParameter();
+                    date_parameter.Value = EscapeParam(date);
+                    date_parameter.ParameterName = @":date";
+                    dbcmd.Parameters.Add(date_parameter);
+                    
+                    SqliteParameter lu_parameter = new SqliteParameter();
+                    lu_parameter.Value = EscapeParam(last_updated);
+                    lu_parameter.ParameterName = @":lastup";
+                    dbcmd.Parameters.Add(lu_parameter);
+                    
+                    SqliteParameter author_parameter = new SqliteParameter();
+                    author_parameter.Value = EscapeParam(author);
+                    author_parameter.ParameterName = @":author";
+                    dbcmd.Parameters.Add(author_parameter);
+                    
+                    SqliteParameter tags_parameter = new SqliteParameter();
+                    tags_parameter.Value = EscapeParam(tags);
+                    tags_parameter.ParameterName = @":tags";
+                    dbcmd.Parameters.Add(tags_parameter);
+                    
+                    SqliteParameter content_parameter = new SqliteParameter();
+                    content_parameter.Value = EscapeParam(content);
+                    content_parameter.ParameterName = @":content";
+                    dbcmd.Parameters.Add(content_parameter);
+                    
+                    SqliteParameter encuri_parameter = new SqliteParameter();
+                    encuri_parameter.Value = EscapeParam(encuri);
+                    encuri_parameter.ParameterName = @":encuri";
+                    dbcmd.Parameters.Add(encuri_parameter);
+                    
+                    SqliteParameter read_parameter = new SqliteParameter();
+                    read_parameter.Value = EscapeParam("False");
+                    read_parameter.ParameterName = @":read";
+                    dbcmd.Parameters.Add(read_parameter);
+                    
+                    SqliteParameter flagged_parameter = new SqliteParameter();
+                    flagged_parameter.Value = EscapeParam("False");
+                    flagged_parameter.ParameterName = @":flagged";
+                    dbcmd.Parameters.Add(flagged_parameter);
+                    
+                    dbcmd.ExecuteNonQuery();
+                    dbcmd.Dispose();
+                    dbcmd = null;
                 }
                 
                 public void ChangeFeedInfo(string feeduri, string property, string intended_value) {

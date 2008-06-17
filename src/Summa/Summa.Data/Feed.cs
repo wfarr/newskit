@@ -86,7 +86,7 @@ namespace Summa {
             public ArrayList Tags {
                 get {
                     string[] feed = Summa.Core.Application.Database.GetFeed(Url);
-                    string tags = feed[6];
+                    string tags = feed[11];
                     ArrayList al = new System.Collections.ArrayList();
                     foreach ( string tag in tags.Split(',') ) {
                         al.Add(tag);

@@ -229,7 +229,7 @@ namespace Summa {
             }
             
             public string MakePrettyDate(string date) {
-                string[] sdate = date.Split('_');
+                /*string[] sdate = date.Split('_');
                 string month = "";
                 string dies = "";
                 string hour = "";
@@ -258,7 +258,8 @@ namespace Summa {
                     minute = sdate[4];
                 }
                 
-                return day+" at "+hour+":"+minute;
+                return day+" at "+hour+":"+minute;*/
+                return date;
             }
         }
     }
