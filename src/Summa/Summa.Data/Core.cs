@@ -117,9 +117,14 @@ namespace Summa {
                 ArrayList feeds = Summa.Core.Application.Database.GetFeeds();
                 ArrayList retfeeds = new ArrayList();
                 
-                foreach (string[] feed in feeds) {
-                    retfeeds.Add(new Summa.Data.Feed(feed[1]));
+                try {
+                    foreach (string[] feed in feeds) {
+                        retfeeds.Add(new Summa.Data.Feed(feed[1]));
+                    }
+                } catch ( Exception e ) {
+                    Summa.Core.Util.Log("There are no feeds.", e);
                 }
+                
                 return retfeeds;
             }
             
@@ -137,12 +142,16 @@ namespace Summa {
             public static ArrayList GetTags() {
                 ArrayList list = new ArrayList();
                 
-                foreach ( Summa.Data.Feed feed in GetFeeds() ) {
-                    foreach ( string tag in feed.Tags ) {
-                        if ( !list.Contains(tag) ) {
-                            list.Add(tag);
+                try {
+                    foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+                        foreach ( string tag in feed.Tags ) {
+                            if ( !list.Contains(tag) ) {
+                                list.Add(tag);
+                            }
                         }
                     }
+                } catch ( Exception e ) {
+                    Summa.Core.Util.Log("There are no feeds.", e);
                 }
                 
                 return list;
@@ -150,12 +159,17 @@ namespace Summa {
             
             public static int GetUnreadCount() {
                 int count = 0;
-                foreach ( Summa.Data.Feed feed in GetFeeds() ) {
-                    foreach ( Summa.Data.Item item in feed.GetItems() ) {
-                        if ( item.Read == false ) {
-                            count++;
+                
+                try {
+                    foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+                        foreach ( Summa.Data.Item item in feed.GetItems() ) {
+                            if ( item.Read == false ) {
+                                count++;
+                            }
                         }
                     }
+                } catch ( Exception e ) {
+                    Summa.Core.Util.Log("There are no feeds.", e);
                 }
                 return count;
             }
