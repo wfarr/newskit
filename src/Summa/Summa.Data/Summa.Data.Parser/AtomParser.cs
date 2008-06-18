@@ -134,7 +134,11 @@ namespace Summa {
                             item.Author = "";
                         }
                         try {
-                            item.Contents = entry.Content[0].Text;
+                            item.Contents = "";
+                            foreach ( Atom.AtomText text in entry.Content ) {
+                                string str = String.Concat(item.Contents, text.Text);
+                                item.Contents = str;
+                            }
                         } catch ( Exception e ) {
                             Summa.Core.Util.Log("Item Contents problem", e);
                             item.Contents = "";
@@ -144,14 +148,6 @@ namespace Summa {
                         } catch ( Exception e ) {
                             Summa.Core.Util.Log("Item EncUri problem", e);
                         }
-                        
-                        try {
-                            foreach (Atom.AtomText content in entry.Content) {
-                                if ( content.Text.Length > item.Contents.Length ) {
-                                    item.Contents = content.Text;
-                                }
-                            }
-                        } catch ( Exception e ) {}
                         
                         try {
                             if ( entry.Summary.Text.Length > item.Contents.Length ) {

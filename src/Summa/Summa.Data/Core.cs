@@ -41,12 +41,17 @@ namespace Summa {
                 
                 if ( !urls.Contains(uri) ) {
                     Summa.Net.Request request = new Summa.Net.Request(uri);
-                    Summa.Data.Parser.FeedParser parser = Summa.Net.Feed.Sniff(request);
                     
-                    Summa.Core.Application.Database.CreateFeed(parser.Uri, parser.Name, parser.Author, parser.Subtitle, parser.Image, parser.License, request.Etag, request.LastModified, "", "All", parser.Favicon);
-                    
-                    foreach ( Summa.Data.Parser.Item item in parser.Items ) {
-                        Summa.Core.Application.Database.AddItem(uri, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+                    if ( request.Status != System.Net.HttpStatusCode.NotFound ) {
+                        Summa.Data.Parser.FeedParser parser = Summa.Net.Feed.Sniff(request);
+                        
+                        Summa.Core.Application.Database.CreateFeed(parser.Uri, parser.Name, parser.Author, parser.Subtitle, parser.Image, parser.License, request.Etag, request.LastModified, "", "All", parser.Favicon);
+                        
+                        foreach ( Summa.Data.Parser.Item item in parser.Items ) {
+                            Summa.Core.Application.Database.AddItem(uri, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+                        }
+                    } else {
+                        throw new Summa.Core.Exceptions.BadFeed();
                     }
                 }
                 
