@@ -87,10 +87,12 @@ namespace Summa {
                 propdialog.store_tags.SetValue(iter, 0, true);
                 propdialog.store_tags.SetValue(iter, 1, entry.Text);
                 
-                Summa.Core.Application.Browser.TagView.Update();
-                
-                if ( Summa.Core.Application.Browser.TagView.Selected == entry.Text ) {
-                    Summa.Core.Application.Browser.FeedView.Update();
+                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                    browser.TagView.Update();
+                    
+                    if ( browser.TagView.Selected == entry.Text ) {
+                        browser.FeedView.Update();
+                    }
                 }
                 
                 Destroy();

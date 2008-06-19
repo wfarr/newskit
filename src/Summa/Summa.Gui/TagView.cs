@@ -29,7 +29,6 @@ using Gdk;
 namespace Summa {
     namespace Gui {
         public class TagView : Gtk.TreeView {
-            private Gtk.ListStore store;
             private Gtk.IconTheme icon_theme;
             public ArrayList Tags;
             
@@ -40,15 +39,14 @@ namespace Summa {
             public string Selected {
                 get {
                     Selection.GetSelected(out selectmodel, out tagiter);
-                    string val = (string)store.GetValue(tagiter, 1);
+                    string val = (string)Summa.Core.Application.TagStore.GetValue(tagiter, 1);
                     return val;
                 }
             }
             
             public TagView() {
                 // set up the liststore for the view
-                store = new Gtk.ListStore(typeof(Gdk.Pixbuf), typeof(string));
-                Model = store;
+                Model = Summa.Core.Application.TagStore;
                 
                 // set up the columns for the view, and hide them. 
                 InsertColumn(-1, "Pix", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
@@ -66,10 +64,10 @@ namespace Summa {
                 store.set(tagiter, 0, icon_theme.lookup_icon("system-search", Gtk.IconSize.MENU, Gtk.IconLookupFlags.NO_SVG).load_icon(), 1, "Searches", -1);*/
                 
                 Gtk.TreeIter tagiter;
-                tagiter = store.Append();
+                tagiter = Summa.Core.Application.TagStore.Append();
                 Pixbuf icon = new Gdk.Pixbuf("/usr/share/epiphany-browser/icons/hicolor/16x16/status/feed-presence.png");
-                store.SetValue(tagiter, 0, icon);
-                store.SetValue(tagiter, 1, "All feeds");
+                Summa.Core.Application.TagStore.SetValue(tagiter, 0, icon);
+                Summa.Core.Application.TagStore.SetValue(tagiter, 1, "All feeds");
                 
                 foreach (string tag in Tags) {
                     if ( tag != "All" ) {
@@ -93,9 +91,9 @@ namespace Summa {
             
             public void AppendTag(string tag) {
                 Gtk.TreeIter iter;
-                iter = store.Append();
-                store.SetValue(iter, 0, new Gdk.Pixbuf("/home/eosten/Desktop/tag.png"));
-                store.SetValue(iter, 1, tag);
+                iter = Summa.Core.Application.TagStore.Append();
+                Summa.Core.Application.TagStore.SetValue(iter, 0, new Gdk.Pixbuf("/home/eosten/Desktop/tag.png"));
+                Summa.Core.Application.TagStore.SetValue(iter, 1, tag);
             }
         }
     }

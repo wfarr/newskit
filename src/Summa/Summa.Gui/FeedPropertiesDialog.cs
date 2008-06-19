@@ -22,10 +22,8 @@ namespace Summa {
             private Gtk.CellRendererToggle cr_toggle;
             
             public FeedPropertiesDialog(Summa.Data.Feed f) : base(Gtk.WindowType.Toplevel) {
-                Summa.Core.Application.Browser = Summa.Core.Application.Browser;
                 feed = f;
                 
-                TransientFor = Summa.Core.Application.Browser;
                 Title = "\""+feed.Name+"\" Properties";
                 BorderWidth = 5;
                 DeleteEvent += OnClose;
@@ -209,7 +207,11 @@ namespace Summa {
                 feed.Author = entry_author.Text;
                 feed.Subtitle = entry_subtitle.Text;
                 feed.Image = entry_image.Text;
-                Summa.Core.Application.Browser.FeedView.UpdateSelected();
+                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                    if ( feed.Url == browser.FeedView.Selected.Url ) {
+                        browser.FeedView.UpdateSelected();
+                    }
+                }
                 Destroy();
             }
         }

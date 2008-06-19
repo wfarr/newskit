@@ -15,7 +15,6 @@ namespace Summa {
             private string[] updateinterval_options;
             
             public ConfigDialog() : base(Gtk.WindowType.Toplevel) {
-                TransientFor = Summa.Core.Application.Browser;
                 Title = "Summa Preferences";
                 BorderWidth = 5;
                 DeleteEvent += OnClose;

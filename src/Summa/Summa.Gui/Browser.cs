@@ -184,6 +184,7 @@ namespace Summa  {
                 
                 about_dialog = new Summa.Gui.AboutDialog();
                 config_dialog = new Summa.Gui.ConfigDialog();
+                config_dialog.TransientFor = this;
                 bookmarker = new Summa.Gui.DieuBookmarker();
                 mediaplayer = new Summa.Gui.TotemMediaPlayer();
                 //Notify.init("Summa");
@@ -226,6 +227,7 @@ namespace Summa  {
             
             public void ShowAddWindow(object obj, EventArgs args) {
                 AddWindow add_dialog = new Summa.Gui.AddWindow();
+                add_dialog.TransientFor = this;
                 add_dialog.Show();
             }
             
@@ -238,29 +240,34 @@ namespace Summa  {
             }
             
             public void CloseWindow(object obj, EventArgs args) {
-                /* get dimensions */
-                int width;
-                int height;
-                
-                GetSize(out width, out height);
-                
-                Summa.Core.Config.WindowWidth = width;
-                Summa.Core.Config.WindowHeight = height;
-                
-                /* get pane positions */
-                int main_size;
-                int left_size;
-                int right_size;
-                
-                main_size = main_paned.Position;
-                left_size = left_paned.Position;
-                right_size = right_paned.Position;
-                
-                Summa.Core.Config.MainPanePosition = main_size;
-                Summa.Core.Config.LeftPanePosition = left_size;
-                Summa.Core.Config.RightPanePosition = right_size;
-                
-                Gtk.Main.Quit();
+                if ( Summa.Core.Application.Browsers.Count > 1 ) {
+                    Destroy();
+                    Summa.Core.Application.Browsers.Remove(this);
+                } else {
+                    /* get dimensions */
+                    int width;
+                    int height;
+                    
+                    GetSize(out width, out height);
+                    
+                    Summa.Core.Config.WindowWidth = width;
+                    Summa.Core.Config.WindowHeight = height;
+                    
+                    /* get pane positions */
+                    int main_size;
+                    int left_size;
+                    int right_size;
+                    
+                    main_size = main_paned.Position;
+                    left_size = left_paned.Position;
+                    right_size = right_paned.Position;
+                    
+                    Summa.Core.Config.MainPanePosition = main_size;
+                    Summa.Core.Config.LeftPanePosition = left_size;
+                    Summa.Core.Config.RightPanePosition = right_size;
+                    
+                    Gtk.Main.Quit();
+                }
             }
             
             public void ShowAboutDialog(object obj, EventArgs args) {
@@ -388,12 +395,20 @@ namespace Summa  {
             public void ShowPropertiesDialog(object obj, EventArgs args) {
                 if ( FeedView.HasSelected ) {
                     Window dialog = new Summa.Gui.FeedPropertiesDialog(FeedView.Selected);
+                    dialog.TransientFor = this;
                     dialog.ShowAll();
                 }
             }
             
+            public void NewWindow(object obj, EventArgs args) {
+                Window b = new Summa.Gui.Browser();
+                Summa.Core.Application.Browsers.Add(b);
+                b.ShowAll();
+            }
+            
             public void ShowTagsWindow(object obj, EventArgs args) {
                 Window dialog = new Summa.Gui.TagWindow();
+                dialog.TransientFor = this;
                 dialog.ShowAll();
             }
             
@@ -426,12 +441,14 @@ namespace Summa  {
             
             public void OnImport(object obj, EventArgs args) {
                 Firstrun fr = new Summa.Gui.Firstrun();
+                fr.TransientFor = this;
                 fr.ShowAll();
             }
             
             public void DeleteFeed(object obj, EventArgs args) {
                 if ( FeedView.HasSelected ) {
                     Window del = new Summa.Gui.DeleteConfirmationDialog(curfeed);
+                    del.TransientFor = this;
                     del.ShowAll();
                 }
             }
@@ -516,8 +533,7 @@ namespace Summa  {
                 action_group.Add(bookmark_action, "<ctrl>d");
                 
                 new_win_action = new Gtk.Action("New_window", "New _window", "Open a new window", null);
-                new_win_action.Activated += new EventHandler(stub); //FIXME
-                new_win_action.Sensitive = false;
+                new_win_action.Activated += new EventHandler(NewWindow);
                 action_group.Add(new_win_action, "<shift><ctrl>N");
                 
                 close_action = new Gtk.Action("Close_window", "_Close window", "Close this window", Gtk.Stock.Close);

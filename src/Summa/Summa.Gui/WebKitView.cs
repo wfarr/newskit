@@ -117,10 +117,12 @@ namespace Summa {
                     text = args.Title;
 
                 if (text != String.Empty) {
-                    if ( text != null ) {
-                        Summa.Core.Application.Browser.statusbar.Push(Summa.Core.Application.Browser.statusbar.GetContextId(text), "Click to visit " + text);
-                    } else {
-                        Summa.Core.Application.Browser.statusbar.Push(Summa.Core.Application.Browser.statusbar.GetContextId(""), "");
+                    foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                        if ( text != null ) {
+                            browser.statusbar.Push(browser.statusbar.GetContextId(text), "Click to visit " + text);
+                        } else {
+                            browser.statusbar.Push(browser.statusbar.GetContextId(""), "");
+                        }
                     }
                 }
             }

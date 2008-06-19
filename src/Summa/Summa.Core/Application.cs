@@ -20,25 +20,34 @@
  */
 
 using System;
+using System.Collections;
 using Gtk;
 
 namespace Summa {
     namespace Core {
         public static class Application {
-            public static Summa.Gui.Browser Browser;
+            public static ArrayList Browsers;
+            
             public static Summa.Gui.StatusIcon StatusIcon;
             public static Summa.Core.Updater Updater;
             public static Summa.Data.Storage.Database Database;
             
+            public static Gtk.ListStore TagStore;
+            
             public static void Main() {
                 Gtk.Application.Init();
                 
-                Browser = new Summa.Gui.Browser();
+                TagStore = new Gtk.ListStore(typeof(Gdk.Pixbuf), typeof(string));
+                
+                Browsers = new ArrayList();
+                Browsers.Add(new Summa.Gui.Browser());
                 StatusIcon = new Summa.Gui.StatusIcon();
                 Updater = new Summa.Core.Updater();
                 Database = new Summa.Data.Storage.Database();
                 
-                Browser.ShowAll();
+                foreach ( Summa.Gui.Browser browser in Browsers ) {
+                    browser.ShowAll();
+                }
                 
                 Gtk.Application.Run();
             }

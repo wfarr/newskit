@@ -18,7 +18,6 @@ namespace Summa {
             
             public DeleteConfirmationDialog(Summa.Data.Feed delfeed) : base(Gtk.WindowType.Toplevel) {
                 feed = delfeed;
-                TransientFor = Summa.Core.Application.Browser;
                 
                 Title = "Delete feed?";
                 IconName = "edit-delete";
@@ -73,10 +72,16 @@ namespace Summa {
             private void OnDelete(object obj, EventArgs args) {
                 Summa.Data.Core.DeleteFeed(feed.Url);
                 
-                Summa.Core.Application.Browser.FeedView.DeleteFeed(feed);
-                
-                Summa.Core.Application.Browser.HtmlView.Render("");
-                Summa.Core.Application.Browser.ItemView.store.Clear();
+                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                    Summa.Data.Feed indfeed = browser.FeedView.Selected;
+                    
+                    browser.FeedView.DeleteFeed(feed);
+                    
+                    if ( feed.Url == indfeed.Url ) {
+                        browser.HtmlView.Render("");
+                        browser.ItemView.store.Clear();
+                    }
+                }
             }
         }
     }

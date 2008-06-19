@@ -29,7 +29,6 @@ namespace Summa {
             }
             
             public TagWindow() : base(Gtk.WindowType.Toplevel) {
-                TransientFor = Summa.Core.Application.Browser;
                 Title = "Manage your tags";
                 BorderWidth = 5;
                 DeleteEvent += OnClose;
@@ -105,8 +104,10 @@ namespace Summa {
                     store.SetValue(iter, 0, false);
                     Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed((string)store.GetValue(iter, 2));
                     
-                    if ( Summa.Core.Application.Browser.FeedView.SetTag == ComboBox.ActiveText ) {
-                        Summa.Core.Application.Browser.FeedView.DeleteFeed(feed);
+                    foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                        if ( browser.FeedView.SetTag == ComboBox.ActiveText ) {
+                            browser.FeedView.DeleteFeed(feed);
+                        }
                     }
                     
                     feed.RemoveTag(ComboBox.ActiveText);
@@ -114,14 +115,17 @@ namespace Summa {
                     store.SetValue(iter, 0, true);
                     Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed((string)store.GetValue(iter, 2));
                     
-                    if ( Summa.Core.Application.Browser.FeedView.SetTag == ComboBox.ActiveText ) {
-                        Summa.Core.Application.Browser.FeedView.AddNewFeed(feed);
+                    foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                        if ( browser.FeedView.SetTag == ComboBox.ActiveText ) {
+                            browser.FeedView.AddNewFeed(feed);
+                        }
+                        browser.TagView.Update();
                     }
-                    Summa.Core.Application.Browser.TagView.Update();
                     
                     feed.AppendTag(ComboBox.ActiveText);
                 }
-                Summa.Core.Application.Browser.TagView.Update();
+                Summa.Gui.Browser b = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
+                b.TagView.Update();
             }
             
             private void Populate(string tag) {

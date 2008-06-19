@@ -39,7 +39,6 @@ namespace Summa {
             public AddWindow() : base(Gtk.WindowType.Toplevel) {
                 Title = "Add subscription";
                 IconName = "add";
-                TransientFor = Summa.Core.Application.Browser;
                 
                 DeleteEvent += OnCancel;
                 
@@ -91,8 +90,10 @@ namespace Summa {
             private void OnAdd(object obj, EventArgs args) {
                 Summa.Data.Core.RegisterFeed(entry.Text);
                 
-                Summa.Core.Application.Browser.TagView.Update();
-                Summa.Core.Application.Browser.FeedView.Update();
+                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                    browser.TagView.Update();
+                    browser.FeedView.Update();
+                }
                 
                 Destroy();
             }

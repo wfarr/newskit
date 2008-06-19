@@ -46,10 +46,12 @@ namespace Summa {
             
             private void ToggleBrowserStatus(object obj, EventArgs args) {
                 if ( shown ) {
-                    Summa.Core.Application.Browser.Hide();
+                    Summa.Gui.Browser b = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
+                    b.Hide();
                     shown = false;
                 } else {
-                    Summa.Core.Application.Browser.Show();
+                    Summa.Gui.Browser b = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
+                    b.Show();
                     shown = true;
                 }
             }
@@ -92,12 +94,14 @@ namespace Summa {
 
                 menu.ShowAll();
                 menu.Popup();
+                
+                Summa.Gui.Browser b = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
 
-                add_button.Activated += new EventHandler(Summa.Core.Application.Browser.ShowAddWindow);
-                refresh_button.Activated += new EventHandler(Summa.Core.Application.Browser.UpdateAll);
-                prefs_button.Activated += new EventHandler(Summa.Core.Application.Browser.ShowConfigDialog);
+                add_button.Activated += new EventHandler(b.ShowAddWindow);
+                refresh_button.Activated += new EventHandler(b.UpdateAll);
+                prefs_button.Activated += new EventHandler(b.ShowConfigDialog);
                 show_button.Activated += new EventHandler(ToggleBrowserStatus);
-                quit_button.Activated += new EventHandler(Summa.Core.Application.Browser.CloseWindow);
+                quit_button.Activated += new EventHandler(b.CloseWindow);
             }
         }
     }

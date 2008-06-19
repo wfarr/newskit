@@ -40,7 +40,6 @@ namespace Summa {
             
             public Firstrun() : base(Gtk.WindowType.Toplevel) {
                 IconName = Gtk.Stock.Convert;
-                TransientFor = Summa.Core.Application.Browser;
                 Title = "Import OPML file";
                 
                 Resizable = false;
@@ -91,7 +90,9 @@ namespace Summa {
                 bbox.Sensitive = false;
                 image.Sensitive = false;
                 label.Sensitive = false;
-                Summa.Core.Application.Browser.Sensitive = false;
+                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                    browser.Sensitive = false;
+                }
                 
                 ProgressBar pb = new Gtk.ProgressBar();
                 table.Attach(pb, 1, 2, 1, 2);
@@ -104,28 +105,33 @@ namespace Summa {
                     double progress = 0.0;
                     
                     foreach ( string feed in feeds ) {
-                        Summa.Core.Application.Browser.statusbar.Push(Summa.Core.Application.Browser.contextid, "Importing feed \""+feed+"\"");
+                        foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                            browser.statusbar.Push(browser.contextid, "Importing feed \""+feed+"\"");
+                        }
                         while ( Gtk.Application.EventsPending() ) {
                             Gtk.Main.Iteration();
                         }
                         
                         bool it_worked = true;
                         
-                        /*try {*/
-                        Summa.Data.Feed uid = Summa.Data.Core.RegisterFeed(feed);
-                        it_worked = true;
-                        /*} catch ( Error ex ) {
-                            Summa.Core.Application.Browser.statusbar.push(Summa.Core.Application.Browser.contextid, "Import of feed \""+feed+"\" failed.");
-                            Summa.Core.Application.Browser.contextid++;
-                            it_worked = false;
-                            string uid = "0";
-                        }*/
+                        try {
+                            Summa.Data.Feed uid = Summa.Data.Core.RegisterFeed(feed);
+                            it_worked = true;
+                        } catch ( Exception e ) {
+                            foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                                browser.statusbar.Push(browser.contextid, "Import of feed \""+feed+"\" failed.");
+                                browser.contextid++;
+                                it_worked = false;
+                            }
+                        }
                         
                         pb.Fraction = progress;
                         progress += step;
                         
                         if ( it_worked ) {
-                            //Summa.Core.Application.Browser.contextid++;
+                            foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                                browser.contextid++;
+                            }
                             
                             while ( Gtk.Application.EventsPending() ) {
                                 Gtk.Main.Iteration();
@@ -133,8 +139,10 @@ namespace Summa {
                         }
                     }
                 }
-                /*Summa.Core.Application.Browser.feedview.update();
-                Summa.Core.Application.Browser.set_sensitive(true);*/
+                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                    browser.FeedView.Update();
+                    browser.Sensitive = true;
+                }
                 Destroy();
             }
         }
