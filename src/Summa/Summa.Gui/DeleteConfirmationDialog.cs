@@ -73,14 +73,10 @@ namespace Summa {
                 Summa.Data.Core.DeleteFeed(feed.Url);
                 
                 foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
-                    Summa.Data.Feed indfeed = browser.FeedView.Selected;
-                    
                     browser.FeedView.DeleteFeed(feed);
                     
-                    if ( feed.Url == indfeed.Url ) {
-                        browser.HtmlView.Render("");
-                        browser.ItemView.store.Clear();
-                    }
+                    browser.HtmlView.Render("");
+                    browser.ItemView.store.Clear();
                 }
                 Destroy();
             }
