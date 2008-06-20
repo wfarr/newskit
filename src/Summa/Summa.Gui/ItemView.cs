@@ -84,7 +84,7 @@ namespace Summa {
             private void AppendItem(Gtk.TreeIter titer, Summa.Data.Item titem) {
                 bool read = titem.Read;
                 bool flagged = titem.Flagged;
-                string date = titem.LastUpdated;
+                string date = titem.Date;
                 string title = titem.Title;
                 string uri = titem.Uri;
                 
@@ -128,9 +128,14 @@ namespace Summa {
             
             public void Update() {
                 ArrayList uitems = feedobj.GetItems();
+                ArrayList itemurls = new ArrayList();
+                
+                foreach (Summa.Data.Item item in items) {
+                    itemurls.Add(item.Uri);
+                }
                 
                 foreach ( Summa.Data.Item item in uitems ) {
-                    if ( uitems.Contains(item) ) {
+                    if ( !itemurls.Contains(item.Uri) ) {
                         TreeIter iter = store.Append();
                         
                         AppendItem(iter, item);

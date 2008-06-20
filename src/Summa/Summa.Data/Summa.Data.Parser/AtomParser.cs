@@ -8,9 +8,6 @@ namespace Summa {
     namespace Data {
         namespace Parser {
             public class AtomParser : Summa.Data.Parser.FeedParser {
-                private XmlDocument document;
-                private XmlNamespaceManager mgr;
-                
                 private string name;
                 public string Name {
                     get { return name; }

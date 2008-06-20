@@ -82,6 +82,7 @@ namespace Summa {
                         browser.ItemView.store.Clear();
                     }
                 }
+                Destroy();
             }
         }
     }
