@@ -32,6 +32,7 @@ namespace Summa {
                 Website = "http://code.google.com/p/newskit/";
                 WebsiteLabel = "http://code.google.com/p/newskit/";
                 License = "LGPL";
+                Name = "Summa";
                 
                 string[] authors = new string[2];
                 authors[0] = "Ethan Osten";

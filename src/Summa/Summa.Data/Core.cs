@@ -101,17 +101,17 @@ namespace Summa {
             public static ArrayList GetTags() {
                 ArrayList list = new ArrayList();
                 
-                try {
-                    foreach ( Summa.Data.Feed feed in GetFeeds() ) {
-                        foreach ( string tag in feed.Tags ) {
-                            if ( !list.Contains(tag) ) {
-                                list.Add(tag);
-                            }
+                //try {
+                foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+                    foreach ( string tag in feed.Tags ) {
+                        if ( !list.Contains(tag) ) {
+                            list.Add(tag);
                         }
                     }
-                } catch ( Exception e ) {
-                    Summa.Core.Util.Log("There are no feeds.", e);
                 }
+                /*} catch ( Exception e ) {
+                    Summa.Core.Util.Log("There are no feeds.", e);
+                }*/
                 
                 return list;
             }

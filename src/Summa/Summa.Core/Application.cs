@@ -39,11 +39,11 @@ namespace Summa {
                 
                 TagStore = new Gtk.ListStore(typeof(Gdk.Pixbuf), typeof(string));
                 
+                Database = new Summa.Data.Storage.Database();
                 Browsers = new ArrayList();
                 Browsers.Add(new Summa.Gui.Browser());
                 StatusIcon = new Summa.Gui.StatusIcon();
                 Updater = new Summa.Core.Updater();
-                Database = new Summa.Data.Storage.Database();
                 
                 foreach ( Summa.Gui.Browser browser in Browsers ) {
                     browser.ShowAll();

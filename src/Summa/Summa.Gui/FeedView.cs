@@ -123,9 +123,14 @@ namespace Summa {
             
             public void Update() {
                 ArrayList ufeeds = Summa.Data.Core.GetFeeds(SetTag);
+                ArrayList haveurls = new ArrayList();
+                
+                foreach ( Summa.Data.Feed feed in feeds ) {
+                    haveurls.Add(feed.Url);
+                }
                 
                 foreach (Summa.Data.Feed feed in ufeeds) {
-                    if ( !feeds.Contains(feed.Url) ) {
+                    if ( !haveurls.Contains(feed.Url) ) {
                         Gtk.TreeIter iter;
                         iter = store.Append();
                         
