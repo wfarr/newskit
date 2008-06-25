@@ -182,6 +182,28 @@ namespace Summa {
                     }
                 }
                 
+                if ( update ) {
+                    // set the limit for the number of items we have at 100, but increase it by the number of flagged items so that they aren't dropped.
+                    int limit = 100;
+                    foreach ( string[] item in Summa.Core.Application.Database.GetPosts(Url) ) {
+                        if ( item[9] == "True" ) {
+                            limit++;
+                        }
+                    }
+                    
+                    ArrayList del_items = Summa.Core.Application.Database.GetPosts(Url);
+                    
+                    foreach ( string[] item in del_items ) {
+                        if ( Summa.Core.Application.Database.GetPosts(Url).Count > limit ) {
+                            if ( item[9] == "False" ) {
+                                Summa.Core.Application.Database.DeleteItem(Url, item[1]);
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                
                 return update;
             }
             

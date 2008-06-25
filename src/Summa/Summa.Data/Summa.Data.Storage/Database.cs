@@ -299,6 +299,13 @@ namespace Summa {
                     return null;
                 }
                 
+                public void DeleteItem(string feeduri, string uri) {
+                    string generated_name = GetGeneratedName(feeduri);
+                    string command = "delete from "+generated_name+@" where uri="""+uri+@"""";
+                    
+                    NonQueryCommand(command);
+                }
+                
                 public void AddItem(string feeduri, string title, string uri, string date, string last_updated, string author, string tags, string content, string encuri, string read, string flagged) {
                     string generated_name = GetGeneratedName(feeduri);
                     

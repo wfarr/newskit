@@ -35,6 +35,7 @@ namespace Summa {
             
             private Summa.Data.Feed feedobj;
             private ArrayList items;
+            private Hashtable itemhash;
             
             private Gtk.TreeModel selectmodel;
             private Gtk.TreeIter iter;
@@ -96,6 +97,10 @@ namespace Summa {
                     icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");
                 }
                 
+                try {
+                    itemhash.Add(uri, store.GetPath(titer));
+                } catch ( System.ArgumentException e ) {}
+                
                 store.SetValue(titer, 0, icon);
                 store.SetValue(titer, 1, read);
                 store.SetValue(titer, 2, flagged);
@@ -104,12 +109,21 @@ namespace Summa {
                 store.SetValue(titer, 5, uri);
             }
             
+            private void DeleteItem(Summa.Data.Item item) {
+                TreePath path = (TreePath)itemhash[item.Uri];
+                TreeIter iter;
+                store.GetIter(out iter, path);
+                store.Remove(ref iter);
+            }
+            
             public void Populate(Summa.Data.Feed feed) {
                 feedobj = feed;
                 items = feed.GetItems();
                 items.Reverse();
                 
                 store.Clear();
+                
+                itemhash = new Hashtable();
                 
                 foreach ( Summa.Data.Item item in items ) {
                     if ( feed.Url == feedobj.Url ) {
@@ -129,9 +143,14 @@ namespace Summa {
             public void Update() {
                 ArrayList uitems = feedobj.GetItems();
                 ArrayList itemurls = new ArrayList();
+                ArrayList uitemurls = new ArrayList();
                 
                 foreach (Summa.Data.Item item in items) {
                     itemurls.Add(item.Uri);
+                }
+                
+                foreach (Summa.Data.Item item in uitems) {
+                    uitemurls.Add(item.Uri);
                 }
                 
                 foreach ( Summa.Data.Item item in uitems ) {
@@ -141,6 +160,13 @@ namespace Summa {
                         AppendItem(iter, item);
                     }
                 }
+                
+                foreach ( Summa.Data.Item item in items ) {
+                    if ( !uitemurls.Contains(item.Uri) ) {
+                        DeleteItem(item);
+                    }
+                }
+                
                 items = feedobj.GetItems();
             }
             

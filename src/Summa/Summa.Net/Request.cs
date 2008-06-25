@@ -24,6 +24,8 @@ namespace Summa {
                 
                 try {
                     httprequest = (HttpWebRequest)WebRequest.Create(uri);
+                    httprequest.AllowAutoRedirect = true;
+                    //httprequest.IfModifiedSince = 
                     
                     httpresponse = (HttpWebResponse)httprequest.GetResponse();
                     
