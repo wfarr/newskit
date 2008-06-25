@@ -38,14 +38,20 @@ namespace Summa {
             
             private void UpdateThread() {
                 while ( updating_queue.Count != 0 ) {
-                    System.Console.WriteLine(Updating);
-                    
                     Summa.Data.Feed feed = (Summa.Data.Feed)updating_queue.Dequeue();
                     Updating = true;
                     bool update = feed.Update();
                     
-                    // it should enter the main loop here long enough to refresh the FeedView and ItemView if necessary.
-                    System.Console.WriteLine(feed.Name+" has "+update.ToString());
+                    foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                        Gdk.Threads.Enter();
+                        if ( update ) {
+                            browser.statusbar.Push(browser.contextid, @"Feed """+feed.Name+@""" has new items.");
+                        } else {
+                            browser.statusbar.Push(browser.contextid, @"Feed """+feed.Name+@""" has no new items.");
+                        }
+                        browser.contextid++;
+                        Gdk.Threads.Leave();
+                    }
                 }
             }
             
