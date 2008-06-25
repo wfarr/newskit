@@ -122,6 +122,8 @@ namespace Summa  {
                 factory = new Gtk.IconFactory();
                 factory.AddDefault();
                 
+                DestroyEvent += CloseWindow;
+                
                 SetUpActionGroup();
                 
                 uimanager = new Gtk.UIManager();
@@ -240,34 +242,7 @@ namespace Summa  {
             }
             
             public void CloseWindow(object obj, EventArgs args) {
-                if ( Summa.Core.Application.Browsers.Count > 1 ) {
-                    Destroy();
-                    Summa.Core.Application.Browsers.Remove(this);
-                } else {
-                    /* get dimensions */
-                    int width;
-                    int height;
-                    
-                    GetSize(out width, out height);
-                    
-                    Summa.Core.Config.WindowWidth = width;
-                    Summa.Core.Config.WindowHeight = height;
-                    
-                    /* get pane positions */
-                    int main_size;
-                    int left_size;
-                    int right_size;
-                    
-                    main_size = main_paned.Position;
-                    left_size = left_paned.Position;
-                    right_size = right_paned.Position;
-                    
-                    Summa.Core.Config.MainPanePosition = main_size;
-                    Summa.Core.Config.LeftPanePosition = left_size;
-                    Summa.Core.Config.RightPanePosition = right_size;
-                    
-                    Gtk.Main.Quit();
-                }
+                Summa.Core.Application.CloseWindow(this);
             }
             
             public void ShowAboutDialog(object obj, EventArgs args) {

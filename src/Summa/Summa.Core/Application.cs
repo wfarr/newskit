@@ -34,6 +34,8 @@ namespace Summa {
             
             public static Gtk.ListStore TagStore;
             
+            public static bool WindowsShown;
+            
             public static void Main() {
                 Gtk.Application.Init();
                 
@@ -49,7 +51,56 @@ namespace Summa {
                     browser.ShowAll();
                 }
                 
+                WindowsShown = true;
+                
                 Gtk.Application.Run();
+            }
+            
+            public static void CloseWindow(Summa.Gui.Browser browser) {
+                if ( Browsers.Count == 1 ) {
+                    /* get dimensions */
+                    int width;
+                    int height;
+                    
+                    browser.GetSize(out width, out height);
+                    
+                    Summa.Core.Config.WindowWidth = width;
+                    Summa.Core.Config.WindowHeight = height;
+                    
+                    /* get pane positions */
+                    int main_size;
+                    int left_size;
+                    int right_size;
+                    
+                    main_size = browser.main_paned.Position;
+                    left_size = browser.left_paned.Position;
+                    right_size = browser.right_paned.Position;
+                    
+                    Summa.Core.Config.MainPanePosition = main_size;
+                    Summa.Core.Config.LeftPanePosition = left_size;
+                    Summa.Core.Config.RightPanePosition = right_size;
+                    
+                    Gtk.Main.Quit();
+                } else {
+                    browser.Destroy();
+                    Browsers.Remove(browser);
+                }
+            }
+            
+            public static void ToggleShown() {
+                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                    if ( WindowsShown ) {
+                        browser.Hide();
+                    } else {
+                        browser.Show();
+                    }
+                }
+                
+                if ( WindowsShown ) {
+                    WindowsShown = false;
+                } else {
+                    WindowsShown = true;
+                }
             }
         }
     }

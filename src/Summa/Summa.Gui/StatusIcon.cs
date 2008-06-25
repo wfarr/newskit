@@ -44,16 +44,8 @@ namespace Summa {
                 PopupMenu += RightClickMenu;
             }
             
-            private void ToggleBrowserStatus(object obj, EventArgs args) {
-                if ( shown ) {
-                    Summa.Gui.Browser b = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
-                    b.Hide();
-                    shown = false;
-                } else {
-                    Summa.Gui.Browser b = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
-                    b.Show();
-                    shown = true;
-                }
+            public void ToggleBrowserStatus(object obj, EventArgs args) {
+                Summa.Core.Application.ToggleShown();
             }
 
             private void RightClickMenu(object obj, EventArgs args) {
