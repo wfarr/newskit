@@ -49,6 +49,11 @@ namespace Summa {
                         } else {
                             browser.statusbar.Push(browser.contextid, @"Feed """+feed.Name+@""" has no new items.");
                         }
+                        
+                        if ( feed.Url == browser.FeedView.Selected.Url ) {
+                            browser.ItemView.Update();
+                        }
+                        
                         browser.contextid++;
                         Gdk.Threads.Leave();
                     }
