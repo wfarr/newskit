@@ -9,11 +9,13 @@ namespace Summa {
     namespace Data {
         namespace Storage {
             public class Database {
-                private string uri = "/home/eosten/.config/newskit/database.db";
-                private const string Uri = "URI=file:///home/eosten/.config/newskit/database.db";
+                private static string uri = Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/database.db";
+                private string Uri = "URI=file://"+uri;
                 private IDbConnection db;
                 
                 public Database() {
+                    System.IO.Directory.CreateDirectory(Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/");
+                    
                     bool exists = System.IO.File.Exists(uri);
                     
                     db = new SqliteConnection("Version=3,"+Uri);
