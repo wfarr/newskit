@@ -6,6 +6,8 @@ namespace Summa {
         public static class Config {
             private static GConf.Client client = new GConf.Client();
             
+            //TODO: put these in a schema file.
+            
             private static string SUMMA_PATH = "/apps/summa";
             private static string KEY_LIBNOTIFY = "/apps/summa/show_notifications";
             private static string KEY_WIN_WIDTH = "/apps/summa/win_width";
@@ -19,7 +21,12 @@ namespace Summa {
             
             public static bool ShowNotifications {
                 get {
-                    return (bool)client.Get(KEY_LIBNOTIFY);
+                    try {
+                        return (bool)client.Get(KEY_LIBNOTIFY);
+                    } catch ( GConf.NoSuchKeyException e ) {
+                        client.Set(KEY_LIBNOTIFY, true);
+                        return true;
+                    }
                 }
                 set {
                     client.Set(KEY_LIBNOTIFY, value);
@@ -28,7 +35,12 @@ namespace Summa {
             
             public static int WindowHeight {
                 get {
-                    return (int)client.Get(KEY_WIN_HEIGHT);
+                    try {
+                        return (int)client.Get(KEY_WIN_HEIGHT);
+                    } catch ( GConf.NoSuchKeyException e ) {
+                        client.Set(KEY_WIN_HEIGHT, 400);
+                        return 400;
+                    }
                 }
                 set {
                     client.Set(KEY_WIN_HEIGHT, value);
@@ -37,7 +49,12 @@ namespace Summa {
             
             public static int WindowWidth {
                 get {
-                    return (int)client.Get(KEY_WIN_WIDTH);
+                    try {
+                        return (int)client.Get(KEY_WIN_WIDTH);
+                    } catch ( GConf.NoSuchKeyException e ) {
+                        client.Set(KEY_WIN_WIDTH, 700);
+                        return 700;
+                    }
                 }
                 set {
                     client.Set(KEY_WIN_WIDTH, value);
@@ -46,7 +63,12 @@ namespace Summa {
             
             public static int MainPanePosition {
                 get {
-                    return (int)client.Get(KEY_MAIN_PANE_POSITION);
+                    try {
+                        return (int)client.Get(KEY_MAIN_PANE_POSITION);
+                    } catch ( GConf.NoSuchKeyException e ) {
+                        client.Set(KEY_MANE_PANE_POSITION, 170);
+                        return 170;
+                    }
                 }
                 set {
                     client.Set(KEY_MAIN_PANE_POSITION, value);
@@ -55,7 +77,12 @@ namespace Summa {
             
             public static int LeftPanePosition {
                 get {
-                    return (int)client.Get(KEY_LEFT_PANE_POSITION);
+                    try {
+                        return (int)client.Get(KEY_LEFT_PANE_POSITION);
+                    } catch ( GConf.NoSuchKeyException e ) {
+                        client.Set(KEY_LEFT_PANE_POSITION, 170);
+                        return 170;
+                    }
                 }
                 set {
                     client.Set(KEY_LEFT_PANE_POSITION, value);
@@ -64,7 +91,12 @@ namespace Summa {
             
             public static int RightPanePosition {
                 get {
-                    return (int)client.Get(KEY_RIGHT_PANE_POSITION);
+                    try {
+                        return (int)client.Get(KEY_RIGHT_PANE_POSITION);
+                    } catch ( GConf.NoSuchKeyException e ) {
+                        client.Set(KEY_RIGHT_PANE_POSITION, 170);
+                        return 170;
+                    }
                 }
                 set {
                     client.Set(KEY_RIGHT_PANE_POSITION, value);
@@ -73,7 +105,12 @@ namespace Summa {
             
             public static bool SortFeedview {
                 get {
-                    return (bool)client.Get(KEY_SHOULD_SORT_FEEDVIEW);
+                    try {
+                        return (bool)client.Get(KEY_SHOULD_SORT_FEEDVIEW);
+                    } catch ( GConf.NoSuchKeyException e ) {
+                        client.Set(KEY_SHOULD_SORT_FEEDVIEW, false);
+                        return false;
+                    }
                 }
                 set {
                     client.Set(KEY_SHOULD_SORT_FEEDVIEW, value);
@@ -82,7 +119,12 @@ namespace Summa {
             
             public static int DefaultZoomLevel {
                 get {
-                    return (int)client.Get(KEY_DEFAULT_ZOOM_LEVEL);
+                    try {
+                        return (int)client.Get(KEY_DEFAULT_ZOOM_LEVEL);
+                    } catch ( GConf.NoSuchKeyException e ) {
+                        client.Set(KEY_DEFAULT_ZOOM_LEVEL, 10);
+                        return 10;
+                    }
                 }
                 set {
                     client.Set(KEY_DEFAULT_ZOOM_LEVEL, value);
@@ -91,8 +133,12 @@ namespace Summa {
             
             public static uint GlobalUpdateInterval {
                 get {
-                    int a = (int)client.Get(KEY_GLOBAL_UPDATE_INTERVAL);
-                    return (uint)a;
+                    try {
+                        int a = (int)client.Get(KEY_GLOBAL_UPDATE_INTERVAL);
+                        return (uint)a;
+                    } catch ( GConf.NoSuchKeyException e ) {
+                        client.Set(KEY_GLOBAL_UPDATE_INTERVAL, 3600000);
+                        return 3600000;
                 }
                 set {
                     client.Set(KEY_GLOBAL_UPDATE_INTERVAL, (int)value);
