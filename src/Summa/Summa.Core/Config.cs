@@ -66,7 +66,7 @@ namespace Summa {
                     try {
                         return (int)client.Get(KEY_MAIN_PANE_POSITION);
                     } catch ( GConf.NoSuchKeyException e ) {
-                        client.Set(KEY_MANE_PANE_POSITION, 170);
+                        client.Set(KEY_MAIN_PANE_POSITION, 170);
                         return 170;
                     }
                 }
@@ -139,6 +139,7 @@ namespace Summa {
                     } catch ( GConf.NoSuchKeyException e ) {
                         client.Set(KEY_GLOBAL_UPDATE_INTERVAL, 3600000);
                         return 3600000;
+                    }
                 }
                 set {
                     client.Set(KEY_GLOBAL_UPDATE_INTERVAL, (int)value);
