@@ -102,6 +102,7 @@ namespace Summa {
                 HeadersVisible = false;
                 
                 feedhash = new Hashtable();
+                feeds = new ArrayList();
 
                 // set up the icon theme so that we can make stuff pretty
                 icon_theme = Gtk.IconTheme.Default;
