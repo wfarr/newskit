@@ -187,7 +187,16 @@ namespace Summa  {
                 about_dialog = new Summa.Gui.AboutDialog();
                 config_dialog = new Summa.Gui.ConfigDialog();
                 config_dialog.TransientFor = this;
-                bookmarker = new Summa.Gui.DieuBookmarker();
+                
+                switch(Summa.Core.Config.Bookmarker) {
+                    case "Native":
+                        bookmarker = new Summa.Gui.NativeBookmarker();
+                        break;
+                    case "Dieu":
+                        bookmarker = new Summa.Gui.DieuBookmarker();
+                        break;
+                }
+                
                 mediaplayer = new Summa.Gui.TotemMediaPlayer();
                 //Notify.init("Summa");
                 

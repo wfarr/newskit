@@ -43,6 +43,7 @@ SUMMA_CSFILES = \
         Summa.Gui/FeedView.cs \
         Summa.Gui/Firstrun.cs \
         Summa.Gui/ItemView.cs \
+        Summa.Gui/NativeBookmarker.cs \
         Summa.Gui/OpmlDialog.cs \
         Summa.Gui/StatusIcon.cs \
         Summa.Gui/TagView.cs \
