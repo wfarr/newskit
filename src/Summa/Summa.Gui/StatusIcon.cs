@@ -89,9 +89,9 @@ namespace Summa {
                 
                 Summa.Gui.Browser b = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
 
-                add_button.Activated += new EventHandler(b.ShowAddWindow);
-                refresh_button.Activated += new EventHandler(b.UpdateAll);
-                prefs_button.Activated += new EventHandler(b.ShowConfigDialog);
+                add_button.Activated += new EventHandler(b.addaction.NewAddWindow);
+                refresh_button.Activated += new EventHandler(b.Up_all_action.UpdateAll);
+                prefs_button.Activated += new EventHandler(b.prefs_action.ShowConfigDialog);
                 show_button.Activated += new EventHandler(ToggleBrowserStatus);
                 quit_button.Activated += new EventHandler(b.CloseWindow);
             }

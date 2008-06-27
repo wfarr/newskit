@@ -34,6 +34,8 @@ namespace Summa {
             
             public static Gtk.ListStore TagStore;
             
+            public static Summa.Gui.ConfigDialog ConfigDialog;
+            
             public static bool WindowsShown;
             
             public static void Main() {
@@ -46,6 +48,7 @@ namespace Summa {
                 Browsers.Add(new Summa.Gui.Browser());
                 StatusIcon = new Summa.Gui.StatusIcon();
                 Updater = new Summa.Core.Updater();
+                ConfigDialog = new Summa.Gui.ConfigDialog();
                 
                 foreach ( Summa.Gui.Browser browser in Browsers ) {
                     browser.ShowAll();

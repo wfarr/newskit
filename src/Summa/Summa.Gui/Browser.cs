@@ -41,14 +41,13 @@ namespace Summa  {
             public Gtk.Action help_menu;
             
             // the file menu
-            public Gtk.Action file_AddAction;
+            public Summa.Actions.AddAction addaction;
             public Gtk.Action import_action;
-            public Gtk.Action Up_all_action;
-            public Gtk.Action print_action;
+            public Summa.Actions.UpdateAllAction Up_all_action;
+            public Summa.Actions.PrintAction print_action;
             public Gtk.Action print_prev_action;
             public Gtk.Action email_action;
-            public Gtk.Action bookmark_action;
-            public Summa.Core.Bookmarker bookmarker;
+            public Summa.Actions.BookmarkAction bookmark_action;
             public Gtk.Action new_win_action;
             public Gtk.Action close_action;
             
@@ -56,8 +55,7 @@ namespace Summa  {
             public Gtk.Action copy_action;
             public Gtk.Action select_all_action;
             public Gtk.Action find_action;
-            public Gtk.Action prefs_action;
-            public Summa.Gui.ConfigDialog config_dialog;
+            public Summa.Actions.PreferencesAction prefs_action;
             
             // subscription menu
             public Gtk.Action update_action;
@@ -67,13 +65,12 @@ namespace Summa  {
             public Gtk.Action tags_action;
             
             // item menu
-            public Gtk.Action zoom_in_action;
-            public Gtk.Action zoom_out_action;
+            public Summa.Actions.ZoomInAction zoom_in_action;
+            public Summa.Actions.ZoomOutAction zoom_out_action;
             public Gtk.Action next_item_action;
             public Gtk.Action prev_item_action;
-            public Gtk.Action flag_action;
-            public Gtk.Action play_action;
-            public Summa.Core.MediaPlayer mediaplayer;
+            public Summa.Actions.FlagAction flag_action;
+            public Summa.Actions.EnclosureAction play_action;
             
             // help menu
             public Gtk.Action help_action;
@@ -82,12 +79,6 @@ namespace Summa  {
             
             public Gtk.Widget menubar;
             public Gtk.Widget toolbar;
-            
-            // toolbuttons
-            public Gtk.Action item_print_action;
-            public Gtk.Action item_bookmark_action;
-            public Gtk.Action item_zoom_in_action;
-            public Gtk.Action item_zoom_out_action;
             
             public Gtk.Paned main_paned;
             public Gtk.Paned left_paned;
@@ -185,19 +176,7 @@ namespace Summa  {
                 right_paned.Pack2(HtmlView_swin, true, true);
                 
                 about_dialog = new Summa.Gui.AboutDialog();
-                config_dialog = new Summa.Gui.ConfigDialog();
-                config_dialog.TransientFor = this;
                 
-                switch(Summa.Core.Config.Bookmarker) {
-                    case "Native":
-                        bookmarker = new Summa.Gui.NativeBookmarker();
-                        break;
-                    case "Dieu":
-                        bookmarker = new Summa.Gui.DieuBookmarker();
-                        break;
-                }
-                
-                mediaplayer = new Summa.Gui.TotemMediaPlayer();
                 //Notify.init("Summa");
                 
                 UpdateFromConfig();
@@ -236,131 +215,12 @@ namespace Summa  {
                 contextid++;
             }
             
-            public void ShowAddWindow(object obj, EventArgs args) {
-                AddWindow add_dialog = new Summa.Gui.AddWindow();
-                add_dialog.TransientFor = this;
-                add_dialog.Show();
-            }
-            
             public void UpdateFromConfig() {
                 Resize(Summa.Core.Config.WindowWidth, Summa.Core.Config.WindowHeight);
             
                 main_paned.Position  = Summa.Core.Config.MainPanePosition;
                 left_paned.Position  = Summa.Core.Config.LeftPanePosition;
                 right_paned.Position  = Summa.Core.Config.RightPanePosition;
-            }
-            
-            public void CloseWindow(object obj, EventArgs args) {
-                Summa.Core.Application.CloseWindow(this);
-            }
-            
-            public void ShowAboutDialog(object obj, EventArgs args) {
-                about_dialog.ShowAll();
-            }
-            
-            public void ShowConfigDialog(object obj, EventArgs args) {
-                config_dialog.ShowAll();
-            }
-            
-            public void BookmarkItem(object obj, EventArgs args) {
-                if ( ItemView.HasSelected ) {
-                    bookmarker.ShowBookmarkWindow(curitem.Title, curitem.Uri, curitem.Contents, "");
-                }
-            }
-            
-            public void GoToNextItem(object obj, EventArgs args) {
-                bool win = ItemView.GoToNextItem();
-                if (!win) {
-                    bool nextfeed = FeedView.GoToNextUnreadFeed();
-                    
-                    if ( nextfeed ) {
-                        UpdateName();
-                        curfeed = FeedView.Selected;
-                        ItemView.Populate(curfeed);
-                        HtmlView.Render(curfeed);
-                        
-                        ItemView.GoToPreviousItem();
-                        UpdateHtmlview();
-                    } else {
-                        statusbar.Push(contextid, "There are no more unread items.");
-                        contextid++;
-                    }
-                } else {
-                    UpdateHtmlview();
-                }
-            }
-            
-            public void GoToPreviousItem(object obj, EventArgs args) {
-                ItemView.GoToPreviousItem();
-                if ( ItemView.HasSelected ) {
-                    UpdateHtmlview();
-                }
-            }
-            
-            public void ZoomIn(object obj, EventArgs args) {
-                HtmlView.ZoomIn();
-            }
-            
-            public void ZoomOut(object obj, EventArgs args) {
-                HtmlView.ZoomOut();
-            }
-            
-            public void UpdateSelectedFeed(object obj, EventArgs args) {
-                if ( FeedView.HasSelected ) {
-                    bool updated = FeedView.Selected.Update();
-                    
-                    if ( updated ) {
-                        FeedView.UpdateSelected();
-                        ItemView.Update();
-                        UpdateName();
-                        ShowNotification(FeedView.Selected);
-                    }
-                }
-            }
-            
-            public void UpdateAll(object obj, EventArgs args) {
-                Summa.Core.Application.Updater.Update();
-            }
-            
-            private bool ScheduledUpdateAll() {
-                if ( should_update ) {
-                    UpdateAllPriv();
-                    return true;
-                } else {
-                    should_update = true;
-                    return false;
-                }
-            }
-            
-            private void UpdateAllPriv() {
-                foreach ( Summa.Data.Feed feed in Summa.Data.Core.GetFeeds() ) {
-                    statusbar.Push(contextid, "Updating feed \""+feed.Name+"\"");
-                    contextid++;
-                    while ( Gtk.Application.EventsPending() ) {
-                        Gtk.Main.Iteration();
-                    }
-                    
-                    string url = feed.Url;
-                    bool newitems = feed.Update();
-                    
-                    if ( newitems ) {
-                        if ( FeedView.HasSelected ) {
-                            if ( feed.Url == FeedView.Selected.Url ) {
-                                ItemView.Update();
-                                UpdateName();
-                            }
-                        }
-                        FeedView.UpdateFeed(feed);
-                        statusbar.Push(contextid, "Feed \""+feed.Name+"\" has new items.");
-                        ShowNotification(feed);
-                        contextid++;
-                        while ( Gtk.Application.EventsPending() ) {
-                            Gtk.Main.Iteration();
-                        }
-                    }
-                }
-                statusbar.Push(contextid, "Update complete.");
-                contextid++;
             }
             
             public void ShowNotification(Summa.Data.Feed feed) {
@@ -371,44 +231,21 @@ namespace Summa  {
                 }*/
             }
             
-            public void ShowPropertiesDialog(object obj, EventArgs args) {
-                if ( FeedView.HasSelected ) {
-                    Window dialog = new Summa.Gui.FeedPropertiesDialog(FeedView.Selected);
-                    dialog.TransientFor = this;
-                    dialog.ShowAll();
-                }
-            }
-            
-            public void NewWindow(object obj, EventArgs args) {
-                Window b = new Summa.Gui.Browser();
-                Summa.Core.Application.Browsers.Add(b);
-                b.ShowAll();
-            }
-            
-            public void ShowTagsWindow(object obj, EventArgs args) {
-                Window dialog = new Summa.Gui.TagWindow();
-                dialog.TransientFor = this;
-                dialog.ShowAll();
-            }
-            
             public void UpdateHtmlview() {
                 curitem = ItemView.Selected;
                 HtmlView.Render(curitem);
                 
-                if ( HtmlView.CanPrint() ) {
-                    item_print_action.Sensitive = true;
-                }
-                
-                if ( bookmarker.CanBookmark() ) {
-                    item_bookmark_action.Sensitive = true;
-                }
+                print_action.CheckShouldSensitive();
+                bookmark_action.CheckShouldSensitive();
                 
                 if ( HtmlView.CanZoom() ) {
-                    zoom_in_action.Sensitive = true;
-                    item_zoom_in_action.Sensitive = true;
-                    zoom_out_action.Sensitive = true;
-                    item_zoom_out_action.Sensitive = true;
+                    zoom_in_action.CheckShouldSensitive();
+                    zoom_out_action.CheckShouldSensitive();
                 }
+                
+                flag_action.Populate(ItemView.Selected);
+                play_action.Populate(ItemView.Selected);
+                play_action.SetToPlay();
                 
                 ItemView.MarkSelectedRead();
                 UpdateName();
@@ -418,54 +255,14 @@ namespace Summa  {
                 }
             }
             
-            public void OnImport(object obj, EventArgs args) {
-                Firstrun fr = new Summa.Gui.Firstrun();
-                fr.TransientFor = this;
-                fr.ShowAll();
-            }
-            
-            public void DeleteFeed(object obj, EventArgs args) {
-                if ( FeedView.HasSelected ) {
-                    Window del = new Summa.Gui.DeleteConfirmationDialog(curfeed);
-                    del.TransientFor = this;
-                    del.ShowAll();
-                }
-            }
-            
-            public void MarkItemFlagged(object obj, EventArgs args) {
-                if ( ItemView.HasSelected ) {
-                    ItemView.MarkSelectedFlagged();
-                }
-            }
-            
-            public void EnclosurePlay(object obj, EventArgs args) {
-                if ( play_action.StockId == Gtk.Stock.MediaPause ) {
-                    mediaplayer.Pause();
-                    play_action.StockId = Gtk.Stock.MediaPlay;
-                } else {
-                    mediaplayer.Play(ItemView.Selected.EncUri);
-                    play_action.StockId = Gtk.Stock.MediaPause;
-                }
-            }
-            
-            public void MarkAllItemsRead(object obj, EventArgs args) {
-                if ( FeedView.HasSelected ) {
-                    ItemView.MarkItemsRead();
-                    FeedView.UpdateSelected();
-                    UpdateName();
-                }
-            }
-            
             public void UpdateName() {
                 Summa.Data.Feed feed = FeedView.Selected;
                 Title = feed.Name+" ("+feed.GetUnreadCount().ToString()+" unread) - Summa";
             }
             
-            public void Print(object obj, EventArgs args) {
-                HtmlView.Print();
+            public void CloseWindow(object obj, EventArgs args) {
+                Summa.Core.Application.CloseWindow(this);
             }
-            
-            public void stub(object obj, EventArgs args) { System.Console.WriteLine("FIXME\n"); }
             
             public void SetUpActionGroup() {
                 // menus
@@ -481,150 +278,92 @@ namespace Summa  {
                 action_group.Add(help_menu);
                 
                 // the file menu
-                file_AddAction = new Gtk.Action("Add", "_New Subscription", "Create a new feed", Gtk.Stock.Add);
-                file_AddAction.Activated += new EventHandler(ShowAddWindow);
-                action_group.Add(file_AddAction, "<ctrl>n");
+                addaction = new Summa.Actions.AddAction(this);
+                action_group.Add(addaction, "<ctrl>n");
                 
-                import_action = new Gtk.Action("Import", "_Import", "Import data", null);
-                import_action.Activated += new EventHandler(OnImport);
+                import_action = new Summa.Actions.ImportAction(this);
                 action_group.Add(import_action);
                 
-                Up_all_action = new Gtk.Action("Update_all", "_Update all feeds", "Update all feeds", Gtk.Stock.Refresh);
-                Up_all_action.Activated += new EventHandler(UpdateAll);
+                Up_all_action = new Summa.Actions.UpdateAllAction(this);
                 action_group.Add(Up_all_action, "<ctrl>r");
                 
-                print_action = new Gtk.Action("Print", "_Print...", "Print the currently selected item", Gtk.Stock.Print);
-                print_action.Activated += new EventHandler(Print);
-                print_action.Sensitive = false;
+                print_action = new Summa.Actions.PrintAction(this);
                 action_group.Add(print_action, "<ctrl>p");
                 
-                print_prev_action = new Gtk.Action("Print_preview", "Print previe_w", "Show a preview of the printed document", Gtk.Stock.PrintPreview);
-                print_prev_action.Activated += new EventHandler(stub); //FIXME
-                print_prev_action.Sensitive = false;
+                print_prev_action = new Summa.Actions.PrintPreviewAction(this);
                 action_group.Add(print_prev_action, "<shift><ctrl>p");
                 
-                email_action = new Gtk.Action("Email_link", "_Email this item", "Email a copy of the selected item", null);
-                email_action.Activated += new EventHandler(stub); //FIXME
-                email_action.Sensitive = false;
+                email_action = new Summa.Actions.EmailLinkAction(this);
                 action_group.Add(email_action);
                 
-                bookmark_action = new Gtk.Action("Bookmark", "_Bookmark this item", "Bookmark this item", null);
-                bookmark_action.Activated += new EventHandler(BookmarkItem);
+                bookmark_action = new Summa.Actions.BookmarkAction(this);
+                bookmark_action.Sensitive = false;
                 action_group.Add(bookmark_action, "<ctrl>d");
                 
-                new_win_action = new Gtk.Action("New_window", "New _window", "Open a new window", null);
-                new_win_action.Activated += new EventHandler(NewWindow);
+                new_win_action = new Summa.Actions.NewWindowAction(this);
                 action_group.Add(new_win_action, "<shift><ctrl>N");
                 
-                close_action = new Gtk.Action("Close_window", "_Close window", "Close this window", Gtk.Stock.Close);
-                close_action.Activated += new EventHandler(CloseWindow);
+                close_action = new Summa.Actions.CloseWindowAction(this);
                 action_group.Add(close_action, "<ctrl>W");
                 
                 // edit menu
-                copy_action = new Gtk.Action("Copy", "_Copy", "Copy", Gtk.Stock.Copy);
-                copy_action.Activated += new EventHandler(stub); //FIXME
-                copy_action.Sensitive = false;
+                copy_action = new Summa.Actions.CopyAction(this);
                 action_group.Add(copy_action, "<ctrl>C");
                 
-                select_all_action = new Gtk.Action("Select_all", "_Select all text", "Select all text", null);
-                select_all_action.Activated += new EventHandler(stub); //FIXME
-                select_all_action.Sensitive = false;
+                select_all_action = new Summa.Actions.SelectAllAction(this);
                 action_group.Add(select_all_action, "<ctrl>A");
                 
-                find_action = new Gtk.Action("Find", "_Find...", "Find an item", Gtk.Stock.Find);
-                find_action.Activated += new EventHandler(stub); //FIXME
-                find_action.Sensitive = false;
+                find_action = new Summa.Actions.FindAction(this);
                 action_group.Add(find_action, "<ctrl>F");
                 
-                prefs_action = new Gtk.Action("Preferences", "_Preferences", "Preferences for Summa", Gtk.Stock.Preferences);
-                prefs_action.Activated += new EventHandler(ShowConfigDialog);
+                prefs_action = new Summa.Actions.PreferencesAction(this);
                 action_group.Add(prefs_action);
                 
                 // subscription menu
-                update_action = new Gtk.Action("Update", "_Update feed", "Update selected feed", Gtk.Stock.Refresh);
-                update_action.Activated += new EventHandler(UpdateSelectedFeed);
+                update_action = new Summa.Actions.UpdateAction(this);
                 action_group.Add(update_action, "<ctrl>u");
                 
-                read_action = new Gtk.Action("Mark_read", "_Mark feed as read", "Mark all items in the selected feed as read", Gtk.Stock.Apply);
-                read_action.Activated += new EventHandler(MarkAllItemsRead);
+                read_action = new Summa.Actions.MarkReadAction(this);
                 action_group.Add(read_action, "<ctrl>m");
                 
-                delete_action = new Gtk.Action("Delete", "_Delete subscription", "Delete the selected feed", Gtk.Stock.Delete);
-                delete_action.Activated += new EventHandler(DeleteFeed);
+                delete_action = new Summa.Actions.DeleteAction(this);
                 action_group.Add(delete_action);
                 
-                props_action = new Gtk.Action("Properties", "_Properties", "Properties of the selected feed", Gtk.Stock.Properties);
-                props_action.Activated += new EventHandler(ShowPropertiesDialog);
+                props_action = new Summa.Actions.PropertiesAction(this);
                 action_group.Add(props_action);
                 
-                tags_action = new Gtk.Action("Tags", "Edit subscription _tags", "Edit the tags of your feeds by tag", null);
-                tags_action.Activated += new EventHandler(ShowTagsWindow);
+                tags_action = new Summa.Actions.TagsAction(this);
                 action_group.Add(tags_action);
                 
                 // item menu
-                zoom_in_action = new Gtk.Action("ZoomIn", "_Increase text size", "Increase text size", Gtk.Stock.ZoomIn);
-                zoom_in_action.Activated += new EventHandler(ZoomIn);
+                zoom_in_action = new Summa.Actions.ZoomInAction(this);
                 zoom_in_action.Sensitive = false;
                 action_group.Add(zoom_in_action, null);
                 
-                zoom_out_action = new Gtk.Action("ZoomOut", "_Decrease text size", "Decrease text size", Gtk.Stock.ZoomOut);
-                zoom_out_action.Activated += new EventHandler(ZoomOut);
+                zoom_out_action = new Summa.Actions.ZoomOutAction(this);
                 zoom_out_action.Sensitive = false;
                 action_group.Add(zoom_out_action, null);
                 
-                next_item_action = new Gtk.Action("Next_item", "_Go to next unread item", "Go to next unread item", Gtk.Stock.GoForward);
-                next_item_action.Activated += new EventHandler(GoToNextItem);
+                next_item_action = new Summa.Actions.NextItemAction(this);
                 action_group.Add(next_item_action, "n");
                 
-                prev_item_action = new Gtk.Action("Previous_item", "_Go to the previous item", "Go to the previous item", Gtk.Stock.GoBack);
-                prev_item_action.Activated += new EventHandler(GoToPreviousItem);
+                prev_item_action = new Summa.Actions.PreviousItemAction(this);
                 action_group.Add(prev_item_action, "j");
                 
-                flag_action = new Gtk.Action("Flag_item", "_Flag/unflag this item", "Flag/unflag this item", null);
-                flag_action.Activated += new EventHandler(MarkItemFlagged);
+                flag_action = new Summa.Actions.FlagAction(this);
+                flag_action.Sensitive = false;
                 action_group.Add(flag_action);
                 
-                play_action = new Gtk.Action("Play_pause", "_Play/pause enclosed media", "Play or pause the media enclosed", Gtk.Stock.MediaPlay);
-                play_action.Activated += new EventHandler(EnclosurePlay);
+                play_action = new Summa.Actions.EnclosureAction(this);
                 play_action.Sensitive = false;
                 action_group.Add(play_action);
                 
                 // help menu
-                help_action = new Gtk.Action("Contents", "_Contents", "Get help", Gtk.Stock.Help);
-                help_action.Activated += new EventHandler(stub); //FIXME
-                help_action.Sensitive = false;
+                help_action = new Summa.Actions.HelpAction(this);
                 action_group.Add(help_action, "F11");
                 
-                about_action = new Gtk.Action("About", "_About", "About", Gtk.Stock.About);
-                about_action.Activated += new EventHandler(ShowAboutDialog);
+                about_action = new Summa.Actions.AboutAction(this);
                 action_group.Add(about_action);
-                
-                // the menubar items
-                item_print_action = new Gtk.Action("ItemPrint", "_Print...", "Print the currently selected item", Gtk.Stock.Print);
-                item_print_action.Activated += new EventHandler(stub); //FIXME
-                item_print_action.Sensitive = false;
-                action_group.Add(item_print_action);
-                
-                IconSet bookmark_iconset = new Gtk.IconSet();
-                IconSource bookmark_iconsource = new Gtk.IconSource();
-                bookmark_iconsource.IconName = "bookmark-new";
-                bookmark_iconset.AddSource(bookmark_iconsource);
-                factory.Add("summa-bookmark-new", bookmark_iconset);
-                
-                item_bookmark_action = new Gtk.Action("ItemBookmark", "_Bookmark this item", "Bookmark this item", "summa-bookmark-new");
-                item_bookmark_action.Activated += new EventHandler(BookmarkItem);
-                item_bookmark_action.Sensitive = false;
-                action_group.Add(item_bookmark_action);
-                
-                item_zoom_in_action = new Gtk.Action("ItemZoomIn", "_Increase text size", "Increase text size", Gtk.Stock.ZoomIn);
-                item_zoom_in_action.Activated += new EventHandler(ZoomIn);
-                item_zoom_in_action.Sensitive = false;
-                action_group.Add(item_zoom_in_action);
-                
-                item_zoom_out_action = new Gtk.Action("ItemZoomOut", "_Decrease text size", "Decrease text size", Gtk.Stock.ZoomOut);
-                item_zoom_out_action.Activated += new EventHandler(ZoomOut);
-                item_zoom_out_action.Sensitive = false;
-                action_group.Add(item_zoom_out_action);
             }
             
             public void SetUpUimanager() {
@@ -683,10 +422,10 @@ namespace Summa  {
             <toolitem action='Previous_item'/>
             <toolitem action='Next_item'/>
             <separator/>
-            <toolitem action='ItemPrint'/>
-            <toolitem action='ItemBookmark'/>
-            <toolitem action='ItemZoomIn'/>
-            <toolitem action='ItemZoomOut'/>
+            <toolitem action='Print'/>
+            <toolitem action='Bookmark'/>
+            <toolitem action='ZoomIn'/>
+            <toolitem action='ZoomOut'/>
             <separator/>
             <toolitem action='Play_pause'/>
         </toolbar>

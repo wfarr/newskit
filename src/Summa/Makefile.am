@@ -33,6 +33,7 @@ SUMMA_CSFILES = \
         Summa.Net/Feed.cs \
         Summa.Net/Request.cs \
         Summa.Gui/AboutDialog.cs \
+        Summa.Gui/Actions.cs \
         Summa.Gui/AddTagDialog.cs \
         Summa.Gui/AddWindow.cs \
         Summa.Gui/Browser.cs \
