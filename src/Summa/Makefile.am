@@ -10,8 +10,8 @@ ASSEMBLIES = \
 	     -pkg:webkit-sharp-1.0 \
 	     -r:Mono.Data.SqliteClient \
 	     -r:Mono.Posix \
-	     -r:System.Data \
 	     -r:System.Core \
+	     -r:System.Data
 
 SUMMA_CSFILES = \
         Summa.Core/Application.cs \
