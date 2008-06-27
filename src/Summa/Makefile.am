@@ -3,15 +3,15 @@ CSC = $(MCS)
 FLAGS = -debug
 
 ASSEMBLIES = \
-	     -pkg:gconf-sharp-2.0   \
-	     -pkg:gnome-sharp-2.0   \
-	     -pkg:gtk-sharp-2.0     \
-	     -r:Mono.Posix    \
-	     -r:System.Data \
+	     -pkg:gconf-sharp-2.0 \
+	     -pkg:gnome-sharp-2.0 \
+	     -pkg:gtk-sharp-2.0 \
+	     -pkg:ndesk-dbus-1.0 \
+	     -pkg:webkit-sharp-1.0 \
 	     -r:Mono.Data.SqliteClient \
-	     -r:/usr/lib/mono/ndesk-dbus-1.0/NDesk.DBus.dll   \
-	     -r:System.Core   \
-	     -r:/usr/lib/mono/webkit-sharp/webkit-sharp.dll
+	     -r:Mono.Posix \
+	     -r:System.Data \
+	     -r:System.Core \
 
 SUMMA_CSFILES = \
         Summa.Core/Application.cs \
