@@ -141,7 +141,7 @@ namespace Summa {
             }
             
             public void Update() {
-                    try {
+                try {
                     ArrayList uitems = feedobj.GetItems();
                     ArrayList itemurls = new ArrayList();
                     ArrayList uitemurls = new ArrayList();
