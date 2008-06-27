@@ -141,33 +141,37 @@ namespace Summa {
             }
             
             public void Update() {
-                ArrayList uitems = feedobj.GetItems();
-                ArrayList itemurls = new ArrayList();
-                ArrayList uitemurls = new ArrayList();
-                
-                foreach (Summa.Data.Item item in items) {
-                    itemurls.Add(item.Uri);
-                }
-                
-                foreach (Summa.Data.Item item in uitems) {
-                    uitemurls.Add(item.Uri);
-                }
-                
-                foreach ( Summa.Data.Item item in uitems ) {
-                    if ( !itemurls.Contains(item.Uri) ) {
-                        TreeIter iter = store.Append();
-                        
-                        AppendItem(iter, item);
+                    try {
+                    ArrayList uitems = feedobj.GetItems();
+                    ArrayList itemurls = new ArrayList();
+                    ArrayList uitemurls = new ArrayList();
+                    
+                    foreach (Summa.Data.Item item in items) {
+                        itemurls.Add(item.Uri);
                     }
-                }
-                
-                foreach ( Summa.Data.Item item in items ) {
-                    if ( !uitemurls.Contains(item.Uri) ) {
-                        DeleteItem(item);
+                    
+                    foreach (Summa.Data.Item item in uitems) {
+                        uitemurls.Add(item.Uri);
                     }
+                    
+                    foreach ( Summa.Data.Item item in uitems ) {
+                        if ( !itemurls.Contains(item.Uri) ) {
+                            TreeIter iter = store.Append();
+                            
+                            AppendItem(iter, item);
+                        }
+                    }
+                    
+                    foreach ( Summa.Data.Item item in items ) {
+                        if ( !uitemurls.Contains(item.Uri) ) {
+                            DeleteItem(item);
+                        }
+                    }
+                    
+                    items = feedobj.GetItems();
+                } catch ( Exception e ) {
+                    Summa.Core.Util.Log("No feed selected", e);
                 }
-                
-                items = feedobj.GetItems();
             }
             
             
