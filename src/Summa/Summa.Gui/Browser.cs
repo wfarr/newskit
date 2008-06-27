@@ -319,11 +319,6 @@ namespace Summa  {
             }
             
             public void UpdateAll(object obj, EventArgs args) {
-                /*if (should_update) {
-                    should_update = false;
-                    UpdateAllPriv();
-                    GLib.Timeout.Add(Summa.Core.Config.GlobalUpdateInterval, new GLib.TimeoutHandler(ScheduledUpdateAll));
-                }*/
                 Summa.Core.Application.Updater.Update();
             }
             
@@ -500,6 +495,7 @@ namespace Summa  {
                 
                 print_action = new Gtk.Action("Print", "_Print...", "Print the currently selected item", Gtk.Stock.Print);
                 print_action.Activated += new EventHandler(Print);
+                print_action.Sensitive = false;
                 action_group.Add(print_action, "<ctrl>p");
                 
                 print_prev_action = new Gtk.Action("Print_preview", "Print previe_w", "Show a preview of the printed document", Gtk.Stock.PrintPreview);
