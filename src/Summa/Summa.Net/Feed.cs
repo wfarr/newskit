@@ -7,9 +7,10 @@ namespace Summa {
             public static Summa.Data.Parser.FeedParser Sniff(Summa.Net.Request request) {
                 Summa.Data.Parser.FeedParser parser = null;
                 
-                try {
-                    parser = new Summa.Data.Parser.AtomParser(request.Uri, request.Xml);
-                } catch ( Exception e ) {}
+                //try {
+                parser = new Summa.Data.Parser.AtomParser(request.Uri, request.Xml);
+                return parser;
+                //} catch ( Exception e ) {}
                 
                 if ( parser != null ) {
                     if ( parser.Name == null ) {
