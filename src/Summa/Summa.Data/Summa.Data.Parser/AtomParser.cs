@@ -1,13 +1,15 @@
 using System;
 using System.Collections;
 using System.Xml;
-using System.Xml.Serialization;
 using System.Text;
 
 namespace Summa {
     namespace Data {
         namespace Parser {
             public class AtomParser : Summa.Data.Parser.FeedParser {
+                private XmlDocument document;
+                private XmlNamespaceManager mgr;
+                
                 private string name;
                 public string Name {
                     get { return name; }
@@ -62,218 +64,96 @@ namespace Summa {
                 
                 public AtomParser(string uri, string xml) {
                     this.uri = uri;
-                    
-                    Atom.AtomFeed af = Atom.AtomFeed.LoadFromXml(xml);
-                    items = new ArrayList();
+                    this.document = new XmlDocument();
                     
                     try {
-                        Name = af.Title.Text;
-                    } catch ( Exception e ) {
-                        Summa.Core.Util.Log("Name problem", e);
-                        Name = "";
-                    }
-                    try {
-                        Subtitle = af.Subtitle;
-                    } catch ( Exception e ) {
-                        Summa.Core.Util.Log("Subtitle problem", e);
-                        Subtitle = "";
-                    }
-                    try {
-                        Author = af.Author.Name;
-                    } catch ( Exception e ) {
-                        Summa.Core.Util.Log("Author problem", e);
-                        Author = "";
-                    }
-                    try {
-                        Image = af.Icon;
-                    } catch ( Exception e ) {
-                        Summa.Core.Util.Log("Icon problem", e);
-                        Image = "";
-                    }
-                    try {
-                        License = af.License;
-                    } catch ( Exception e ) {
-                        Summa.Core.Util.Log("License problem", e);
-                        License = "";
-                    }
-                    
-                    foreach (Atom.AtomEntry entry in af.Entry) {
-                        Summa.Data.Parser.Item item = new Summa.Data.Parser.Item();
-                        
-                        try {
-                            item.Title = entry.Title.Text;
-                        } catch ( Exception e ) {
-                            Summa.Core.Util.Log("Item Title problem", e);
-                            item.Title = "";
-                        }
-                        try {
-                            item.Uri = entry.Link[0].Url;
-                        } catch ( Exception e ) {
-                            Summa.Core.Util.Log("Item Uri problem", e);
-                            item.Uri = "";
-                        }
-                        try {
-                            item.Date = entry.Published.ToString();
-                        } catch ( Exception e ) {
-                            Summa.Core.Util.Log("Item Date problem", e);
-                            item.Date = "";
-                        }
-                        try {
-                            item.LastUpdated = entry.ModifyTime.ToString();
-                        } catch ( Exception e ) {
-                            Summa.Core.Util.Log("Item Last Updated problem", e);
-                            item.LastUpdated = "";
-                        }
-                        try {
-                            item.Author = entry.Author.Name;
-                        } catch ( Exception e ) {
-                            Summa.Core.Util.Log("Item Author problem", e);
-                            item.Author = "";
-                        }
-                        try {
-                            item.Contents = "";
-                            foreach ( Atom.AtomText text in entry.Content ) {
-                                string str = String.Concat(item.Contents, text.Text);
-                                item.Contents = str;
+                        document.LoadXml(xml);
+                    } catch (XmlException e) {
+                        bool have_stripped_control = false;
+                        StringBuilder sb = new StringBuilder ();
+
+                        foreach (char c in xml) {
+                            if (Char.IsControl(c) && c != '\n') {
+                                have_stripped_control = true;
+                            } else {
+                                sb.Append(c);
                             }
-                        } catch ( Exception e ) {
-                            Summa.Core.Util.Log("Item Contents problem", e);
-                            item.Contents = "";
                         }
-                        try {
-                            item.EncUri = entry.LinkByType("enclosure").Url;
-                        } catch ( Exception e ) {
-                            Summa.Core.Util.Log("Item EncUri problem", e);
-                        }
-                        
-                        try {
-                            if ( entry.Summary.Text.Length > item.Contents.Length ) {
-                                item.Contents = entry.Summary.Text;
+
+                        bool loaded = false;
+                        if (have_stripped_control) {
+                            try {
+                                document.LoadXml(sb.ToString ());
+                                loaded = true;
+                            } catch (Exception) {
                             }
-                        } catch ( Exception e ) {}
-                        
-                        items.Add(item);
+                        }
+
+                        if (!loaded) {                              
+                        }
+                    }
+                    mgr = new XmlNamespaceManager(document.NameTable);
+                    Parse();
+                }
+                
+                public AtomParser(string uri, XmlDocument doc) {
+                    this.uri = uri;
+                    this.document = doc;
+                    this.mgr = new XmlNamespaceManager(document.NameTable);
+                    Parse();
+                }
+                
+                private void Parse() {
+                    Name = GetXmlNodeText(document, "/feed/title");
+                    Console.WriteLine(Name);
+                    Subtitle = GetXmlNodeText(document, "/feed/subtitle");
+                    License = GetXmlNodeText(document, "/feed/license");
+                    Image = GetXmlNodeText(document, "/feed/banner");
+                    Author = GetXmlNodeText(document, "/feed/author/name");
+                    
+                    XmlNodeList nodes = document.SelectNodes("//entry");
+                    
+                    Items = new ArrayList();
+                    foreach (XmlNode node in nodes) {
+                        items.Add(ParseItem(node));
                     }
                 }
-            }
-        }
-    }
-}
-
-// thanks Blam!
-namespace Atom {
-    [XmlType("feed")]
-    public class AtomFeed {
-        [XmlElement("link")] public AtomLink[] Link = null;
-        
-        [XmlElement("updated")] public DateTime UpdateTime = DateTime.MinValue;
-        [XmlElement("modified")] public DateTime ModifyTime = DateTime.MinValue;
-        [XmlElement("title")] public AtomText Title = null;
-        [XmlElement("subtitle")] public string Subtitle = null;
-        [XmlElement("author")] public AtomAuthor Author = null;
-        [XmlElement("icon")] public string Icon = null;
-        [XmlElement("license")] public string License = null;
-        
-        [XmlElement("entry")] public AtomEntry[] Entry;
-        
-        private static XmlSerializer ser = new XmlSerializer(typeof(AtomFeed), "http://www.w3.org/2005/Atom");
-
-        public static AtomFeed LoadFromXml(string xml) {
-            System.IO.TextReader xr = new System.IO.StringReader(xml);
-            return (AtomFeed)ser.Deserialize(xr);
-        }
-        
-        public DateTime Modified {
-            get {
-                if(UpdateTime != DateTime.MinValue){
-                    return UpdateTime;
-                } else {
-                    return ModifyTime;
+                
+                private Summa.Data.Parser.Item ParseItem(XmlNode node) {
+                    Summa.Data.Parser.Item item = new Summa.Data.Parser.Item();
+                    
+                    item.Title = GetXmlNodeText(node, "title");
+                    item.Author = GetXmlNodeText(node, "author/name");
+                    item.Uri = GetXmlNodeUrl(node, "link");
+                    item.Contents = GetXmlNodeText(node, "content");
+                    item.Date = GetRfc822DateTime(node, "updated").ToString();
+                    item.LastUpdated = "";
+                    item.EncUri = "";
+                    
+                    return item;
                 }
-            }
-        }
-        
-        public DateTime Updated {
-            get {
-                return Modified;
-            }
-        }
+                
+                public string GetXmlNodeText(XmlNode node, string tag) {
+                    XmlNode n = node.SelectSingleNode(tag);
+                    return (n == null) ? null : n.InnerText.Trim();
+                }
+                
+                public string GetXmlNodeUrl(XmlNode node, string tag) {
+                    XmlNode n = node.SelectSingleNode(tag, mgr);
+                    return (n == null) ? null : (string)n.Attributes.Item(0).Value;
+                }
+                
+                public DateTime GetRfc822DateTime(XmlNode node, string tag) {
+                    DateTime ret = DateTime.MinValue;
+                    string result = GetXmlNodeText(node, tag);
 
-        public AtomLink LinkByType(string type) {
-                foreach(AtomLink link in Link){
-                    if(link.Type == type){
-                        return link;
+                    if (!String.IsNullOrEmpty(result)) {
+                        Migo.Syndication.Rfc822DateTime.TryParse(result, out ret);
                     }
-                }
-
-            return null;
-        }
-    }
-
-    [XmlType("author")]
-    public class AtomAuthor {
-        [XmlElement("name")] public string Name;
-        [XmlElement("email")] public string Email;
-    }
-
-    [XmlType("link")]
-    public class AtomLink {
-        [XmlAttribute("href")] public string Url = null;
-        [XmlAttribute("rel")] public string Rel = null;
-        [XmlAttribute("type")] public string Type = null;
-    }
-
-    [XmlType("entry")]
-    public class AtomEntry {
-        [XmlElement("link")] public AtomLink[] Link = null;
-        [XmlElement("published")] public DateTime Published;
-        [XmlElement("updated")] public DateTime UpdateTime = DateTime.MinValue;
-        [XmlElement("modified")] public DateTime ModifyTime = DateTime.MinValue;
-        [XmlElement("title")] public AtomText Title;
-        [XmlElement("author")] public AtomAuthor Author = null;
-        [XmlElement("id")] public string Id;
-
-        [XmlElement("content")] public AtomText[] Content;
-        [XmlElement("summary")] public AtomText Summary;
-
-        public DateTime Modified {
-            get {
-                if(UpdateTime != DateTime.MinValue){
-                    return UpdateTime;
-                } else {
-                    return ModifyTime;
+                            
+                    return ret;              
                 }
             }
         }
-        
-        public DateTime Updated {
-            get {
-                return Modified;
-            }
-        }
-
-        public AtomLink LinkByType(string type) {
-            foreach(AtomLink link in Link){
-                if(link.Rel == type){
-                        return link;
-                }
-            }
-            return null;
-        }
-
-        public AtomText ContentByType(string type) {
-                foreach(AtomText text in Content){
-                    if(text.Type == type){
-                        return text;
-                    }
-                }
-
-            return null;
-        }
-    }
-
-    public class AtomText {
-        [XmlText] public string Text = null;
-        [XmlAttribute("type")] public string Type = null;
     }
 }
