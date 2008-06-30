@@ -66,8 +66,8 @@ namespace Summa {
                     this.uri = uri;
                     this.document = new XmlDocument();
                     
-                    try {
-                        document.LoadXml(xml);
+                    /*try {
+                        */document.LoadXml(xml);/*
                     } catch (XmlException e) {
                         bool have_stripped_control = false;
                         StringBuilder sb = new StringBuilder ();
@@ -91,8 +91,9 @@ namespace Summa {
 
                         if (!loaded) {                              
                         }
-                    }
+                    }*/
                     mgr = new XmlNamespaceManager(document.NameTable);
+                    this.mgr.AddNamespace("atom", "http://www.w3.org/2005/Atom");
                     Parse();
                 }
                 
@@ -100,18 +101,22 @@ namespace Summa {
                     this.uri = uri;
                     this.document = doc;
                     this.mgr = new XmlNamespaceManager(document.NameTable);
+        			this.mgr.AddNamespace("atom", "http://www.w3.org/2005/Atom");
                     Parse();
                 }
                 
                 private void Parse() {
-                    Name = GetXmlNodeText(document, "/feed/title");
+                    //Name = document.InnerXml;
+                    //Name = document.SelectSingleNode("//title", mgr).InnerXml;
+                    Name = GetXmlNodeText(document, "/atom:feed/atom:title");
+                    //Name = document.SelectSingleNode("/atom:feed/atom:title", mgr).InnerXml;
                     Console.WriteLine(Name);
-                    Subtitle = GetXmlNodeText(document, "/feed/subtitle");
-                    License = GetXmlNodeText(document, "/feed/license");
-                    Image = GetXmlNodeText(document, "/feed/banner");
-                    Author = GetXmlNodeText(document, "/feed/author/name");
+                    Subtitle = GetXmlNodeText(document, "/atom:feed/atom:subtitle");
+                    License = GetXmlNodeText(document, "/atom:feed/atom:license");
+                    Image = GetXmlNodeText(document, "/atom:feed/atom:banner");
+                    Author = GetXmlNodeText(document, "/atom:feed/atom:author/atom:name");
                     
-                    XmlNodeList nodes = document.SelectNodes("//entry");
+                    XmlNodeList nodes = document.SelectNodes("/atom:feed/atom:entry");
                     
                     Items = new ArrayList();
                     foreach (XmlNode node in nodes) {
@@ -122,7 +127,7 @@ namespace Summa {
                 private Summa.Data.Parser.Item ParseItem(XmlNode node) {
                     Summa.Data.Parser.Item item = new Summa.Data.Parser.Item();
                     
-                    item.Title = GetXmlNodeText(node, "title");
+                    item.Title = GetXmlNodeText(node, "atom:title");
                     item.Author = GetXmlNodeText(node, "author/name");
                     item.Uri = GetXmlNodeUrl(node, "link");
                     item.Contents = GetXmlNodeText(node, "content");
@@ -134,7 +139,7 @@ namespace Summa {
                 }
                 
                 public string GetXmlNodeText(XmlNode node, string tag) {
-                    XmlNode n = node.SelectSingleNode(tag);
+                    XmlNode n = node.SelectSingleNode(tag, mgr);
                     return (n == null) ? null : n.InnerText.Trim();
                 }
                 
