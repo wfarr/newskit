@@ -66,32 +66,7 @@ namespace Summa {
                     this.uri = uri;
                     this.document = new XmlDocument();
                     
-                    /*try {
-                        */document.LoadXml(xml);/*
-                    } catch (XmlException e) {
-                        bool have_stripped_control = false;
-                        StringBuilder sb = new StringBuilder ();
-
-                        foreach (char c in xml) {
-                            if (Char.IsControl(c) && c != '\n') {
-                                have_stripped_control = true;
-                            } else {
-                                sb.Append(c);
-                            }
-                        }
-
-                        bool loaded = false;
-                        if (have_stripped_control) {
-                            try {
-                                document.LoadXml(sb.ToString ());
-                                loaded = true;
-                            } catch (Exception) {
-                            }
-                        }
-
-                        if (!loaded) {                              
-                        }
-                    }*/
+                    document.LoadXml(xml);
                     mgr = new XmlNamespaceManager(document.NameTable);
                     this.mgr.AddNamespace("atom", "http://www.w3.org/2005/Atom");
                     Parse();
@@ -106,17 +81,13 @@ namespace Summa {
                 }
                 
                 private void Parse() {
-                    //Name = document.InnerXml;
-                    //Name = document.SelectSingleNode("//title", mgr).InnerXml;
                     Name = GetXmlNodeText(document, "/atom:feed/atom:title");
-                    //Name = document.SelectSingleNode("/atom:feed/atom:title", mgr).InnerXml;
-                    Console.WriteLine(Name);
                     Subtitle = GetXmlNodeText(document, "/atom:feed/atom:subtitle");
                     License = GetXmlNodeText(document, "/atom:feed/atom:license");
                     Image = GetXmlNodeText(document, "/atom:feed/atom:banner");
                     Author = GetXmlNodeText(document, "/atom:feed/atom:author/atom:name");
                     
-                    XmlNodeList nodes = document.SelectNodes("/atom:feed/atom:entry");
+                    XmlNodeList nodes = document.SelectNodes("//atom:entry", mgr);
                     
                     Items = new ArrayList();
                     foreach (XmlNode node in nodes) {
@@ -128,10 +99,11 @@ namespace Summa {
                     Summa.Data.Parser.Item item = new Summa.Data.Parser.Item();
                     
                     item.Title = GetXmlNodeText(node, "atom:title");
-                    item.Author = GetXmlNodeText(node, "author/name");
-                    item.Uri = GetXmlNodeUrl(node, "link");
-                    item.Contents = GetXmlNodeText(node, "content");
-                    item.Date = GetRfc822DateTime(node, "updated").ToString();
+                    item.Author = GetXmlNodeText(node, "atom:author/atom:name");
+                    item.Uri = GetXmlNodeUrl(node, "atom:link");
+                    //item.Contents = node.SelectSingleNode("atom:content", mgr).InnerText;
+                    item.Contents = GetXmlNodeContent(node);
+                    item.Date = GetRfc822DateTime(node, "atom:updated").ToString();
                     item.LastUpdated = "";
                     item.EncUri = "";
                     
@@ -141,6 +113,11 @@ namespace Summa {
                 public string GetXmlNodeText(XmlNode node, string tag) {
                     XmlNode n = node.SelectSingleNode(tag, mgr);
                     return (n == null) ? null : n.InnerText.Trim();
+                }
+                
+                public string GetXmlNodeContent(XmlNode node) {
+                    XmlNode n = node.SelectSingleNode("atom:content", mgr);
+                    return (n == null) ? null : n.InnerXml.Trim().Replace("\n", "<br/>\n");
                 }
                 
                 public string GetXmlNodeUrl(XmlNode node, string tag) {
@@ -153,7 +130,7 @@ namespace Summa {
                     string result = GetXmlNodeText(node, tag);
 
                     if (!String.IsNullOrEmpty(result)) {
-                        Migo.Syndication.Rfc822DateTime.TryParse(result, out ret);
+                        Migo.Syndication.Rfc822DateTime.TryAtomParse(result, out ret);
                     }
                             
                     return ret;              

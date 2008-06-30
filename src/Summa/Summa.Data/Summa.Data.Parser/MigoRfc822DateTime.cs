@@ -116,6 +116,39 @@ namespace Migo.Syndication
             return ret;
         }
         
+        public static DateTime AtomParse(string datetime)
+        {
+            if (datetime == null) {
+                throw new ArgumentNullException ("dateTime");
+            }
+            
+            string[] dsplit = datetime.Split('-');
+            int year = Convert.ToInt32(dsplit[0]);
+            int month = Convert.ToInt32(dsplit[1]);
+            int day = Convert.ToInt32(dsplit[2].Split('T')[0]);
+            
+            string[] dsplit2 = dsplit[2].Split('T')[1].Split(':');
+            int hour = Convert.ToInt32(dsplit2[0]);
+            int minute = Convert.ToInt32(dsplit2[1]);
+            int second = Convert.ToInt32(dsplit2[2].Split('Z')[0]);
+            
+            DateTime ret = new DateTime(year, month, day, hour, minute, second);
+            return ret;
+        }
+        
+        public static bool TryAtomParse(string datetime, out DateTime result)
+        {
+            bool ret = false;
+            result = DateTime.MinValue;
+            
+            try {
+                result = AtomParse (datetime);
+                ret = true;
+            } catch {}
+            
+            return ret;
+        }
+        
         private static int MonthToInt32 (string month)
         {
             int i = 1;
