@@ -83,18 +83,20 @@ namespace Summa {
                 store = new Gtk.ListStore(typeof(Gdk.Pixbuf),    // the icon
                                           typeof(string),        // the name
                                           typeof(string),        // the url
-                                          typeof(bool));         // unread?
+                                          typeof(bool),          // unread?
+                                          typeof(int));          // font weight
                 Model = store;
                 trender = new Gtk.CellRendererText();
                 trender.Ellipsize = Pango.EllipsizeMode.End;
                 
-                // set up the columns for the view
+                /*// set up the columns for the view
                 TreeViewColumn column_Read = new Gtk.TreeViewColumn("Read", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
                 column_Read.SortColumnId = 3;
                 column_Read.SortIndicator = false;
-                AppendColumn(column_Read);
+                AppendColumn(column_Read);*/
                 
                 TreeViewColumn column_Name = new Gtk.TreeViewColumn("Title", trender, "text", 1);
+                column_Name.AddAttribute(trender, "weight", 4);
                 column_Name.SortColumnId = 1;
                 column_Name.SortIndicator = true;
                 AppendColumn(column_Name);
@@ -172,20 +174,25 @@ namespace Summa {
                 
                 Gdk.Pixbuf icon;
                 if ( count > 0 ) {
-                    icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");
+                    /*icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");*/
                     unread = true;
                 } else {
-                    icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");
+                    /*icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");*/
                     unread = false;
                 }
                 
                 string feedname = feed.Name;
                 string feedurl = feed.Url;
                 
-                store.SetValue(titer, 0, icon);
+                /*store.SetValue(titer, 0, icon);*/
                 store.SetValue(titer, 1, feedname);
                 store.SetValue(titer, 2, feedurl);
                 store.SetValue(titer, 3, unread);
+                if ( unread ) {
+                    store.SetValue(titer, 4, (int)Pango.Weight.Bold);
+                } else {
+                    store.SetValue(titer, 4, (int)Pango.Weight.Normal);
+                }
                 
                 try {
                     feedhash.Add(feedurl, store.GetPath(titer));

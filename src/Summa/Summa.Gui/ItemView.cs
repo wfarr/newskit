@@ -62,17 +62,21 @@ namespace Summa {
             
             public ItemView() {
                 // set up the liststore for the view
-                store = new Gtk.ListStore(typeof(Gdk.Pixbuf), typeof(bool), typeof(bool), typeof(string), typeof(string), typeof(string));
+                store = new Gtk.ListStore(typeof(Gdk.Pixbuf), typeof(bool), typeof(bool), typeof(string), typeof(string), typeof(string), typeof(int));
                 Model = store;
                 
                 // set up the columns for the view
                 InsertColumn(-1, "Read", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
+                CellRendererText trender = new Gtk.CellRendererText();
                 
-                TreeViewColumn column_Date = new Gtk.TreeViewColumn("Date", new Gtk.CellRendererText(), "text", 3);
+                TreeViewColumn column_Date = new Gtk.TreeViewColumn("Date", trender, "text", 3);
+                column_Date.AddAttribute(trender, "weight", 6);
                 column_Date.SortColumnId = 3;
                 column_Date.SortIndicator = true;
                 AppendColumn(column_Date);
-                InsertColumn(-1, "Title", new Gtk.CellRendererText(), "text", 4);
+                TreeViewColumn column_Title = new Gtk.TreeViewColumn("Title", trender, "text", 4);
+                column_Title.AddAttribute(trender, "weight", 6);
+                AppendColumn(column_Title);
                 
                 RulesHint = true;
                 HeadersClickable = true;
@@ -91,10 +95,12 @@ namespace Summa {
                 
                 if ( !read ) {
                     icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");
+                    store.SetValue(titer, 6, (int)Pango.Weight.Bold);
                 } else if ( flagged ) {
                     icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-flagged.png");
                 } else {
                     icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");
+                    store.SetValue(titer, 6, (int)Pango.Weight.Normal);
                 }
                 
                 try {
