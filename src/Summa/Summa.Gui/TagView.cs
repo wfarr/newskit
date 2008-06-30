@@ -69,9 +69,13 @@ namespace Summa {
                 if ( Summa.Core.Application.Browsers.Count == 0 ) {
                     Gtk.TreeIter tagiter;
                     tagiter = Summa.Core.Application.TagStore.Append();
-                    Pixbuf icon = new Gdk.Pixbuf("/Users/wfarr/Desktop/feed-presence.png");
+                    Pixbuf icon = new Gdk.Pixbuf("/usr/share/epiphany-browser/icons/hicolor/16x16/status/feed-presence.png");
                     Summa.Core.Application.TagStore.SetValue(tagiter, 0, icon);
                     Summa.Core.Application.TagStore.SetValue(tagiter, 1, "All feeds");
+                    
+                    /*tagiter = Summa.Core.Application.TagStore.Append();
+                    Summa.Core.Application.TagStore.SetValue(tagiter, 0, icon_theme.LookupIcon("system-search", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon());
+                    Summa.Core.Application.TagStore.SetValue(tagiter, 1, "Searches");*/
                 
                     foreach ( string tag in Tags ) {
                         if ( tag != "All" ) {

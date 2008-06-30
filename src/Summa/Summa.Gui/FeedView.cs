@@ -158,6 +158,13 @@ namespace Summa {
                 AppendFeed(feed, iter);
             }
             
+            /*public void UpdateSearch(Summa.Data.Search search) {
+                TreePath path = (TreePath)feedhash[search.Name];
+                TreeIter iter;
+                store.GetIter(out iter, path);
+                AppendSearch(search, iter);
+            }*/
+            
             public void DeleteFeed(Summa.Data.Feed feed) {
                 TreePath path = (TreePath)feedhash[feed.Url];
                 TreeIter iter;
@@ -207,6 +214,38 @@ namespace Summa {
                 }
             }
             
+            /*public void AppendSearch(Summa.Data.Search search, Gtk.TreeIter titer) {
+                int count = search.GetUnreadCount(); // optimize this!
+                bool unread = false;
+                
+                Gdk.Pixbuf icon;
+                if ( count > 0 ) {
+                    /*icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");
+                    unread = true;
+                } else {
+                    /*icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");
+                    unread = false;
+                }
+                
+                string feedname = search.Name;
+                
+                /*store.SetValue(titer, 0, icon);
+                store.SetValue(titer, 1, feedname);
+                store.SetValue(titer, 3, unread);
+                if ( unread ) {
+                    store.SetValue(titer, 4, (int)Pango.Weight.Bold);
+                } else {
+                    store.SetValue(titer, 4, (int)Pango.Weight.Normal);
+                }
+                
+                try {
+                    feedhash.Add(feedname, store.GetPath(titer));
+                } catch ( System.ArgumentException e ) {}
+                
+                while ( Gtk.Application.EventsPending() ) {
+                    Gtk.Main.Iteration();
+            }*/
+            
             /*private void PopulateWithSearches() {
                 store.clear();
                 
@@ -223,6 +262,21 @@ namespace Summa {
                     
                     store.set(iter, 0, icon_theme.lookup_icon("system-search", Gtk.IconSize.MENU, Gtk.IconLookupFlags.NO_SVG).load_icon(), 1, feedname, 2, feedurl, 3, true, -1);
                 }
+            }*/
+            
+            /*private void PopulateWithSearches() {
+                store.Clear();
+                
+                Gtk.TreeIter iter;
+                iter = store.Append();
+                Summa.Data.Search search = new Summa.Data.Search("Unread items");
+                search.AddSearchTerm("IS", "read", "False");
+                AppendSearch(search, iter);
+                
+                iter = store.Append();
+                Summa.Data.Search search = new Summa.Data.Search("Flagged items");
+                search.AddSearchTerm("IS", "flagged", "True");
+                AppendSearch(search, iter);
             }*/
             
             private void PopulateWithFeeds(string tag) {            
