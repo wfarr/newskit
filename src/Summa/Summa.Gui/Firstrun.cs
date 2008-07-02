@@ -103,8 +103,8 @@ namespace Summa {
                 
                 if ( fcdialog.Uris.Length > 0 ) {
                     string uri = fcdialog.Uri;
-                    string[] feeds = Summa.Data.Core.ImportOpml(uri);
-                    double step = 1.0/feeds.Length;
+                    ArrayList feeds = Summa.Data.Core.ImportOpml(uri);
+                    double step = 1.0/feeds.Count;
                     double progress = 0.0;
                     
                     foreach ( string feed in feeds ) {
