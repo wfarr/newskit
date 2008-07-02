@@ -133,8 +133,8 @@ namespace Summa {
             public void Render(string data) {
                 LoadString(data, "text/html", "utf-8", "http:///");
             }
-
-            public void Render(Summa.Data.Item item) {
+            
+            public string MakeItemHtml(Summa.Data.Item item) {
                 if (content.ToString() != String.Empty) {
                     // Empties the StringBuilder if it has more than ""
                     content.Remove(0, content.Length);
@@ -154,7 +154,11 @@ namespace Summa {
                 content.Append("<hr/>");
                 content.Append(item.Contents);
                 
-                Render(content.ToString());
+                return content.ToString();
+            }
+            
+            public void Render(Summa.Data.Item item) {
+                Render(MakeItemHtml(item));
             }
             
             public void Render(Summa.Data.Feed feed) {
@@ -180,6 +184,14 @@ namespace Summa {
                 content.AppendFormat("<img src=\"{0}\">", feed.Image);
                 
                 Render(content.ToString());
+                
+                /*string all_content = "";
+                
+                foreach ( Summa.Data.Item item in feed.GetItems() ) {
+                    all_content += MakeItemHtml(item);
+                    all_content += "<br/><br/><hr/>";
+                }
+                Render(all_content);*/
             }
         }
     }

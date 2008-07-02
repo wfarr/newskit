@@ -93,11 +93,11 @@ namespace Summa {
                 trender = new Gtk.CellRendererText();
                 trender.Ellipsize = Pango.EllipsizeMode.End;
                 
-                /*// set up the columns for the view
+                // set up the columns for the view
                 TreeViewColumn column_Read = new Gtk.TreeViewColumn("Read", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
                 column_Read.SortColumnId = 3;
                 column_Read.SortIndicator = false;
-                AppendColumn(column_Read);*/
+                AppendColumn(column_Read);
                 
                 TreeViewColumn column_Name = new Gtk.TreeViewColumn("Title", trender, "text", 1);
                 column_Name.AddAttribute(trender, "weight", 4);
@@ -180,16 +180,14 @@ namespace Summa {
             }
             
             public void AppendFeed(Summa.Data.Feed feed, Gtk.TreeIter titer) {
-                int count = feed.GetUnreadCount(); // optimize this!
-                bool unread = false;
+                //int count = feed.GetUnreadCount(); // optimize this!
+                bool unread = feed.HasUnread();
                 
                 Gdk.Pixbuf icon;
-                if ( count > 0 ) {
-                    /*icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");*/
-                    unread = true;
+                if ( unread ) {
+                    icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");
                 } else {
-                    /*icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");*/
-                    unread = false;
+                    icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");
                 }
                 
                 string feedname = feed.Name;

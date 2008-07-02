@@ -101,7 +101,7 @@ namespace Summa {
             public void AppendTag(string tag) {
                 Gtk.TreeIter iter;
                 iter = Summa.Core.Application.TagStore.Append();
-                Summa.Core.Application.TagStore.SetValue(iter, 0, new Gdk.Pixbuf("/Users/wfarr/Desktop/tag.png"));
+                Summa.Core.Application.TagStore.SetValue(iter, 0, new Gdk.Pixbuf("/home/eosten/Desktop/tag.png"));
                 Summa.Core.Application.TagStore.SetValue(iter, 1, tag);
             }
         }
