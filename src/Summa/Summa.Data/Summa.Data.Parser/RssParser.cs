@@ -37,53 +37,113 @@ namespace Summa {
                 
                 private string name;
                 public string Name {
-                    get { return name; }
+                    get {
+                        try {
+                            return name;
+                        } catch ( Exception e ) {
+                            return "";
+                        }
+                    }
                     set { name = value; }
                 }
                 private string subtitle;
                 public string Subtitle {
-                    get { return subtitle; }
+                    get {
+                        try {
+                            return subtitle;
+                        } catch ( Exception e ) {
+                            return "";
+                        }
+                    }
                     set { subtitle = value; }
                 }
                 private string uri;
                 public string Uri {
-                    get { return uri; }
+                    get {
+                        try {
+                            return uri;
+                        } catch ( Exception e ) {
+                            return "";
+                        }
+                    }
                     set { uri = value; }
                 }
                 private string author;
                 public string Author {
-                    get { return author; }
+                    get {
+                        try {
+                            return author;
+                        } catch ( Exception e ) {
+                            return "";
+                        }
+                    }
                     set { author = value; }
                 }
                 private string image;
                 public string Image {
-                    get { return image; }
+                    get {
+                        try {
+                            return image;
+                        } catch ( Exception e ) {
+                            return "";
+                        }
+                    }
                     set { image = value; }
                 }
                 private string license;
                 public string License {
-                    get { return license; }
+                    get {
+                        try {
+                            return license;
+                        } catch ( Exception e ) {
+                            return "";
+                        }
+                    }
                     set { license = value; }
                 }
                 private string etag;
                 public string Etag {
-                    get { return etag; }
+                    get {
+                        try {
+                            return etag;
+                        } catch ( Exception e ) {
+                            return "";
+                        }
+                    }
                     set { etag = value; }
                 }
                 private string modified;
                 public string Modified {
-                    get { return modified; }
+                    get {
+                        try {
+                            return modified;
+                        } catch ( Exception e ) {
+                            return "";
+                        }
+                    }
                     set { modified = value; }
                 }
                 private string favicon;
                 public string Favicon {
-                    get { return favicon; }
+                    get {
+                        try {
+                            return favicon;
+                        } catch ( Exception e ) {
+                            return "";
+                        }
+                    }
                     set { favicon = value; }
                 }
                 
                 private ArrayList items;
                 public ArrayList Items {
-                    get { return items; }
+                    get {
+                        try {
+                            return items;
+                        } catch ( Exception e ) {
+                            return new ArrayList();
+                        }
+                    }
                     set { items = value; }
                 }
                 

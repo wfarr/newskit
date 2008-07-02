@@ -48,6 +48,17 @@ namespace Summa {
                     if ( request.Status != System.Net.HttpStatusCode.NotFound ) {
                         Summa.Data.Parser.FeedParser parser = Summa.Net.Feed.Sniff(request);
                         
+                        Console.WriteLine(parser.Uri);
+                        Console.WriteLine(parser.Name);
+                        Console.WriteLine(parser.Author);
+                        Console.WriteLine(parser.Subtitle);
+                        Console.WriteLine(parser.Image);
+                        Console.WriteLine(parser.License);
+                        Console.WriteLine(request.Etag);
+                        Console.WriteLine(request.LastModified);
+                        Console.WriteLine(parser.Favicon);
+                        
+                        
                         Summa.Core.Application.Database.CreateFeed(parser.Uri, parser.Name, parser.Author, parser.Subtitle, parser.Image, parser.License, request.Etag, request.LastModified, "", "All", parser.Favicon);
                         
                         parser.Items.Reverse();
@@ -138,8 +149,9 @@ namespace Summa {
                 return count;
             }
             
-            public static string[] ImportOpml(string filename) {
-                return null; //not implemented
+            public static ArrayList ImportOpml(string filename) {
+                Summa.Data.Parser.OpmlParser opml = new Summa.Data.Parser.OpmlParser(filename);
+                return opml.Uris;
             }
             
             // FIXME - should have the Search stuff

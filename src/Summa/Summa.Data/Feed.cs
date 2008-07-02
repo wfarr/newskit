@@ -221,6 +221,15 @@ namespace Summa {
                 return count;
             }
             
+            public bool HasUnread() {
+                foreach ( string[] item in Summa.Core.Application.Database.GetPosts(Url)) {
+                    if ( item[8] == "False" ) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
             public void MarkItemsRead() {
                 foreach (Summa.Data.Item item in GetItems()) {
                     item.Read = true;
