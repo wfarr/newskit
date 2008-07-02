@@ -7,16 +7,19 @@ ASSEMBLIES = \
 	     -pkg:gnome-sharp-2.0 \
 	     -pkg:gtk-sharp-2.0 \
 	     -pkg:ndesk-dbus-1.0 \
+	     -pkg:ndesk-dbus-glib-1.0 \
 	     -pkg:webkit-sharp-1.0 \
 	     -r:Mono.Data.SqliteClient \
 	     -r:Mono.Posix \
 	     -r:System.Core \
-	     -r:System.Data
+	     -r:System.Data \
+	     -r:System.Web
 
 SUMMA_CSFILES = \
         Summa.Core/Application.cs \
         Summa.Core/Bookmarker.cs \
         Summa.Core/Config.cs \
+        Summa.Core/DBus.cs \
         Summa.Core/Exceptions.cs \
         Summa.Core/MediaPlayer.cs \
         Summa.Core/Updater.cs \
@@ -30,6 +33,7 @@ SUMMA_CSFILES = \
         Summa.Data/Summa.Data.Parser/FeedParser.cs \
         Summa.Data/Summa.Data.Parser/Item.cs \
         Summa.Data/Summa.Data.Parser/MigoRfc822DateTime.cs \
+        Summa.Data/Summa.Data.Parser/OpmlParser.cs \
         Summa.Data/Summa.Data.Parser/RssParser.cs \
         Summa.Net/Feed.cs \
         Summa.Net/Request.cs \

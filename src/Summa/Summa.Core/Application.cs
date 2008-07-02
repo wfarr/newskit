@@ -35,6 +35,7 @@ namespace Summa {
             public static Summa.Gui.StatusIcon StatusIcon;
             public static Summa.Core.Updater Updater;
             public static Summa.Data.Storage.Database Database;
+            public static Summa.Core.DBusInterface DBus;
             
             public static Gtk.ListStore TagStore;
             
@@ -53,6 +54,7 @@ namespace Summa {
                 StatusIcon = new Summa.Gui.StatusIcon();
                 Updater = new Summa.Core.Updater();
                 ConfigDialog = new Summa.Gui.ConfigDialog();
+                DBus = new Summa.Core.DBusInterface();
                 
                 foreach ( Summa.Gui.Browser browser in Browsers ) {
                     browser.ShowAll();
