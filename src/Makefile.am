@@ -1,0 +1,4 @@
+SUBDIRS = \
+	Summa
+
+MAINTAINERCLEANFILES = Makefile.in
