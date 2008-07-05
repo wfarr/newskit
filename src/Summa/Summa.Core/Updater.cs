@@ -36,7 +36,7 @@ namespace Summa {
             private bool should_automatic_update;
             private bool enqueued;
             
-            private Queue updating_queue;
+            private ArrayList updating_queue;
             
             public ArrayList FeedsUpdating {
                 get {
@@ -56,16 +56,25 @@ namespace Summa {
                 should_automatic_update = true;
                 enqueued = false;
                 
-                updating_queue = new Queue(20);
+                updating_queue = new ArrayList();
                 
                 GLib.Timeout.Add(Summa.Core.Config.GlobalUpdateInterval, new GLib.TimeoutHandler(ScheduledUpdate));
             }
             
             private void UpdateThread() {
-                while ( updating_queue.Count != 0 ) {
-                    Summa.Data.Feed feed = (Summa.Data.Feed)updating_queue.Dequeue();
+                foreach ( Summa.Data.Feed feed in updating_queue ) {
+                    foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                        Gdk.Threads.Enter();
+                        browser.FeedView.SetAsUpdating(feed);
+                        Gdk.Threads.Leave();
+                    }
+                    
                     Updating = true;
-                    bool update = feed.Update();
+                    bool update = false;
+                    
+                    try {
+                        update = feed.Update();
+                    } catch ( NullReferenceException ) {}
                     
                     foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
                         Gdk.Threads.Enter();
@@ -75,12 +84,20 @@ namespace Summa {
                             browser.statusbar.Push(browser.contextid, @"Feed """+feed.Name+@""" has no new items.");
                         }
                         
-                        if ( feed.Url == browser.FeedView.Selected.Url ) {
-                            browser.ItemView.Update();
+                        browser.FeedView.UpdateFeed(feed);
+                        if ( browser.FeedView.HasSelected ) {
+                            if ( feed.Url == browser.FeedView.Selected.Url ) {
+                                browser.ItemView.Update();
+                            }
                         }
                         
                         browser.contextid++;
+                        browser.FeedView.SetAsNotUpdating(feed);
                         Gdk.Threads.Leave();
+                    }
+                    
+                    while ( Gtk.Application.EventsPending() ) {
+                        Gtk.Main.Iteration();
                     }
                 }
             }
@@ -90,7 +107,7 @@ namespace Summa {
                     should_automatic_update = false;
                     
                     foreach ( Summa.Data.Feed feed in Summa.Data.Core.GetFeeds() ) {
-                        updating_queue.Enqueue(feed);
+                        updating_queue.Add(feed);
                     }
                 
                     System.Threading.Thread updatethread = new System.Threading.Thread(UpdateThread);
@@ -101,7 +118,7 @@ namespace Summa {
             public bool ScheduledUpdate() {
                 if ( !Updating && should_automatic_update ) {
                     foreach ( Summa.Data.Feed feed in Summa.Data.Core.GetFeeds() ) {
-                        updating_queue.Enqueue(feed);
+                        updating_queue.Add(feed);
                     }
                 
                     System.Threading.Thread updatethread = new System.Threading.Thread(UpdateThread);

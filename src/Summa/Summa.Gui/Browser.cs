@@ -111,6 +111,7 @@ namespace Summa  {
             
             public Browser() : base(Gtk.WindowType.Toplevel) {
                 Title = "Summa";
+                IconName = "summa";
                 
                 action_group = new Gtk.ActionGroup("general");
                 factory = new Gtk.IconFactory();

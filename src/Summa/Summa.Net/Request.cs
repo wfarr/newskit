@@ -82,11 +82,11 @@ namespace Summa {
                     httprequest = (HttpWebRequest)WebRequest.Create(uri);
                     httprequest.AllowAutoRedirect = true;
                     
-                    /*try {
+                    try {
                         string modified = Summa.Core.Application.Database.GetFeed(uri)[9];
                         DateTime m = Convert.ToDateTime(modified);
                         httprequest.IfModifiedSince = m;
-                    } catch ( Exception e ) {}*/
+                    } catch ( Exception e ) {}
                     
                     httpresponse = (HttpWebResponse)httprequest.GetResponse();
                     Status = httpresponse.StatusCode;
@@ -114,7 +114,6 @@ namespace Summa {
                         
                         Xml = sb.ToString();
                         Xml = System.Text.RegularExpressions.Regex.Replace(Xml, "( [a-z]+)=([a-zA-Z0-9:/._%;?=&-]+)", "$1=\"$2\"");
-                        Console.WriteLine(Xml);
                         
                         LastModified = httpresponse.LastModified.ToString();
                         try {

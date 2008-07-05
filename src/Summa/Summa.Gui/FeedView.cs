@@ -193,7 +193,7 @@ namespace Summa {
                 string feedname = feed.Name;
                 string feedurl = feed.Url;
                 
-                /*store.SetValue(titer, 0, icon);*/
+                store.SetValue(titer, 0, icon);
                 store.SetValue(titer, 1, feedname);
                 store.SetValue(titer, 2, feedurl);
                 store.SetValue(titer, 3, unread);
@@ -210,6 +210,20 @@ namespace Summa {
                 while ( Gtk.Application.EventsPending() ) {
                     Gtk.Main.Iteration();
                 }
+            }
+            
+            public void SetAsUpdating(Summa.Data.Feed feed) {
+                TreePath path = (TreePath)feedhash[feed.Url];
+                TreeIter iter;
+                store.GetIter(out iter, path);
+                store.SetValue(iter, 0, icon_theme.LookupIcon("reload", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon());
+            }
+            
+            public void SetAsNotUpdating(Summa.Data.Feed feed) {
+                TreePath path = (TreePath)feedhash[feed.Url];
+                TreeIter iter;
+                store.GetIter(out iter, path);
+                AppendFeed(feed, iter);
             }
             
             /*public void AppendSearch(Summa.Data.Search search, Gtk.TreeIter titer) {

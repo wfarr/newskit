@@ -32,10 +32,7 @@ namespace Summa {
             private bool shown;
             
             public StatusIcon() {
-                FromIconName = "internet-news-reader";
-                if ( IconName == null ) {
-                    FromIconName = "applications-internet";
-                }
+                FromIconName = "summa";
                  
                 shown = true;
                 int unread = Summa.Data.Core.GetUnreadCount();

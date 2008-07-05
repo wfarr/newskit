@@ -97,12 +97,12 @@ namespace Summa {
                 string uri = titem.Uri;
                 
                 if ( !read ) {
-                    icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");
+                    icon = icon_theme.LookupIcon("feed-item", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
                     store.SetValue(titer, 6, (int)Pango.Weight.Bold);
                 } else if ( flagged ) {
                     icon = new Gdk.Pixbuf("/Users/wfarr/Desktop/summa-flagged.png");
                 } else {
-                    icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");
+                    icon = null;
                     store.SetValue(titer, 6, (int)Pango.Weight.Normal);
                 }
                 
@@ -110,7 +110,11 @@ namespace Summa {
                     itemhash.Add(uri, store.GetPath(titer));
                 } catch ( System.ArgumentException e ) {}
                 
-                store.SetValue(titer, 0, icon);
+                if ( icon != null ) {
+                    store.SetValue(titer, 0, icon);
+                } else {
+                    store.SetValue(titer, 0, "");
+                }
                 store.SetValue(titer, 1, read);
                 store.SetValue(titer, 2, flagged);
                 store.SetValue(titer, 3, MakePrettyDate(date));

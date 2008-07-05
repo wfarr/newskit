@@ -48,7 +48,7 @@ namespace Summa {
                 
                 Gdk.Pixbuf image_window = i.LoadIcon("add", 0, Gtk.IconLookupFlags.NoSvg);
                 
-                LogoIconName = "internet-news-reader";
+                LogoIconName = "summa";
                 Icon = image_window;
                 
                 Response += new Gtk.ResponseHandler(OnHide);
