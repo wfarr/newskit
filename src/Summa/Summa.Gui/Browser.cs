@@ -195,16 +195,17 @@ namespace Summa.Gui {
         }
         
         public void FeedviewChanged(object obj, EventArgs args) {
-            UpdateName(); Console.WriteLine(1+" : "+DateTime.Now);
-            curfeed = FeedView.Selected; Console.WriteLine(2+" : "+DateTime.Now);
-            curfeed.UnreadCountChanged += OnUnreadCountChanged; Console.WriteLine(3+" : "+DateTime.Now);
+            UpdateName();
+            curfeed = FeedView.Selected;
+            curfeed.UnreadCountChanged += OnUnreadCountChanged;
             play_action.Sensitive = false;
-            HtmlView.Render(curfeed); Console.WriteLine(4+" : "+DateTime.Now);
-            ItemView.Populate(curfeed); Console.WriteLine(5+" : "+DateTime.Now);
+            HtmlView.Render(curfeed);
+            ItemView.Populate(curfeed);
         }
         
         public void ItemviewChanged(object obj, EventArgs args) {
-            UpdateHtmlview();
+             Console.WriteLine(1+" : "+DateTime.Now);
+            UpdateHtmlview(); Console.WriteLine(+" : "+DateTime.Now);
             play_action.StockId = Gtk.Stock.MediaPlay;
             
             if ( ItemView.Selected.EncUri != "" ) {
@@ -240,23 +241,23 @@ namespace Summa.Gui {
         }
         
         public void UpdateHtmlview() {
-            curitem = ItemView.Selected;
-            HtmlView.Render(curitem);
+            curitem = ItemView.Selected; Console.WriteLine(+" : "+DateTime.Now);
+            HtmlView.Render(curitem); Console.WriteLine(+" : "+DateTime.Now);
             
-            print_action.CheckShouldSensitive();
-            bookmark_action.CheckShouldSensitive();
+            print_action.CheckShouldSensitive(); Console.WriteLine(+" : "+DateTime.Now);
+            bookmark_action.CheckShouldSensitive(); Console.WriteLine(+" : "+DateTime.Now);
             
             if ( HtmlView.CanZoom() ) {
-                zoom_in_action.CheckShouldSensitive();
-                zoom_out_action.CheckShouldSensitive();
+                zoom_in_action.CheckShouldSensitive(); Console.WriteLine(+" : "+DateTime.Now);
+                zoom_out_action.CheckShouldSensitive(); Console.WriteLine(+" : "+DateTime.Now);
             }
             
-            flag_action.Populate(ItemView.Selected);
-            play_action.Populate(ItemView.Selected);
-            play_action.SetToPlay();
+            flag_action.Populate(ItemView.Selected); Console.WriteLine(+" : "+DateTime.Now);
+            play_action.Populate(ItemView.Selected); Console.WriteLine(+" : "+DateTime.Now);
+            play_action.SetToPlay(); Console.WriteLine(+" : "+DateTime.Now);
             
-            ItemView.MarkSelectedRead();
-            UpdateName();
+            ItemView.MarkSelectedRead(); Console.WriteLine(+" : "+DateTime.Now);
+            UpdateName(); Console.WriteLine(+" : "+DateTime.Now);
         }
         
         public void UpdateName() {
