@@ -46,10 +46,10 @@ namespace Summa.Core {
             Log = new ArrayList();
             
             TagStore = new Gtk.ListStore(typeof(Gdk.Pixbuf), typeof(string));
-                
+            
             Database = new Summa.Core.Database();
             Browsers = new ArrayList();
-            Browsers.Add(new Summa.Gui.Browser());
+            Browsers.Add(new Summa.Gui.Browser()); // here
             StatusIcon = new Summa.Gui.StatusIcon();
             Updater = new Summa.Core.Updater();
             ConfigDialog = new Summa.Gui.ConfigDialog();
@@ -58,7 +58,6 @@ namespace Summa.Core {
             foreach ( Summa.Gui.Browser browser in Browsers ) {
                 browser.ShowAll();
             }
-            
             WindowsShown = true;
             
             Gtk.Application.Run();

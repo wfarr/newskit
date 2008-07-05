@@ -195,12 +195,12 @@ namespace Summa.Gui {
         }
         
         public void FeedviewChanged(object obj, EventArgs args) {
-            UpdateName();
-            curfeed = FeedView.Selected;
-            curfeed.UnreadCountChanged += OnUnreadCountChanged;
+            UpdateName(); Console.WriteLine(1+" : "+DateTime.Now);
+            curfeed = FeedView.Selected; Console.WriteLine(2+" : "+DateTime.Now);
+            curfeed.UnreadCountChanged += OnUnreadCountChanged; Console.WriteLine(3+" : "+DateTime.Now);
             play_action.Sensitive = false;
-            HtmlView.Render(curfeed);
-            ItemView.Populate(curfeed);
+            HtmlView.Render(curfeed); Console.WriteLine(4+" : "+DateTime.Now);
+            ItemView.Populate(curfeed); Console.WriteLine(5+" : "+DateTime.Now);
         }
         
         public void ItemviewChanged(object obj, EventArgs args) {

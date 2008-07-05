@@ -125,11 +125,7 @@ namespace Summa.Data {
             
             try {
                 foreach ( Summa.Data.Feed feed in GetFeeds() ) {
-                    foreach ( Summa.Data.Item item in feed.Items ) {
-                        if ( item.Read == false ) {
-                            count++;
-                        }
-                    }
+                    count += feed.UnreadCount;
                 }
             } catch ( Exception e ) {
                 Summa.Core.Log.LogException(e, "There are no feeds.");
