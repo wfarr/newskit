@@ -27,6 +27,7 @@ using System;
 using System.Collections;
 using System.Text;
 using System.IO;
+using System.Diagnostics;
 
 using System.Data;
 using Mono.Data.SqliteClient;
@@ -68,6 +69,8 @@ namespace Summa.Core {
         public event ItemDeletedHandler ItemDeleted;
         public event ItemChangedHandler ItemChanged;
         
+        private Hashtable GeneratedNames;
+        
         public Database() {
             Directory.CreateDirectory(Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/");
             
@@ -75,6 +78,12 @@ namespace Summa.Core {
             
             db = new SqliteConnection("Version=3,"+Uri);
             db.Open();
+            
+            GeneratedNames = new Hashtable();
+            
+            foreach ( string[] feed in GetFeeds() ) {
+                GeneratedNames.Add(feed[1], feed[2]);
+            }
             
             if (!exists) {
                 Initialize();
@@ -117,21 +126,7 @@ namespace Summa.Core {
         }
         
         private string GetGeneratedName(string uri) {
-            IDbCommand dbcmd = db.CreateCommand();
-            dbcmd.CommandText = @"select * from Feeds";
-            IDataReader reader = dbcmd.ExecuteReader();
-            string name = null;
-            while(reader.Read()) {
-                if ( reader.GetString(1) == uri ) {
-                    name = reader.GetString(2);
-                    break;
-                }
-            }
-            reader.Close();
-            reader = null;
-            dbcmd.Dispose();
-            dbcmd = null;
-            return name;
+            return (string)GeneratedNames[uri];
         }
         
         public string CreateFeed(string uri, string name, string author, string subtitle, string image, string license, string etag, string hmodified, string status, string tags, string favicon) {
@@ -250,6 +245,8 @@ namespace Summa.Core {
             
             NonQueryCommand("create table "+generated_name+" (id INTEGER PRIMARY KEY, title VARCHAR(50), uri VARCHAR(50), date VARCHAR(50), last_updated VARCHAR(50), author VARCHAR(50), tags VARCHAR(50), content VARCHAR(50), encuri VARCHAR(50), read VARCHAR(50), flagged VARCHAR(50))");
             
+            GeneratedNames.Add(uri, generated_name);
+            
             AddedEventArgs args = new AddedEventArgs();
             args.Uri = uri;
             FeedAdded(this, args);
@@ -260,6 +257,8 @@ namespace Summa.Core {
         public void DeleteFeed(string uri) {
             NonQueryCommand("drop table "+GetGeneratedName(uri));
             NonQueryCommand(@"delete from Feeds where uri="""+uri+@"""");
+            
+            GeneratedNames.Remove(uri);
             
             AddedEventArgs args = new AddedEventArgs();
             args.Uri = uri;
@@ -306,7 +305,23 @@ namespace Summa.Core {
             dbcmd.CommandText = "select * from Feeds";
             IDataReader reader = dbcmd.ExecuteReader();
             while(reader.Read()) {
-                list.Add(GetFeed(reader.GetString(1)));
+                string[] feed = new string[13];
+                
+                feed[0] = reader.GetString(0).ToString(); // integer primary key
+                feed[1] = reader.GetString(1); // uri
+                feed[2] = reader.GetString(2); // generated_name
+                feed[3] = reader.GetString(3); // name
+                feed[4] = reader.GetString(4); // author
+                feed[5] = reader.GetString(5); // subtitle
+                feed[6] = reader.GetString(6); // image
+                feed[7] = reader.GetString(7); // license
+                feed[8] = reader.GetString(8); // etag
+                feed[9] = reader.GetString(9); // hmodified
+                feed[10] = reader.GetString(10); // status
+                feed[11] = reader.GetString(11); // tags
+                feed[12] = reader.GetString(12); //favicon
+                
+                list.Add(feed);
             }
             reader.Close();
             reader = null;
@@ -326,6 +341,10 @@ namespace Summa.Core {
         }
         
         public ArrayList GetPosts(string feeduri) {
+            StackFrame fr = new StackFrame(1, true);
+            StackTrace st = new StackTrace(fr);
+            //Console.WriteLine("{0} {1}", "GetPosts", st.ToString());
+            
             ArrayList list = new ArrayList();
             
             IDbCommand dbcmd = db.CreateCommand();
@@ -354,14 +373,29 @@ namespace Summa.Core {
         }
         
         public string[] GetItem(string feeduri, string uri) {
-            ArrayList list = GetPosts(feeduri);
+            string[] item = null;
             
-            foreach (string[] item in list) {
-                if ( item[1] == uri ) {
-                    return item;
-                }
+            IDbCommand dbcmd = db.CreateCommand();
+            dbcmd.CommandText = "select * from "+GetGeneratedName(feeduri)+@" where uri="""+uri+@"""";
+            IDataReader reader = dbcmd.ExecuteReader();
+            while(reader.Read()) {
+                item = new string[10];
+                item[0] = reader.GetString(1); //title
+                item[1] = reader.GetString(2); //uri
+                item[2] = reader.GetString(3); //date
+                item[3] = reader.GetString(4); //last_updated
+                item[4] = reader.GetString(5); //author
+                item[5] = reader.GetString(6); //tags
+                item[6] = reader.GetString(7); //content
+                item[7] = reader.GetString(8); //encuri
+                item[8] = reader.GetString(9); //read
+                item[9] = reader.GetString(10); //flagged
             }
-            return null;
+            reader.Close();
+            reader = null;
+            dbcmd.Dispose();
+            dbcmd = null;
+            return item;
         }
         
         public void DeleteItem(string feeduri, string uri) {
@@ -501,6 +535,28 @@ namespace Summa.Core {
             args.Value = intended_value;
             args.ItemProperty = property;
             FeedChanged(this, args);
+        }
+        
+        public ArrayList GetTags() {
+            StackFrame fr = new StackFrame(1, true);
+            StackTrace st = new StackTrace(fr);
+            //Console.WriteLine("{0} {1}", "GetTags", st.ToString());
+            
+            ArrayList list = new ArrayList();
+            
+            foreach ( string feeduri in GetFeeds() ) {
+                IDbCommand dbcmd = db.CreateCommand();
+                dbcmd.CommandText = "select tags from "+GetGeneratedName(feeduri);
+                IDataReader reader = dbcmd.ExecuteReader();
+                while(reader.Read()) {
+                    list.Add(reader.GetString(1));
+                }
+                reader.Close();
+                reader = null;
+                dbcmd.Dispose();
+                dbcmd = null;
+            }
+            return list;
         }
     }
 }
