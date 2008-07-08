@@ -129,18 +129,9 @@ namespace Summa.Data {
         }
         private string FeedUri;
         
-        public event EventHandler ShouldRefresh;
-        private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
-            if ( args.Uri == Uri ) {
-                ShouldRefresh(this, EventArgs.Empty);
-            }
-        }
-        
         public Item(string the_uri, string feeduri) {
             Uri = the_uri;
             FeedUri = feeduri;
-            
-            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
         }
     }
 }

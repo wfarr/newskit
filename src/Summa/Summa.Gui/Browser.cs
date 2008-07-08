@@ -184,8 +184,20 @@ namespace Summa.Gui {
             
             UpdateFromConfig();
             
+            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
+            
             //client.Notify(KEY_LIBNOTIFY); //FIXME
             //client.ValueChanged += b => { update_from_gconf(); };
+        }
+        
+        private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
+            if ( FeedView.HasSelected ) {
+                if ( FeedView.Selected.Url == args.FeedUri ) {
+                    if ( args.ItemProperty == "read" ) {
+                        UpdateName();
+                    }
+                }
+            }
         }
         
         public void TagviewChanged(object obj, EventArgs args) {
@@ -197,15 +209,13 @@ namespace Summa.Gui {
         public void FeedviewChanged(object obj, EventArgs args) {
             UpdateName();
             curfeed = FeedView.Selected;
-            curfeed.UnreadCountChanged += OnUnreadCountChanged;
             play_action.Sensitive = false;
             HtmlView.Render(curfeed);
             ItemView.Populate(curfeed);
         }
         
         public void ItemviewChanged(object obj, EventArgs args) {
-             Console.WriteLine(1+" : "+DateTime.Now);
-            UpdateHtmlview(); Console.WriteLine(+" : "+DateTime.Now);
+            UpdateHtmlview();
             play_action.StockId = Gtk.Stock.MediaPlay;
             
             if ( ItemView.Selected.EncUri != "" ) {
@@ -215,8 +225,25 @@ namespace Summa.Gui {
             }
         }
         
-        private void OnUnreadCountChanged(object obj, EventArgs args) {
-            UpdateName();
+        public void UpdateHtmlview() {
+            curitem = ItemView.Selected;
+            HtmlView.Render(curitem);
+            
+            print_action.CheckShouldSensitive();
+            bookmark_action.CheckShouldSensitive();
+            
+            if ( HtmlView.CanZoom() ) {
+                zoom_in_action.CheckShouldSensitive();
+                zoom_out_action.CheckShouldSensitive();
+            }
+            
+            flag_action.Populate(ItemView.Selected);
+            play_action.Populate(ItemView.Selected);
+            play_action.SetToPlay();
+            
+            if ( !ItemView.Selected.Read ) {
+                ItemView.MarkSelectedRead();
+            }
         }
         
         public void SetStatusbarText(string text, string text1) {
@@ -238,26 +265,6 @@ namespace Summa.Gui {
                 not.set_urgency(Notify.Urgency.NORMAL);
                 not.show();
             }*/
-        }
-        
-        public void UpdateHtmlview() {
-            curitem = ItemView.Selected; Console.WriteLine(+" : "+DateTime.Now);
-            HtmlView.Render(curitem); Console.WriteLine(+" : "+DateTime.Now);
-            
-            print_action.CheckShouldSensitive(); Console.WriteLine(+" : "+DateTime.Now);
-            bookmark_action.CheckShouldSensitive(); Console.WriteLine(+" : "+DateTime.Now);
-            
-            if ( HtmlView.CanZoom() ) {
-                zoom_in_action.CheckShouldSensitive(); Console.WriteLine(+" : "+DateTime.Now);
-                zoom_out_action.CheckShouldSensitive(); Console.WriteLine(+" : "+DateTime.Now);
-            }
-            
-            flag_action.Populate(ItemView.Selected); Console.WriteLine(+" : "+DateTime.Now);
-            play_action.Populate(ItemView.Selected); Console.WriteLine(+" : "+DateTime.Now);
-            play_action.SetToPlay(); Console.WriteLine(+" : "+DateTime.Now);
-            
-            ItemView.MarkSelectedRead(); Console.WriteLine(+" : "+DateTime.Now);
-            UpdateName(); Console.WriteLine(+" : "+DateTime.Now);
         }
         
         public void UpdateName() {

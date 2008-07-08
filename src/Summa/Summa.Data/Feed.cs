@@ -160,46 +160,8 @@ namespace Summa.Data {
             }
         }
         
-        public event EventHandler ShouldRefresh;
-        public event EventHandler NewItem;
-        public event EventHandler DeletedItem;
-        public event EventHandler UnreadCountChanged;
-        
-        private void OnFeedChanged(object obj, Summa.Core.ChangedEventArgs args) {
-            if ( args.Uri == Url ) {
-                ShouldRefresh(this, EventArgs.Empty);
-            }
-        }
-        
-        private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {
-            if ( args.FeedUri == Url ) {
-                ItemEventArgs iargs = new ItemEventArgs();
-                iargs.Item = new Summa.Data.Item(args.Uri, Url);
-                NewItem(this, iargs);
-            }
-        }
-        
-        private void OnItemDeleted(object obj, Summa.Core.AddedEventArgs args) {
-            if ( args.FeedUri == Url ) {
-                DeletedItem(this, args);
-            }
-        }
-        
-        private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
-            if ( args.FeedUri == Url ) {
-                if ( args.ItemProperty == "read" ) {
-                    UnreadCountChanged(this, args);
-                }
-            }
-        }
-        
         public Feed(string url) {
             Url = url;
-            
-            Summa.Core.Application.Database.FeedChanged += OnFeedChanged;
-            Summa.Core.Application.Database.ItemAdded += OnItemAdded;
-            Summa.Core.Application.Database.ItemDeleted += OnItemDeleted;
-            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
         }
         
         public void AppendTag(string tag) {

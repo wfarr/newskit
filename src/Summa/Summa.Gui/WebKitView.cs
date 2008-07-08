@@ -161,11 +161,7 @@ namespace Summa.Gui {
         public void Render(Summa.Data.Item item) {
             Render(MakeItemHtml(item));
             SelectedItem = item;
-            //SelectedItem.ShouldRefresh += OnShouldRefresh;
-        }
-        
-        private void OnShouldRefresh(object obj, EventArgs args) {
-            Render(MakeItemHtml(SelectedItem));
+            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
         }
         
         public void Render(Summa.Data.Feed feed) {
@@ -192,7 +188,7 @@ namespace Summa.Gui {
             
             Render(content.ToString());
             SelectedFeed = feed;
-            SelectedFeed.ShouldRefresh += OnFeedShouldRefresh;
+            Summa.Core.Application.Database.FeedChanged += OnFeedChanged;
             
             /*string all_content = "";
             
@@ -203,8 +199,16 @@ namespace Summa.Gui {
             Render(all_content);*/
         }
         
-        private void OnFeedShouldRefresh(object obj, EventArgs args) {
-            Render(content.ToString());
+        private void OnFeedChanged(object obj, Summa.Core.ChangedEventArgs args) {
+            if ( args.Uri == SelectedFeed.Url ) {
+                Render(content.ToString());
+            }
+        }
+        
+        private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
+            if ( args.Uri == SelectedItem.Uri ) {
+                Render(MakeItemHtml(SelectedItem));
+            }
         }
     }
 }

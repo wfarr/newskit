@@ -57,7 +57,6 @@ namespace Summa.Gui {
                 if ( Selection.CountSelectedRows() != 0 ) {
                     Selection.GetSelected(out selectmodel, out iter);
                 } else { store.GetIterFirst(out iter); }
-                
                 return ItemFromIter(iter);
             }
         }
@@ -151,25 +150,26 @@ namespace Summa.Gui {
                 }
             }
             
-            feedobj.NewItem += OnNewItem;
-            feedobj.DeletedItem += OnDeletedItem;
             Summa.Core.Application.Database.FeedDeleted += OnFeedDeleted;
-        }
-        
-        private void OnNewItem(object obj, EventArgs args) {
-            TreeIter iter = store.Append();
-            Summa.Data.ItemEventArgs iargs = (Summa.Data.ItemEventArgs)args;
-            AppendItem(iter, iargs.Item);
-        }
-        
-        private void OnDeletedItem(object obj, EventArgs args) {
-            Summa.Data.ItemEventArgs iargs = (Summa.Data.ItemEventArgs)args;
-            DeleteItem(iargs.Item);
+            Summa.Core.Application.Database.ItemAdded += OnItemAdded;
+            Summa.Core.Application.Database.ItemDeleted += OnItemDeleted;
         }
         
         private void OnFeedDeleted(object obj, Summa.Core.AddedEventArgs args) {
             if ( feedobj.Url == args.Uri ) {
                 store.Clear();
+            }
+        }
+        
+        private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {
+            if ( feedobj.Url == args.FeedUri ) {
+                AppendItem(store.Append(), new Summa.Data.Item(args.Uri, args.FeedUri));
+            }
+        }
+        
+        private void OnItemDeleted(object obj, Summa.Core.AddedEventArgs args) {
+            if ( feedobj.Url == args.FeedUri ) {
+                DeleteItem(new Summa.Data.Item(args.Uri, args.FeedUri));
             }
         }
         
@@ -208,6 +208,7 @@ namespace Summa.Gui {
         }
         
         public void MarkSelectedRead() {
+            Console.WriteLine("MarkSelectedRead : "+DateTime.Now);
             Selected.Read = true;
             
             AppendItem(iter, Selected);
@@ -286,7 +287,6 @@ namespace Summa.Gui {
         
         private Summa.Data.Item ItemFromIter(Gtk.TreeIter treeiter) {
             string val = (string)store.GetValue(iter, 5);
-                
             Summa.Data.Item item = new Summa.Data.Item(val, feedobj.Url);
             return item;
         }

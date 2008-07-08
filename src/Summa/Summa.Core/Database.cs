@@ -526,7 +526,7 @@ namespace Summa.Core {
             FeedChanged(this, args);
         }
         
-        public void ChangeItemInfo(string feeduri, string itemuri, string property, string intended_value) {
+        public void ChangeItemInfo(string feeduri, string itemuri, string property, string intended_value) { //optimize
             NonQueryCommand("update "+GetGeneratedName(feeduri)+" set "+property+@"="""+intended_value+@""" where uri="""+itemuri+@"""");
             
             ChangedEventArgs args = new ChangedEventArgs();
@@ -534,7 +534,7 @@ namespace Summa.Core {
             args.FeedUri = feeduri;
             args.Value = intended_value;
             args.ItemProperty = property;
-            FeedChanged(this, args);
+            ItemChanged(this, args);
         }
         
         public ArrayList GetTags() {
