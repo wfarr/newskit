@@ -138,6 +138,13 @@ namespace Summa.Gui {
             } catch ( Exception e ) {
                 Summa.Core.Log.LogException(e);
             }
+            
+            if ( args.ItemProperty == "tags" ) {
+                Console.WriteLine(1);
+                if ( args.Value.Split(',').Contains(SetTag) ) {
+                    AddNewFeed(new Summa.Data.Feed(args.Uri));
+                }
+            }
         }
         
         private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {

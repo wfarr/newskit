@@ -24,6 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
+
 using Gtk;
 
 namespace Summa.Gui {
@@ -40,6 +42,8 @@ namespace Summa.Gui {
         private Gtk.TreeModel selectmodel;
         private Gtk.TreeIter iter;
         
+        private ArrayList Tags;
+        
         public Summa.Data.Feed Selected {
             get {
                 if ( treeview.Selection.CountSelectedRows() != 0 ) {
@@ -53,6 +57,8 @@ namespace Summa.Gui {
         }
         
         public TagWindow() : base(Gtk.WindowType.Toplevel) {
+            Tags = new ArrayList();
+            
             Title = "Manage your tags";
             BorderWidth = 5;
             DeleteEvent += OnClose;
@@ -79,7 +85,14 @@ namespace Summa.Gui {
         
         private void OnFeedChanged(object obj, Summa.Core.ChangedEventArgs args ) {
             if ( args.ItemProperty == "tags" ) {
-                ComboBox.AppendText(args.Value);
+                foreach ( string tag in args.Value.Split(',') ) {
+                    if ( !Tags.Contains(tag) ) {
+                        if ( tag != "All" ) {
+                            ComboBox.AppendText(tag);
+                            Tags.Add(tag);
+                        }
+                    }
+                }
             }
         }
         
@@ -88,6 +101,7 @@ namespace Summa.Gui {
             foreach ( string tag in Summa.Data.Core.GetTags() ) {
                 if ( tag != "All" ) {
                     ComboBox.AppendText(tag);
+                    Tags.Add(tag);
                 }
             }
             
