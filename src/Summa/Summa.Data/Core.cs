@@ -41,7 +41,7 @@ namespace Summa.Data {
             
             Summa.Data.Feed retfeed = null;
             
-            if ( !urls.Contains(uri) ) {
+            if ( !Summa.Core.Application.Database.FeedExists(uri) ) {
                 Summa.Net.Request request = new Summa.Net.Request(uri);
                 
                 if ( request.Status != System.Net.HttpStatusCode.NotFound ) {
@@ -104,6 +104,16 @@ namespace Summa.Data {
         
         public static ArrayList GetTags() {
             ArrayList list = new ArrayList();
+            
+            try {
+                foreach ( string tag in Summa.Core.Application.Database.GetTags() ) {
+                    if ( !list.Contains(tag) ) {
+                        list.Add(tag);
+                    }
+                }
+            } catch ( Exception e ) {
+                Summa.Core.Log.LogException(e);
+            }
             
             try {
                 foreach ( Summa.Data.Feed feed in GetFeeds() ) {
