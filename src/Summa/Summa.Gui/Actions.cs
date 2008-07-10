@@ -493,6 +493,8 @@ namespace Summa.Actions {
             } else {
                 Label = "Flag this item";
             }
+            
+            Sensitive = true;
         }
     }
     

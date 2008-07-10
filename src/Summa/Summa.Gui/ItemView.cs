@@ -42,6 +42,9 @@ namespace Summa.Gui {
         private Gtk.TreeModel selectmodel;
         private Gtk.TreeIter iter;
         
+        private Gtk.TreeViewColumn column_Date;
+        private Gtk.TreeViewColumn column_Title;
+        
         public bool HasSelected {
             get {
                 if ( Selection.CountSelectedRows() != 0 ) {
@@ -70,12 +73,12 @@ namespace Summa.Gui {
             InsertColumn(-1, "Read", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
             CellRendererText trender = new Gtk.CellRendererText();
             
-            TreeViewColumn column_Date = new Gtk.TreeViewColumn("Date", trender, "text", 3);
+            column_Date = new Gtk.TreeViewColumn("Date", trender, "text", 3);
             column_Date.AddAttribute(trender, "weight", 6);
             column_Date.SortColumnId = 3;
             column_Date.SortIndicator = true;
             AppendColumn(column_Date);
-            TreeViewColumn column_Title = new Gtk.TreeViewColumn("Title", trender, "text", 4);
+            column_Title = new Gtk.TreeViewColumn("Title", trender, "text", 4);
             column_Title.AddAttribute(trender, "weight", 6);
             AppendColumn(column_Title);
             
@@ -98,15 +101,15 @@ namespace Summa.Gui {
                 icon = icon_theme.LookupIcon("feed-item", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
                 store.SetValue(titer, 6, (int)Pango.Weight.Bold);
             } else if ( flagged ) {
-                icon = new Gdk.Pixbuf("/Users/wfarr/Desktop/summa-flagged.png");
+                icon = icon_theme.LookupIcon("emblem-important", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
             } else {
-                icon = null;
+                icon = new Gdk.Pixbuf(Gdk.Colorspace.Rgb, false, 0, 0, 0);
                 store.SetValue(titer, 6, (int)Pango.Weight.Normal);
             }
             
-            try {
+            //try {
                 itemhash.Add(uri, store.GetPath(titer));
-            } catch ( System.ArgumentException e ) {}
+            //s} catch ( System.ArgumentException e ) {}
             
             if ( icon != null ) {
                 store.SetValue(titer, 0, icon);
@@ -153,6 +156,7 @@ namespace Summa.Gui {
             Summa.Core.Application.Database.FeedDeleted += OnFeedDeleted;
             Summa.Core.Application.Database.ItemAdded += OnItemAdded;
             Summa.Core.Application.Database.ItemDeleted += OnItemDeleted;
+            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
         }
         
         private void OnFeedDeleted(object obj, Summa.Core.AddedEventArgs args) {
@@ -170,6 +174,15 @@ namespace Summa.Gui {
         private void OnItemDeleted(object obj, Summa.Core.AddedEventArgs args) {
             if ( feedobj.Url == args.FeedUri ) {
                 DeleteItem(new Summa.Data.Item(args.Uri, args.FeedUri));
+            }
+        }
+        
+        private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args ) {
+            if ( args.FeedUri == feedobj.Url ) {
+                TreePath path = (TreePath)itemhash[args.Uri];
+                TreeIter iter;
+                store.GetIter(out iter, path);
+                AppendItem(iter, new Summa.Data.Item(args.Uri, args.FeedUri));
             }
         }
         
@@ -208,10 +221,7 @@ namespace Summa.Gui {
         }
         
         public void MarkSelectedRead() {
-            Console.WriteLine("MarkSelectedRead : "+DateTime.Now);
             Selected.Read = true;
-            
-            AppendItem(iter, Selected);
         }
         
         public void MarkSelectedFlagged() {
@@ -237,6 +247,7 @@ namespace Summa.Gui {
                 path.Prev();
                 
                 Selection.SelectPath(path);
+                SetCursor(path, column_Title, false);
             }
         }
         
@@ -262,6 +273,7 @@ namespace Summa.Gui {
                     break;
                 }
             }
+            SetCursor((TreePath)itemhash[ItemFromIter(iter).Uri], column_Title, false);
             return has_unread;
         }
         

@@ -30,7 +30,7 @@ using Gdk;
 namespace Summa.Gui {
     public class AboutDialog : Gtk.AboutDialog {
         public AboutDialog() {
-            Version = "0.0.0";
+            Version = "0.1.0";
             Website = "http://code.google.com/p/newskit/";
             WebsiteLabel = "http://code.google.com/p/newskit/";
             License = "LGPL";

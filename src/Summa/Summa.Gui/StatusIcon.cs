@@ -52,7 +52,7 @@ namespace Summa.Gui {
         
         private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
             if ( args.ItemProperty == "read" ) {
-                if ( args.Value == "true" ) {
+                if ( args.Value == "True" ) {
                     unread--;
                     UpdateTooltip();
                 }

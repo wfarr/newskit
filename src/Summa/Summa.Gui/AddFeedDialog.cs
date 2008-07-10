@@ -78,6 +78,7 @@ namespace Summa.Gui {
             
             add_button = new Gtk.Button(Gtk.Stock.Add);
             add_button.Clicked += new EventHandler(OnAdd);
+            add_button.GrabFocus();
             bbox.PackEnd(add_button);
         }
         
