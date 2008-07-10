@@ -29,14 +29,26 @@ namespace Summa.Core {
     public static class Log {
         public static void LogException(Exception e) {
             Summa.Core.Application.Log.Add(e.ToString());
+            
+            if ( Summa.Core.Application.Log.Count > 100 ) {
+                Summa.Core.Application.Log.Remove(Summa.Core.Application.Log[0]);
+            }
         }
         
         public static void LogException(Exception e, string message) {
             Summa.Core.Application.Log.Add(e.ToString()+" with message "+message);
+            
+            if ( Summa.Core.Application.Log.Count > 100 ) {
+                Summa.Core.Application.Log.Remove(Summa.Core.Application.Log[0]);
+            }
         }
         
         public static void LogMessage(string message) {
             Summa.Core.Application.Log.Add(message);
+            
+            if ( Summa.Core.Application.Log.Count > 100 ) {
+                Summa.Core.Application.Log.Remove(Summa.Core.Application.Log[0]);
+            }
         }
     }
 }
