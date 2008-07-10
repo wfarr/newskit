@@ -22,6 +22,7 @@ SUMMA_CSFILES = \
         Summa.Core/DBus.cs \
         Summa.Core/Exceptions.cs \
         Summa.Core/Log.cs \
+        Summa.Core/Notifier.cs \
         Summa.Core/Updater.cs \
         Summa.Data/Core.cs \
         Summa.Data/Feed.cs \
@@ -39,6 +40,7 @@ SUMMA_CSFILES = \
         Summa.Gui/FirstRun.cs \
         Summa.Gui/ItemView.cs \
         Summa.Gui/NativeBookmarker.cs \
+        Summa.Gui/NotificationBar.cs \
         Summa.Gui/OpmlDialog.cs \
         Summa.Gui/StatusIcon.cs \
         Summa.Gui/TagView.cs \
