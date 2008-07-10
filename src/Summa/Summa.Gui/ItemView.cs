@@ -90,44 +90,42 @@ namespace Summa.Gui {
             icon_theme = Gtk.IconTheme.Default;
         }
         
-        private void AppendItem(Gtk.TreeIter titer, Summa.Data.Item titem) {
-            bool read = titem.Read;
-            bool flagged = titem.Flagged;
-            string date = titem.Date;
-            string title = titem.Title;
-            string uri = titem.Uri;
+        private void PopulateItem(Summa.Data.Item item) {
+            TreeIter iter;
+            try {
+                iter = (TreeIter)itemhash[item.Uri];
+            } catch ( NullReferenceException e ) {
+                Summa.Core.Log.LogException(e);
+                iter = store.Append();
+                itemhash.Add(item.Uri, iter);
+            }
             
-            if ( !read ) {
+            if (!item.Read) {
                 icon = icon_theme.LookupIcon("feed-item", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
-                store.SetValue(titer, 6, (int)Pango.Weight.Bold);
-            } else if ( flagged ) {
+                store.SetValue(iter, 6, (int)Pango.Weight.Bold);
+            } else if (item.Flagged) {
                 icon = icon_theme.LookupIcon("emblem-important", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
+                store.SetValue(iter, 6, (int)Pango.Weight.Normal);
             } else {
-                icon = new Gdk.Pixbuf(Gdk.Colorspace.Rgb, false, 0, 0, 0);
-                store.SetValue(titer, 6, (int)Pango.Weight.Normal);
+                icon = new Gdk.Pixbuf(Gdk.Colorspace.Rgb, false, 8, 8, 8);
+                store.SetValue(iter, 6, (int)Pango.Weight.Normal);
             }
             
-            //try {
-                itemhash.Add(uri, store.GetPath(titer));
-            //s} catch ( System.ArgumentException e ) {}
-            
-            if ( icon != null ) {
-                store.SetValue(titer, 0, icon);
-            } else {
-                store.SetValue(titer, 0, "");
-            }
-            store.SetValue(titer, 1, read);
-            store.SetValue(titer, 2, flagged);
-            store.SetValue(titer, 3, MakePrettyDate(date));
-            store.SetValue(titer, 4, title);
-            store.SetValue(titer, 5, uri);
+            store.SetValue(iter, 0, icon);
+            store.SetValue(iter, 1, item.Read);
+            store.SetValue(iter, 2, item.Flagged);
+            store.SetValue(iter, 3, MakePrettyDate(item.Date));
+            store.SetValue(iter, 4, item.Title);
+            store.SetValue(iter, 5, item.Uri);
         }
         
         private void DeleteItem(Summa.Data.Item item) {
-            TreePath path = (TreePath)itemhash[item.Uri];
-            TreeIter iter;
-            store.GetIter(out iter, path);
-            store.Remove(ref iter);
+            try {
+                TreeIter iter = (TreeIter)itemhash[item.Uri];
+                store.Remove(ref iter);
+            } catch ( Exception e ) {
+                Summa.Core.Log.LogException(e);
+            }
         }
         
         public void Populate(Summa.Data.Feed feed) {
@@ -141,9 +139,7 @@ namespace Summa.Gui {
             
             foreach ( Summa.Data.Item item in items ) {
                 if ( feed.Url == feedobj.Url ) {
-                    TreeIter iter = store.Append();
-                    
-                    AppendItem(iter, item);
+                    PopulateItem(item);
                     
                     while ( Gtk.Application.EventsPending() ) {
                         Gtk.Main.Iteration();
@@ -167,7 +163,7 @@ namespace Summa.Gui {
         
         private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {
             if ( feedobj.Url == args.FeedUri ) {
-                AppendItem(store.Append(), new Summa.Data.Item(args.Uri, args.FeedUri));
+                PopulateItem(new Summa.Data.Item(args.Uri, args.FeedUri));
             }
         }
         
@@ -179,10 +175,8 @@ namespace Summa.Gui {
         
         private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args ) {
             if ( args.FeedUri == feedobj.Url ) {
-                TreePath path = (TreePath)itemhash[args.Uri];
-                TreeIter iter;
-                store.GetIter(out iter, path);
-                AppendItem(iter, new Summa.Data.Item(args.Uri, args.FeedUri));
+                Summa.Data.Item item = new Summa.Data.Item(args.Uri, args.FeedUri);
+                PopulateItem(item);
             }
         }
         
@@ -202,9 +196,7 @@ namespace Summa.Gui {
                 
                 foreach ( Summa.Data.Item item in uitems ) {
                     if ( !itemurls.Contains(item.Uri) ) {
-                        TreeIter iter = store.Append();
-                        
-                        AppendItem(iter, item);
+                        PopulateItem(item);
                     }
                 }
                 
@@ -220,10 +212,6 @@ namespace Summa.Gui {
             }
         }
         
-        public void MarkSelectedRead() {
-            Selected.Read = true;
-        }
-        
         public void MarkSelectedFlagged() {
             if ( Selected.Flagged ) {
                 Selected.Flagged = false;
@@ -231,7 +219,7 @@ namespace Summa.Gui {
                 Selected.Flagged = true;
             }
             
-            AppendItem(iter, Selected);
+            PopulateItem(Selected);
         }
         
         public void GoToPreviousItem() {
@@ -273,7 +261,7 @@ namespace Summa.Gui {
                     break;
                 }
             }
-            SetCursor((TreePath)itemhash[ItemFromIter(iter).Uri], column_Title, false);
+            SetCursor(store.GetPath(iter), column_Title, false);
             return has_unread;
         }
         
@@ -292,7 +280,7 @@ namespace Summa.Gui {
                 } else {
                     Summa.Data.Item item = ItemFromIter(iter);
                     item.Read = true;
-                    AppendItem(iter, item);
+                    PopulateItem(item);
                 }
             }
         }

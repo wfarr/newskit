@@ -242,7 +242,7 @@ namespace Summa.Gui {
             play_action.SetToPlay();
             
             if ( !ItemView.Selected.Read ) {
-                ItemView.MarkSelectedRead();
+                ItemView.Selected.Read = true;
             }
         }
         
