@@ -39,7 +39,6 @@ namespace Summa.Gui {
         
         public Gtk.ComboBox ComboBox;
         
-        private Gtk.TreeModel selectmodel;
         private Gtk.TreeIter iter;
         
         private ArrayList Tags;
@@ -47,6 +46,7 @@ namespace Summa.Gui {
         public Summa.Data.Feed Selected {
             get {
                 if ( treeview.Selection.CountSelectedRows() != 0 ) {
+                    Gtk.TreeModel selectmodel;
                     treeview.Selection.GetSelected(out selectmodel, out iter);
                 } else { store.GetIterFirst(out iter); }
                 

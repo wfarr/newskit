@@ -99,14 +99,10 @@ namespace Summa.Gui {
         
         public Gtk.Button connection_button;
         public Summa.Gui.NotificationBar StatusBar;
-        public uint contextid;
         
         // the currently displayed feed
         public Summa.Data.Feed curfeed;
         public Summa.Data.Item curitem;
-        
-        // some magic for updates
-        private bool should_update;
         
         public Browser() : base(Gtk.WindowType.Toplevel) {
             Title = "Summa";

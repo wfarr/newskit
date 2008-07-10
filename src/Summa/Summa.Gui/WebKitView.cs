@@ -121,12 +121,10 @@ namespace Summa.Gui {
                 text = args.Title;
 
             if (text != String.Empty) {
-                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
-                    if ( text != null ) {
-                        Summa.Core.Application.Notifier.Notify("Click to visit " + text);
-                    } else {
-                        Summa.Core.Application.Notifier.Notify("");
-                    }
+                if ( text != null ) {
+                    Summa.Core.Application.Notifier.Notify("Click to visit " + text);
+                } else {
+                    Summa.Core.Application.Notifier.Notify("");
                 }
             }
         }

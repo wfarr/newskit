@@ -38,7 +38,7 @@ namespace Summa.Gui {
         private bool possible;
         
         public DieuBookmarker() {
-            Dieu dieu = Bus.Session.GetObject<Dieu>("org.gnome.Dieu", new ObjectPath("/org/gnome/Dieu"));
+            dieu = Bus.Session.GetObject<Dieu>("org.gnome.Dieu", new ObjectPath("/org/gnome/Dieu"));
             possible = true;
         }
         

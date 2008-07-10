@@ -41,7 +41,6 @@ namespace Summa.Gui {
         
         public Gtk.TreeIter iter;
         public Gtk.TreeModel selectmodel;
-        GLib.Value retval;
         
         // a NewsKitFeed representing the feed selected
         // note that if no feed is selected, trying to get this will cause you
@@ -266,7 +265,9 @@ namespace Summa.Gui {
             
             try {
                 feedhash.Add(feedurl, store.GetPath(titer));
-            } catch ( System.ArgumentException e ) {}
+            } catch ( System.ArgumentException e ) {
+                Summa.Core.Log.LogException(e);
+            }
             
             while ( Gtk.Application.EventsPending() ) {
                 Gtk.Main.Iteration();

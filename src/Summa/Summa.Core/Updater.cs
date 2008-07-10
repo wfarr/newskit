@@ -33,7 +33,6 @@ namespace Summa.Core {
     public class Updater {
         public bool Updating;
         private bool should_automatic_update;
-        private bool enqueued;
         
         private ArrayList updating_queue;
         
@@ -53,7 +52,6 @@ namespace Summa.Core {
         public Updater() {
             Updating = false;
             should_automatic_update = true;
-            enqueued = false;
             
             updating_queue = new ArrayList();
             

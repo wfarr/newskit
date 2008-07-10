@@ -31,15 +31,13 @@ using Gdk;
 
 namespace Summa.Gui {
     public class TagView : Gtk.TreeView {
-        private Gtk.IconTheme icon_theme;
         public ArrayList Tags;
         
-        private Gtk.TreeModel selectmodel;
         private Gtk.TreeIter tagiter;
-        private GLib.Value retval;
         
         public string Selected {
             get {
+                Gtk.TreeModel selectmodel;
                 Selection.GetSelected(out selectmodel, out tagiter);
                 string val = (string)Summa.Core.Application.TagStore.GetValue(tagiter, 1);
                 return val;
@@ -54,9 +52,6 @@ namespace Summa.Gui {
             InsertColumn(-1, "Pix", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
             InsertColumn(-1, "Tag", new Gtk.CellRendererText(), "text", 1);
             HeadersVisible = false;
-            
-            // set up the icon theme so that we can make stuff pretty 
-            icon_theme = Gtk.IconTheme.Default;
             
             // set up for NewsKit
             Tags = Summa.Data.Core.GetTags();

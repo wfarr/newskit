@@ -65,11 +65,7 @@ namespace Summa.Actions {
     }
     
     public class UpdateAllAction : Gtk.Action {
-        private Summa.Gui.Browser browser;
-        
         public UpdateAllAction(Summa.Gui.Browser browser) : base("Update_all", "_Update all feeds") {
-            this.browser = browser;
-            
             Tooltip = "Update all feeds";
             StockId = Gtk.Stock.Refresh;
             Activated += UpdateAll;
@@ -104,11 +100,7 @@ namespace Summa.Actions {
     }
     
     public class PrintPreviewAction : Gtk.Action {
-        private Summa.Gui.Browser browser;
-        
         public PrintPreviewAction(Summa.Gui.Browser browser) : base("Print_preview", "Print previe_w") {
-            this.browser = browser;
-            
             Tooltip = "Show a preview of the printed document";
             StockId = Gtk.Stock.PrintPreview;
             Activated += PrintPreview;
@@ -120,11 +112,7 @@ namespace Summa.Actions {
     }
     
     public class EmailLinkAction : Gtk.Action {
-        private Summa.Gui.Browser browser;
-        
         public EmailLinkAction(Summa.Gui.Browser browser) : base("Email_link", "_Email this item") {
-            this.browser = browser;
-            
             Tooltip = "Email a copy of the selected item";
             Activated += EmailLink;
             Sensitive = false;
@@ -175,11 +163,7 @@ namespace Summa.Actions {
     }
     
     public class NewWindowAction : Gtk.Action {
-        private Summa.Gui.Browser browser;
-        
         public NewWindowAction(Summa.Gui.Browser browser) : base("New_window", "New _window") {
-            this.browser = browser;
-            
             Tooltip = "Open a new window";
             Activated += NewWindow;
         }
@@ -208,11 +192,7 @@ namespace Summa.Actions {
     }
     
     public class CopyAction : Gtk.Action {
-        private Summa.Gui.Browser browser;
-        
         public CopyAction(Summa.Gui.Browser browser) : base("Copy", "_Copy") {
-            this.browser = browser;
-            
             Tooltip = "Copy";
             StockId = Gtk.Stock.Copy;
             Activated += Copy;
@@ -224,11 +204,7 @@ namespace Summa.Actions {
     }
     
     public class SelectAllAction : Gtk.Action {
-        private Summa.Gui.Browser browser;
-        
         public SelectAllAction(Summa.Gui.Browser browser) : base("Select_all", "_Select all text") {
-            this.browser = browser;
-            
             Tooltip = "Select all text";
             Activated += SelectAll;
             Sensitive = false;
@@ -239,11 +215,7 @@ namespace Summa.Actions {
     }
     
     public class FindAction : Gtk.Action {
-        private Summa.Gui.Browser browser;
-        
         public FindAction(Summa.Gui.Browser browser) : base("Find", "_Find...") {
-            this.browser = browser;
-            
             Tooltip = "Find an item";
             StockId = Gtk.Stock.Find;
             Activated += Find;
@@ -541,11 +513,7 @@ namespace Summa.Actions {
     }
     
     public class HelpAction : Gtk.Action {
-        private Summa.Gui.Browser browser;
-        
         public HelpAction(Summa.Gui.Browser browser) : base("Contents", "_Contents") {
-            this.browser = browser;
-            
             Tooltip = "Get help";
             StockId = Gtk.Stock.Help;
             Activated += Help;

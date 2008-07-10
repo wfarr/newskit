@@ -341,10 +341,6 @@ namespace Summa.Core {
         }
         
         public ArrayList GetPosts(string feeduri) {
-            StackFrame fr = new StackFrame(1, true);
-            StackTrace st = new StackTrace(fr);
-            //Console.WriteLine("{0} {1}", "GetPosts", st.ToString());
-            
             ArrayList list = new ArrayList();
             
             IDbCommand dbcmd = db.CreateCommand();
@@ -538,10 +534,6 @@ namespace Summa.Core {
         }
         
         public ArrayList GetTags() {
-            StackFrame fr = new StackFrame(1, true);
-            StackTrace st = new StackTrace(fr);
-            //Console.WriteLine("{0} {1}", "GetTags", st.ToString());
-            
             ArrayList list = new ArrayList();
             
             foreach ( string feeduri in GetFeeds() ) {

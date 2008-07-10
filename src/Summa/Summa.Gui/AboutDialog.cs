@@ -34,7 +34,7 @@ namespace Summa.Gui {
             Website = "http://code.google.com/p/newskit/";
             WebsiteLabel = "http://code.google.com/p/newskit/";
             License = "LGPL";
-            Name = "Summa";
+            ProgramName = "Summa";
             
             string[] authors = new string[2];
             authors[0] = "Ethan Osten";

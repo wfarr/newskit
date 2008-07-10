@@ -107,9 +107,7 @@ namespace Summa.Gui {
                 double progress = 0.0;
                 
                 foreach ( string feed in feeds ) {
-                    foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
-                        Summa.Core.Application.Notifier.Notify("Importing feed \""+feed+"\"");
-                    }
+                    Summa.Core.Application.Notifier.Notify("Importing feed \""+feed+"\"");
                     while ( Gtk.Application.EventsPending() ) {
                         Gtk.Main.Iteration();
                     }
@@ -117,22 +115,19 @@ namespace Summa.Gui {
                     bool it_worked = true;
                     
                     try {
-                        Summa.Data.Feed uid = Summa.Data.Core.RegisterFeed(feed);
+                        Summa.Data.Core.RegisterFeed(feed);
                         it_worked = true;
                     } catch ( Summa.Core.Exceptions.BadFeed e ) {
-                        foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
-                            Summa.Core.Application.Notifier.Notify("Import of feed \""+feed+"\" failed.");
-                            it_worked = false;
-                        }
+                        Summa.Core.Log.LogException(e);
+                        Summa.Core.Application.Notifier.Notify("Import of feed \""+feed+"\" failed.");
+                        it_worked = false;
                     }
                     
                     pb.Fraction = progress;
                     progress += step;
                     
                     if ( it_worked ) {
-                        foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
-                            browser.contextid++;
-                        }
+                        Summa.Core.Application.Notifier.Notify("Import of feed\""+feed+"\" was successful.");
                         
                         while ( Gtk.Application.EventsPending() ) {
                             Gtk.Main.Iteration();

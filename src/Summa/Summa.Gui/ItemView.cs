@@ -39,7 +39,6 @@ namespace Summa.Gui {
         private ArrayList items;
         private Hashtable itemhash;
         
-        private Gtk.TreeModel selectmodel;
         private Gtk.TreeIter iter;
         
         private Gtk.TreeViewColumn column_Date;
@@ -57,6 +56,7 @@ namespace Summa.Gui {
         
         public Summa.Data.Item Selected {
             get {
+                Gtk.TreeModel selectmodel;
                 if ( Selection.CountSelectedRows() != 0 ) {
                     Selection.GetSelected(out selectmodel, out iter);
                 } else { store.GetIterFirst(out iter); }
@@ -107,7 +107,7 @@ namespace Summa.Gui {
                 icon = icon_theme.LookupIcon("emblem-important", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
                 store.SetValue(iter, 6, (int)Pango.Weight.Normal);
             } else {
-                icon = new Gdk.Pixbuf(Gdk.Colorspace.Rgb, false, 8, 8, 8);
+                icon = new Gdk.Pixbuf(Gdk.Colorspace.Rgb, false, 0, 0, 0);
                 store.SetValue(iter, 6, (int)Pango.Weight.Normal);
             }
             
@@ -224,6 +224,7 @@ namespace Summa.Gui {
         
         public void GoToPreviousItem() {
             if ( Selection.CountSelectedRows() != 0 ) {
+                Gtk.TreeModel selectmodel;
                 Selection.GetSelected(out selectmodel, out iter);
             } else {
                 store.GetIterFirst(out iter);
@@ -241,6 +242,7 @@ namespace Summa.Gui {
         
         public bool GoToNextItem() {
             if ( Selection.CountSelectedRows() != 0 ) {
+                Gtk.TreeModel selectmodel;
                 Selection.GetSelected(out selectmodel, out iter);
             } else { store.GetIterFirst(out iter); }
             
