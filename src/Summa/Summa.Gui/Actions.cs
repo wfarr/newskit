@@ -441,8 +441,7 @@ namespace Summa.Actions {
                     browser.ItemView.GoToPreviousItem();
                     browser.UpdateHtmlview();
                 } else {
-                    browser.statusbar.Push(browser.contextid, "There are no more unread items.");
-                    browser.contextid++;
+                    Summa.Core.Application.Notifier.Notify("There are no more unread items.");
                 }
             } else {
                 browser.UpdateHtmlview();

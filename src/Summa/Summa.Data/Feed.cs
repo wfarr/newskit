@@ -197,7 +197,14 @@ namespace Summa.Data {
         }
         
         public bool Update() {
-            Summa.Net.Request request = new Summa.Net.Request(Url);
+            Summa.Net.Request request;
+            try {
+                request = new Summa.Net.Request(Url);
+            } catch ( Summa.Core.Exceptions.NotFound e ) {
+                Summa.Core.Log.LogException(e);
+                return false;
+            }
+            
             Summa.Interfaces.IFeedParser parser = Summa.Net.Util.Sniff(request);
             
             parser.Items.Reverse();

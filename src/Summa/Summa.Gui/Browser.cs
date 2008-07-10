@@ -98,7 +98,7 @@ namespace Summa.Gui {
         public Summa.Data.Item item;
         
         public Gtk.Button connection_button;
-        public Gtk.Statusbar statusbar;
+        public Summa.Gui.NotificationBar StatusBar;
         public uint contextid;
         
         // the currently displayed feed
@@ -167,9 +167,8 @@ namespace Summa.Gui {
             ItemView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
             right_paned.Pack1(ItemView_swin, true, true);
             
-            statusbar = new Gtk.Statusbar();
-            contextid = 0;
-            table.Attach(statusbar, 0, 5, 3, 4, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
+            StatusBar = new Summa.Gui.NotificationBar();
+            table.Attach(StatusBar, 0, 5, 3, 4, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
             
             HtmlView = new Summa.Gui.WebKitView();
             HtmlView_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
@@ -244,11 +243,6 @@ namespace Summa.Gui {
             if ( !ItemView.Selected.Read ) {
                 ItemView.Selected.Read = true;
             }
-        }
-        
-        public void SetStatusbarText(string text, string text1) {
-            statusbar.Push(contextid, text);
-            contextid++;
         }
         
         public void UpdateFromConfig() {

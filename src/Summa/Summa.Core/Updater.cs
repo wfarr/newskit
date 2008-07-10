@@ -66,7 +66,14 @@ namespace Summa.Core {
                 bool update = false;
                 
                 try {
+                    Summa.Core.Application.Notifier.Notify("Updating feed: "+feed.Name);
                     update = feed.Update();
+                    
+                    if ( update ) {
+                        Summa.Core.Application.Notifier.Notify(feed.Name+" has new items.");
+                    } else {
+                        Summa.Core.Application.Notifier.Notify(feed.Name+" has no new items.");
+                    }
                 } catch ( NullReferenceException ) {}
             }
         }

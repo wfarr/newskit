@@ -108,7 +108,7 @@ namespace Summa.Gui {
                 
                 foreach ( string feed in feeds ) {
                     foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
-                        browser.statusbar.Push(browser.contextid, "Importing feed \""+feed+"\"");
+                        Summa.Core.Application.Notifier.Notify("Importing feed \""+feed+"\"");
                     }
                     while ( Gtk.Application.EventsPending() ) {
                         Gtk.Main.Iteration();
@@ -121,8 +121,7 @@ namespace Summa.Gui {
                         it_worked = true;
                     } catch ( Summa.Core.Exceptions.BadFeed e ) {
                         foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
-                            browser.statusbar.Push(browser.contextid, "Import of feed \""+feed+"\" failed.");
-                            browser.contextid++;
+                            Summa.Core.Application.Notifier.Notify("Import of feed \""+feed+"\" failed.");
                             it_worked = false;
                         }
                     }

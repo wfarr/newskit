@@ -123,9 +123,9 @@ namespace Summa.Gui {
             if (text != String.Empty) {
                 foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
                     if ( text != null ) {
-                        browser.statusbar.Push(browser.statusbar.GetContextId(text), "Click to visit " + text);
+                        Summa.Core.Application.Notifier.Notify("Click to visit " + text);
                     } else {
-                        browser.statusbar.Push(browser.statusbar.GetContextId(""), "");
+                        Summa.Core.Application.Notifier.Notify("");
                     }
                 }
             }
