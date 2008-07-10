@@ -81,12 +81,12 @@ namespace Summa.Core {
             
             GeneratedNames = new Hashtable();
             
-            foreach ( string[] feed in GetFeeds() ) {
-                GeneratedNames.Add(feed[1], feed[2]);
-            }
-            
             if (!exists) {
                 Initialize();
+            }
+            
+            foreach ( string[] feed in GetFeeds() ) {
+                GeneratedNames.Add(feed[1], feed[2]);
             }
         }
         
