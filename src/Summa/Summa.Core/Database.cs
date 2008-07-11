@@ -509,7 +509,7 @@ namespace Summa.Core {
             AddedEventArgs args = new AddedEventArgs();
             args.Uri = uri;
             args.FeedUri = feeduri;
-            ItemDeleted(this, args);
+            ItemAdded(this, args);
         }
         
         public void ChangeFeedInfo(string feeduri, string property, string intended_value) {
