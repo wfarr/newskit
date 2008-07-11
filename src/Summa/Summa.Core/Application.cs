@@ -43,6 +43,7 @@ namespace Summa.Core {
         
         public static void Main() {
             Gtk.Application.Init();
+            GLib.Log.SetLogHandler(null, GLib.LogLevelFlags.All, new GLib.LogFunc(Summa.Core.Log.LogFunc)); 
             
             Log = new ArrayList();
             
@@ -51,7 +52,7 @@ namespace Summa.Core {
             Notifier = new Summa.Core.Notifier();
             Database = new Summa.Core.Database();
             Browsers = new ArrayList();
-            Browsers.Add(new Summa.Gui.Browser()); // here
+            Browsers.Add(new Summa.Gui.Browser());
             StatusIcon = new Summa.Gui.StatusIcon();
             Updater = new Summa.Core.Updater();
             ConfigDialog = new Summa.Gui.ConfigDialog();

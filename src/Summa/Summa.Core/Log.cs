@@ -50,5 +50,9 @@ namespace Summa.Core {
                 Summa.Core.Application.Log.Remove(Summa.Core.Application.Log[0]);
             }
         }
+        
+        public static void LogFunc(string log_domain, GLib.LogLevelFlags log_level, string message) {
+            LogMessage(message);
+        }
     }
 }
