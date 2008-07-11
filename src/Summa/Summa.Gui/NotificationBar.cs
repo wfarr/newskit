@@ -40,10 +40,8 @@ namespace Summa.Gui {
         }
         
         public void ShowMessage(string message) {
-            Gdk.Threads.Enter();
-                Push(cid, message);
-                cid++;
-            Gdk.Threads.Leave();
+            Push(cid, message);
+            cid++;
         }
     }
 }
