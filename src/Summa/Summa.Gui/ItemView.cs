@@ -140,10 +140,6 @@ namespace Summa.Gui {
             foreach ( Summa.Data.Item item in items ) {
                 if ( feed.Url == feedobj.Url ) {
                     PopulateItem(item);
-                    
-                    while ( Gtk.Application.EventsPending() ) {
-                        Gtk.Main.Iteration();
-                    }
                 } else {
                     return;
                 }

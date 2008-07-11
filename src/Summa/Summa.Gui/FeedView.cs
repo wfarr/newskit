@@ -139,7 +139,6 @@ namespace Summa.Gui {
             }
             
             if ( args.ItemProperty == "tags" ) {
-                Console.WriteLine(1);
                 if ( args.Value.Split(',').Contains(SetTag) ) {
                     AddNewFeed(new Summa.Data.Feed(args.Uri));
                 }
@@ -267,10 +266,6 @@ namespace Summa.Gui {
                 feedhash.Add(feedurl, store.GetPath(titer));
             } catch ( System.ArgumentException e ) {
                 Summa.Core.Log.LogException(e);
-            }
-            
-            while ( Gtk.Application.EventsPending() ) {
-                Gtk.Main.Iteration();
             }
         }
         
