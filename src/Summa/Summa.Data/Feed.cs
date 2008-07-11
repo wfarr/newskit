@@ -48,7 +48,7 @@ namespace Summa.Data {
         public string Author {
             get {
                 string[] feed = Summa.Core.Application.Database.GetFeed(Url);
-                return feed[3];
+                return feed[4];
             }
             set {
                 Summa.Core.Application.Database.ChangeFeedInfo(Url, "author", value);
@@ -57,7 +57,7 @@ namespace Summa.Data {
         public string Subtitle {
             get {
                 string[] feed = Summa.Core.Application.Database.GetFeed(Url);
-                return feed[4];
+                return feed[5];
             }
             set {
                 Summa.Core.Application.Database.ChangeFeedInfo(Url, "subtitle", value);
