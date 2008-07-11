@@ -239,7 +239,7 @@ namespace Summa.Actions {
         
         public void ShowConfigDialog(object obj, EventArgs args) {
             Summa.Core.Application.ConfigDialog.TransientFor = browser;
-            Summa.Core.Application.ConfigDialog.TransientFor.ShowAll();
+            Summa.Core.Application.ConfigDialog.ShowAll();
         }
     }
     
@@ -256,14 +256,16 @@ namespace Summa.Actions {
         
         public void Update(object obj, EventArgs args) {
             if ( browser.FeedView.HasSelected ) {
-                bool updated = browser.FeedView.Selected.Update();
+                Summa.Core.Application.Updater.UpdateFeed(browser.FeedView.Selected);
+                
+                /*bool updated = browser.FeedView.Selected.Update();
                 
                 if ( updated ) {
                     browser.FeedView.UpdateSelected();
                     browser.ItemView.Update();
                     browser.UpdateName();
                     browser.ShowNotification(browser.FeedView.Selected);
-                }
+                }*/
             }
         }
     }
