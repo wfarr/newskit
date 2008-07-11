@@ -215,7 +215,15 @@ namespace Summa.Parser {
         
         public string GetXmlNodeUrl(XmlNode node, string tag) {
             XmlNode n = node.SelectSingleNode(tag, mgr);
-            return (n == null) ? null : (string)n.Attributes.Item(0).Value;
+            
+            foreach ( XmlAttribute val in n.Attributes ) {
+                string sval = (string)val.Value;
+                if ( sval.StartsWith("http://") ) {
+                    return sval;
+                }
+            }
+            
+            return null;
         }
         
         public DateTime GetRfc822DateTime(XmlNode node, string tag) {
