@@ -36,6 +36,8 @@ namespace Summa.Core {
         
         private ArrayList updating_queue;
         
+        private Summa.Data.Feed updating_feed;
+        
         public ArrayList FeedsUpdating {
             get {
                 Summa.Data.Feed[] array = (Summa.Data.Feed[])updating_queue.ToArray();
@@ -64,16 +66,28 @@ namespace Summa.Core {
                 bool update = false;
                 
                 try {
-                    Summa.Core.Application.Notifier.Notify("Updating feed: "+feed.Name);
+                    Summa.Core.NotificationEventArgs fargs = new Summa.Core.NotificationEventArgs();
+                    fargs.Message = "Updating feed: "+feed.Name;
+                    Gtk.Application.Invoke(this, fargs, OnNotify);
+                    
                     update = feed.Update();
                     
                     if ( update ) {
-                        Summa.Core.Application.Notifier.Notify(feed.Name+" has new items.");
+                        Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
+                        args.Message = feed.Name+" has new items.";
+                        Gtk.Application.Invoke(this, args, OnNotify);
                     } else {
-                        Summa.Core.Application.Notifier.Notify(feed.Name+" has no new items.");
+                        Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
+                        args.Message = feed.Name+" has no new items.";
+                        Gtk.Application.Invoke(this, args, new EventHandler(OnNotify));
                     }
                 } catch ( NullReferenceException ) {}
             }
+        }
+        
+        private void OnNotify(object obj, EventArgs args) {
+            Summa.Core.NotificationEventArgs iargs = (Summa.Core.NotificationEventArgs)args;
+            Summa.Core.Application.Notifier.Notify(iargs.Message);
         }
         
         public void Update() {
@@ -87,6 +101,32 @@ namespace Summa.Core {
                 System.Threading.Thread updatethread = new System.Threading.Thread(UpdateThread);
                 updatethread.Start();
             }
+        }
+        
+        private void UpdateFeedThread() {
+            try {
+                Summa.Core.NotificationEventArgs fargs = new Summa.Core.NotificationEventArgs();
+                fargs.Message = "Updating feed: "+updating_feed.Name;
+                Gtk.Application.Invoke(this, fargs, OnNotify);
+                
+                bool update = updating_feed.Update();
+                
+                if ( update ) {
+                    Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
+                    args.Message = updating_feed.Name+" has new items.";
+                    Gtk.Application.Invoke(this, args, OnNotify);
+                } else {
+                    Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
+                    args.Message = updating_feed.Name+" has no new items.";
+                    Gtk.Application.Invoke(this, args, new EventHandler(OnNotify));
+                }
+            } catch ( NullReferenceException ) {}
+        }
+        
+        public void UpdateFeed(Summa.Data.Feed feed) {
+            updating_feed = feed;
+            System.Threading.Thread updatethread = new System.Threading.Thread(UpdateFeedThread);
+            updatethread.Start();
         }
         
         public bool ScheduledUpdate() {
