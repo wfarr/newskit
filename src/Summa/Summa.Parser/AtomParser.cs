@@ -217,8 +217,9 @@ namespace Summa.Parser {
             XmlNode n = node.SelectSingleNode(tag, mgr);
             
             foreach ( XmlAttribute val in n.Attributes ) {
+                string name = (string)val.Name;
                 string sval = (string)val.Value;
-                if ( sval.StartsWith("http://") ) {
+                if ( name == "href" ) {
                     return sval;
                 }
             }

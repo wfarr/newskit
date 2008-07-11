@@ -119,7 +119,7 @@ namespace Migo.Syndication
                 throw new ArgumentNullException ("dateTime");
             }
             
-            string[] dsplit = datetime.Split('-');
+            /*string[] dsplit = datetime.Split('-');
             int year = Convert.ToInt32(dsplit[0]);
             int month = Convert.ToInt32(dsplit[1]);
             int day = Convert.ToInt32(dsplit[2].Split('T')[0]);
@@ -129,8 +129,8 @@ namespace Migo.Syndication
             int minute = Convert.ToInt32(dsplit2[1]);
             int second = Convert.ToInt32(dsplit2[2].Split('Z')[0]);
             
-            DateTime ret = new DateTime(year, month, day, hour, minute, second);
-            return ret;
+            DateTime ret = new DateTime(year, month, day, hour, minute, second);*/
+            return Convert.ToDateTime(datetime);
         }
         
         public static bool TryAtomParse(string datetime, out DateTime result)
