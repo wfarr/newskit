@@ -1,6 +1,7 @@
-SUBDIRS = src 
+SUBDIRS = src \
+    data
 
-nkdocdir = ${prefix}/doc/NewsKit
+nkdocdir = ${prefix}/doc/Summa
 nkdoc_DATA = \
 	README\
 	COPYING\
@@ -27,3 +28,11 @@ dist-hook:
 
 run:
 	mono --debug src/Summa/summa.exe
+
+install-data-local:
+		if test -z "$(DESTDIR)" ; then \
+				for p in $(gconf_DATA) ; do \
+						GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(top_builddir)/data/$$p ; \
+				done \
+		fi
+		gtk-update-icon-cache $(datadir)/icons/hicolor

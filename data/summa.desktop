@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Summa
+GenericName=Feed Reader
+Comment=Subscribe to and read feeds from the internet
+Exec=summa
+StartupNotify=false
+Terminal=false
+Type=Application
+Icon=summa
+Categories=Network;GNOME;GTK

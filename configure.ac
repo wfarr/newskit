@@ -41,6 +41,7 @@ AC_CONFIG_FILES([
 Makefile
 src/Makefile
 src/Summa/Makefile
+data/Makefile
 ])
 
 AC_OUTPUT
