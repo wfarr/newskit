@@ -15,7 +15,7 @@ ASSEMBLIES = \
 	     -r:System.Data \
 	     -r:System.Web
 
-SUMMA_CSFILES = \
+SUMMA_CSDISTFILES = \
         Summa.Core/Application.cs \
         Summa.Core/Config.cs \
         Summa.Core/Database.cs \
@@ -38,6 +38,7 @@ SUMMA_CSFILES = \
         Summa.Gui/FeedPropertiesDialog.cs \
         Summa.Gui/FeedView.cs \
         Summa.Gui/FirstRun.cs \
+        Summa.Gui/ItemNotebook.cs \
         Summa.Gui/ItemView.cs \
         Summa.Gui/NativeBookmarker.cs \
         Summa.Gui/NotificationBar.cs \
@@ -60,7 +61,7 @@ SUMMA_CSFILES = \
 
 summalibdir = $(prefix)/lib/summa
 all:
-	$(CSC) $(FLAGS) $(ASSEMBLIES) $(SUMMA_CSFILES) -out:summa.exe 
+	$(CSC) $(FLAGS) $(ASSEMBLIES) $(SUMMA_CSDISTFILES) -out:summa.exe 
 
 install-data-local: summa.exe
 	$(mkinstalldirs) $(DESTDIR)$(summalibdir)
