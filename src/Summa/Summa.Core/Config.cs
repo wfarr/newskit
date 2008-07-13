@@ -42,6 +42,8 @@ namespace Summa.Core {
         private static string KEY_DEFAULT_ZOOM_LEVEL = "/apps/summa/default_zoom_level";
         private static string KEY_GLOBAL_UPDATE_INTERVAL = "/apps/summa/global_update_interval";
         private static string KEY_BOOKMARKER = "/apps/summa/bookmarker";
+        private static string KEY_TABS = "/apps/summa/open_in_tabs";
+        private static string KEY_WIDESCREEN = "/apps/summa/widescreen_view";
         
         public static bool ShowNotifications {
             get {
@@ -160,6 +162,7 @@ namespace Summa.Core {
             }
             set {
                 client.Set(KEY_DEFAULT_ZOOM_LEVEL, value);
+                Summa.Core.Application.Notifier.ChangeZoom();
             }
         }
         
@@ -191,6 +194,37 @@ namespace Summa.Core {
             }
             set {
                 client.Set(KEY_BOOKMARKER, value);
+            }
+        }
+        
+        public static bool OpenTabs {
+            get {
+                try {
+                    return (bool)client.Get(KEY_TABS);
+                } catch ( GConf.NoSuchKeyException e ) {
+                    Summa.Core.Log.LogException(e);
+                    client.Set(KEY_TABS, false);
+                    return false;
+                }
+            }
+            set {
+                client.Set(KEY_TABS, value);
+            }
+        }
+        
+        public static bool WidescreenView {
+            get {
+                try {
+                    return (bool)client.Get(KEY_WIDESCREEN);
+                } catch ( GConf.NoSuchKeyException e ) {
+                    Summa.Core.Log.LogException(e);
+                    client.Set(KEY_WIDESCREEN, false);
+                    return false;
+                }
+            }
+            set {
+                client.Set(KEY_WIDESCREEN, value);
+                Summa.Core.Application.Notifier.ChangeView();
             }
         }
     }

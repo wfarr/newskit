@@ -43,6 +43,7 @@ namespace Summa.Gui {
         private StringBuilder content = new StringBuilder();
         public Summa.Data.Item SelectedItem;
         public Summa.Data.Feed SelectedFeed;
+        public Summa.Gui.ItemNotebook notebook;
         
         public WebKitView() {
             NavigationRequested += new NavigationRequestedHandler(OnNavigationRequested);
@@ -51,6 +52,11 @@ namespace Summa.Gui {
             string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.<br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";
             Render(starting_content);
             
+            ZoomTo(Summa.Core.Config.DefaultZoomLevel);
+            Summa.Core.Application.Notifier.ZoomChanged += OnZoomChanged;
+        }
+        
+        private void OnZoomChanged(object obj, EventArgs args) {
             ZoomTo(Summa.Core.Config.DefaultZoomLevel);
         }
         
@@ -81,8 +87,6 @@ namespace Summa.Gui {
         }
         
         public void ZoomTo(int size) {
-            Summa.Core.Config.DefaultZoomLevel = size;
-            
             Summa.Gui.WebSettings settings = new Summa.Gui.WebSettings();
             settings.DefaultFontSize = Summa.Core.Config.DefaultZoomLevel;
             
@@ -105,7 +109,17 @@ namespace Summa.Gui {
         }
         
         private void OnNavigationRequested(object obj, NavigationRequestedArgs args) {
-            Gnome.Url.Show(args.Request.Uri);
+            if ( Summa.Core.Config.OpenTabs ) {
+                try {
+                    notebook.CloseFirstTab = false;
+                    notebook.LoadUri(args.Request.Uri);
+                    notebook.CloseFirstTab = true;
+                } catch ( Exception ) {
+                    Gnome.Url.Show(args.Request.Uri);
+                }
+            } else {
+                Gnome.Url.Show(args.Request.Uri);
+            }
             
             args.RetVal = WebKit.NavigationResponse.Ignore;
         }
@@ -131,6 +145,10 @@ namespace Summa.Gui {
         
         public void Render(string data) {
             LoadString(data, "text/html", "utf-8", "http:///");
+        }
+        
+        public void RenderUri(string uri) {
+            Open(uri);
         }
         
         public string MakeItemHtml(Summa.Data.Item item) {

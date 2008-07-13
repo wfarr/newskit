@@ -89,11 +89,11 @@ namespace Summa.Actions {
         }
         
         public void Print(object obj, EventArgs args) {
-            browser.HtmlView.Print();
+            browser.ItemNotebook.CurrentView.Print();
         }
         
         public void CheckShouldSensitive() {
-            if ( browser.HtmlView.CanPrint() ) {
+            if ( browser.ItemNotebook.CurrentView.CanPrint() ) {
                 browser.print_action.Sensitive = true;
             }
         }
@@ -357,7 +357,7 @@ namespace Summa.Actions {
         }
         
         public void ZoomIn(object obj, EventArgs args) {
-            browser.HtmlView.ZoomIn();
+            browser.ItemNotebook.CurrentView.ZoomIn();
         }
         
         public void CheckShouldSensitive() {
@@ -379,7 +379,7 @@ namespace Summa.Actions {
         }
         
         public void ZoomOut(object obj, EventArgs args) {
-            browser.HtmlView.ZoomOut();
+            browser.ItemNotebook.CurrentView.ZoomOut();
         }
         
         public void CheckShouldSensitive() {

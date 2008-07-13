@@ -36,6 +36,8 @@ namespace Summa.Core {
     
     public class Notifier {
         public event NotificationEventHandler Notification;
+        public event EventHandler ZoomChanged;
+        public event EventHandler ViewChanged;
         
         public Notifier() {}
         
@@ -47,6 +49,14 @@ namespace Summa.Core {
         
         public void PopupNotification(string message) {
             //FIXME
+        }
+        
+        public void ChangeZoom() {
+            ZoomChanged(this, new EventArgs());
+        }
+        
+        public void ChangeView() {
+            ViewChanged(this, new EventArgs());
         }
     }
 }

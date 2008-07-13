@@ -93,9 +93,9 @@ namespace Summa.Gui {
         public Summa.Gui.ItemView ItemView;
         public Gtk.ScrolledWindow ItemView_swin;
         
-        public Summa.Gui.WebKitView HtmlView;
-        public Gtk.ScrolledWindow HtmlView_swin;
         public Summa.Data.Item item;
+        
+        public Summa.Gui.ItemNotebook ItemNotebook;
         
         public Gtk.Button connection_button;
         public Summa.Gui.NotificationBar StatusBar;
@@ -152,7 +152,11 @@ namespace Summa.Gui {
             FeedView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
             left_paned.Pack2(FeedView_swin, true, true);
             
-            right_paned = new Gtk.VPaned();
+            if ( Summa.Core.Config.WidescreenView ) {
+                right_paned = new Gtk.HPaned();
+            } else {
+                right_paned = new Gtk.VPaned();
+            }
             main_paned.Pack2(right_paned, true, true);
             
             ItemView = new Summa.Gui.ItemView();
@@ -163,26 +167,33 @@ namespace Summa.Gui {
             ItemView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
             right_paned.Pack1(ItemView_swin, true, true);
             
+            ItemNotebook = new Summa.Gui.ItemNotebook();
+            right_paned.Pack2(ItemNotebook, true, true);
+            
             StatusBar = new Summa.Gui.NotificationBar();
             table.Attach(StatusBar, 0, 5, 3, 4, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
             
-            HtmlView = new Summa.Gui.WebKitView();
-            HtmlView_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
-            HtmlView_swin.Add(HtmlView);
-            HtmlView_swin.ShadowType = Gtk.ShadowType.In;
-            HtmlView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
-            right_paned.Pack2(HtmlView_swin, true, true);
-            
             AboutDialog = new Summa.Gui.AboutDialog();
-            
-            //Notify.init("Summa");
             
             UpdateFromConfig();
             
             Summa.Core.Application.Database.ItemChanged += OnItemChanged;
-            
-            //client.Notify(KEY_LIBNOTIFY); //FIXME
-            //client.ValueChanged += b => { update_from_gconf(); };
+            Summa.Core.Application.Notifier.ViewChanged += OnViewChanged;
+        }
+        
+        private void OnViewChanged(object obj, EventArgs args) {
+            right_paned.Remove(ItemView_swin);
+            right_paned.Remove(ItemNotebook);
+            main_paned.Remove(right_paned);
+            if ( Summa.Core.Config.WidescreenView ) {
+                right_paned = new Gtk.HPaned();
+            } else {
+                right_paned = new Gtk.VPaned();
+            }
+            main_paned.Pack2(right_paned, true, true);
+            right_paned.Add1(ItemView_swin);
+            right_paned.Add2(ItemNotebook);
+            ShowAll();
         }
         
         private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
@@ -205,7 +216,7 @@ namespace Summa.Gui {
             UpdateName();
             curfeed = FeedView.Selected;
             play_action.Sensitive = false;
-            HtmlView.Render(curfeed);
+            ItemNotebook.CurrentView.Render(curfeed);
             ItemView.Populate(curfeed);
         }
         
@@ -222,12 +233,13 @@ namespace Summa.Gui {
         
         public void UpdateHtmlview() {
             curitem = ItemView.Selected;
-            HtmlView.Render(curitem);
+            ItemNotebook.Load(curitem);
+            ItemNotebook.ShowAll();
             
             print_action.CheckShouldSensitive();
             bookmark_action.CheckShouldSensitive();
             
-            if ( HtmlView.CanZoom() ) {
+            if ( ItemNotebook.CurrentView.CanZoom() ) {
                 zoom_in_action.CheckShouldSensitive();
                 zoom_out_action.CheckShouldSensitive();
             }

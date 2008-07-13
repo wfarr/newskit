@@ -51,12 +51,12 @@ namespace Summa.Core {
             
             Notifier = new Summa.Core.Notifier();
             Database = new Summa.Core.Database();
-            Browsers = new ArrayList();
-            Browsers.Add(new Summa.Gui.Browser());
-            StatusIcon = new Summa.Gui.StatusIcon();
             Updater = new Summa.Core.Updater();
             ConfigDialog = new Summa.Gui.ConfigDialog();
             DBus = new Summa.Core.DBusInterface();
+            Browsers = new ArrayList();
+            Browsers.Add(new Summa.Gui.Browser());
+            StatusIcon = new Summa.Gui.StatusIcon();
             
             foreach ( Summa.Gui.Browser browser in Browsers ) {
                 browser.ShowAll();

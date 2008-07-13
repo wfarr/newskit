@@ -36,6 +36,8 @@ namespace Summa.Gui {
         
         private Gtk.CheckButton cb_notifications;
         private Gtk.CheckButton cb_sortfeedview;
+        private Gtk.CheckButton cb_tabs;
+        private Gtk.CheckButton cb_widescreen;
         private Gtk.ComboBox cb_updateinterval;
         private string[] updateinterval_options;
         
@@ -94,6 +96,16 @@ namespace Summa.Gui {
             cb_sortfeedview.Toggled += new EventHandler(OnCbSortFeedViewToggled);
             interface_vbox.PackStart(cb_sortfeedview, false, false, 0);
             
+            cb_tabs = new Gtk.CheckButton("Open links in tabs inside Summa");
+            cb_tabs.Active = Summa.Core.Config.OpenTabs;
+            cb_tabs.Toggled += new EventHandler(OnCbTabsToggled);
+            interface_vbox.PackStart(cb_tabs, false, false, 0);
+            
+            cb_widescreen = new Gtk.CheckButton("Arrange window in widescreen mode");
+            cb_widescreen.Active = Summa.Core.Config.WidescreenView;
+            cb_widescreen.Toggled += new EventHandler(OnCbWidescreenToggled);
+            interface_vbox.PackStart(cb_widescreen, false, false, 0);
+            
             Frame updating_frame = new Gtk.Frame();
             Label updating_label = new Gtk.Label();
             updating_label.Markup = ("<b>Updating</b>");
@@ -146,6 +158,22 @@ namespace Summa.Gui {
                 Summa.Core.Config.SortFeedview = true;
             } else {
                 Summa.Core.Config.SortFeedview = false;
+            }
+        }
+        
+        private void OnCbTabsToggled(object obj, EventArgs args) {
+            if ( cb_tabs.Active ) {
+                Summa.Core.Config.OpenTabs = true;
+            } else {
+                Summa.Core.Config.OpenTabs = false;
+            }
+        }
+        
+        private void OnCbWidescreenToggled(object obj, EventArgs args) {
+            if ( cb_widescreen.Active ) {
+                Summa.Core.Config.WidescreenView = true;
+            } else {
+                Summa.Core.Config.WidescreenView = false;
             }
         }
         
