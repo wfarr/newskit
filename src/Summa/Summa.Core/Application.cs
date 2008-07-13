@@ -26,6 +26,9 @@
 using System;
 using System.Collections;
 
+using System.Runtime.InteropServices;
+using System.Text;
+
 using Gtk;
 
 namespace Summa.Core {
@@ -43,6 +46,8 @@ namespace Summa.Core {
         
         public static void Main() {
             Gtk.Application.Init();
+            SetProcessName("summa");
+            
             GLib.Log.SetLogHandler(null, GLib.LogLevelFlags.All, new GLib.LogFunc(Summa.Core.Log.LogFunc)); 
             
             Log = new ArrayList();
@@ -112,5 +117,17 @@ namespace Summa.Core {
                 WindowsShown = true;
             }
         }
+        
+        [DllImport("libc")]
+		private static extern int prctl (int option, byte [] arg2, ulong arg3, ulong arg4, ulong arg5);
+
+		// From /usr/include/linux/prctl.h
+		private const int PR_SET_NAME = 15;
+
+		public static void SetProcessName(string name) {
+			if (prctl (PR_SET_NAME, Encoding.ASCII.GetBytes (name + '\0'), 0, 0, 0) < 0) {
+				Summa.Core.Log.LogMessage(String.Format("Couldn't set process name to '{0}': {1}", name, Mono.Unix.Native.Stdlib.GetLastError()));
+			}
+		}
     }
 }
