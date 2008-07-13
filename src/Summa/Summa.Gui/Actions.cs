@@ -162,6 +162,22 @@ namespace Summa.Actions {
         }
     }
     
+    public class NewTabAction : Gtk.Action {
+        private Summa.Gui.Browser browser;
+        
+        public NewTabAction(Summa.Gui.Browser browser) : base("New_tab", "Open in a new _tab") {
+            this.browser = browser;
+            
+            Tooltip = "Open the current item in a new tab";
+            Activated += NewTab;
+        }
+        
+        public void NewTab(object obj, EventArgs args) {
+            browser.ItemNotebook.Load(browser.curitem);
+            browser.ItemNotebook.ShowAll();
+        }
+    }
+    
     public class NewWindowAction : Gtk.Action {
         public NewWindowAction(Summa.Gui.Browser browser) : base("New_window", "New _window") {
             Tooltip = "Open a new window";

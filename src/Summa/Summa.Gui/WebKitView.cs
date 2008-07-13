@@ -111,9 +111,7 @@ namespace Summa.Gui {
         private void OnNavigationRequested(object obj, NavigationRequestedArgs args) {
             if ( Summa.Core.Config.OpenTabs ) {
                 try {
-                    notebook.CloseFirstTab = false;
                     notebook.LoadUri(args.Request.Uri);
-                    notebook.CloseFirstTab = true;
                 } catch ( Exception ) {
                     Gnome.Url.Show(args.Request.Uri);
                 }

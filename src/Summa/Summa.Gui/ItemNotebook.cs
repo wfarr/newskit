@@ -41,16 +41,10 @@ namespace Summa.Gui {
             Scrollable = true;
             ShowTabs = false;
             
-            CloseFirstTab = false;
             Load("Welcome to <b>Summa</b>, a GNOME feed reader.<br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.");
-            CloseFirstTab = true;
         }
         
         public void Load(Summa.Data.Item item) {
-            if ( CloseFirstTab ) {
-                RemovePage(0);
-            }
-            
             Gtk.HBox container = new Gtk.HBox();
             Gtk.Label label = new Gtk.Label(item.Title);
             container.PackStart(label);
@@ -69,21 +63,26 @@ namespace Summa.Gui {
             
             AppendPage(view_swin, container);
             container.ShowAll();
+            
+            ShowAll();
+            if ( NPages > 1 ) {
+                ShowTabs = true;
+            } else {
+                ShowTabs = false;
+            }
         }
         
         public void Load(string content) {
-            if ( CloseFirstTab ) {
-                RemovePage(0);
-            }
-            
             Gtk.HBox container = new Gtk.HBox();
             Gtk.Label label = new Gtk.Label("Summa");
             container.PackStart(label);
-            Gtk.Button button = new Gtk.Button(new Gtk.Image(Gtk.IconTheme.Default.LookupIcon("gtk-close", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon()));
-            button.Clicked += OnClicked;
-            button.Relief = Gtk.ReliefStyle.None;
-            button.SetSizeRequest(20, 20);
-            container.PackEnd(button);
+            if ( NPages != 0 ) {
+                Gtk.Button button = new Gtk.Button(new Gtk.Image(Gtk.IconTheme.Default.LookupIcon("gtk-close", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon()));
+                button.Clicked += OnClicked;
+                button.Relief = Gtk.ReliefStyle.None;
+                button.SetSizeRequest(20, 20);
+                container.PackEnd(button);
+            }
             
             Summa.Gui.WebKitView view = new Summa.Gui.WebKitView();
             view.notebook = this;
@@ -94,13 +93,16 @@ namespace Summa.Gui {
             
             AppendPage(view_swin, container);
             container.ShowAll();
+            
+            ShowAll();
+            if ( NPages > 1 ) {
+                ShowTabs = true;
+            } else {
+                ShowTabs = false;
+            }
         }
         
         public void LoadUri(string uri) {
-            if ( CloseFirstTab ) {
-                RemovePage(0);
-            }
-            
             Gtk.HBox container = new Gtk.HBox();
             Gtk.Label label = new Gtk.Label(uri);
             container.PackStart(label);
@@ -119,10 +121,24 @@ namespace Summa.Gui {
             
             AppendPage(view_swin, container);
             container.ShowAll();
+            
+            ShowAll();
+            if ( NPages > 1 ) {
+                ShowTabs = true;
+            } else {
+                ShowTabs = false;
+            }
         }
         
         private void OnClicked(object obj, EventArgs args) {
             RemovePage(Page);
+            
+            ShowAll();
+            if ( NPages > 1 ) {
+                ShowTabs = true;
+            } else {
+                ShowTabs = false;
+            }
         }
     }
 }

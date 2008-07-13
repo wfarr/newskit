@@ -50,6 +50,7 @@ namespace Summa.Gui {
         public Gtk.Action print_prev_action;
         public Gtk.Action email_action;
         public Summa.Actions.BookmarkAction bookmark_action;
+        public Gtk.Action new_tab_action;
         public Gtk.Action new_win_action;
         public Gtk.Action close_action;
         
@@ -233,11 +234,14 @@ namespace Summa.Gui {
         
         public void UpdateHtmlview() {
             curitem = ItemView.Selected;
-            ItemNotebook.Load(curitem);
+            Gtk.Bin c = (Gtk.Bin)ItemNotebook.GetNthPage(0);
+            Summa.Gui.WebKitView view = (Summa.Gui.WebKitView)c.Child;
+            view.Render(curitem);
             ItemNotebook.ShowAll();
             
             print_action.CheckShouldSensitive();
             bookmark_action.CheckShouldSensitive();
+            new_tab_action.Sensitive = true;
             
             if ( ItemNotebook.CurrentView.CanZoom() ) {
                 zoom_in_action.CheckShouldSensitive();
@@ -313,6 +317,10 @@ namespace Summa.Gui {
             bookmark_action = new Summa.Actions.BookmarkAction(this);
             bookmark_action.Sensitive = false;
             action_group.Add(bookmark_action, "<ctrl>d");
+            
+            new_tab_action = new Summa.Actions.NewTabAction(this);
+            new_tab_action.Sensitive = false;
+            action_group.Add(new_tab_action, "<ctrl>t");
             
             new_win_action = new Summa.Actions.NewWindowAction(this);
             action_group.Add(new_win_action, "<shift><ctrl>N");
@@ -394,6 +402,7 @@ namespace Summa.Gui {
         <menuitem action='Email_link'/>
         <menuitem action='Bookmark'/>
         <separator/>
+        <menuitem action='New_tab'/>
         <menuitem action='New_window'/>
         <menuitem action='Close_window'/>
         </menu>
