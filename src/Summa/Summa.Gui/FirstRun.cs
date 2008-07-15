@@ -118,7 +118,7 @@ namespace Summa.Gui {
                         Summa.Data.Core.RegisterFeed(feed);
                         it_worked = true;
                     } catch ( Summa.Core.Exceptions.BadFeed e ) {
-                        Summa.Core.Log.LogException(e);
+                        Summa.Core.Log.Exception(e);
                         Summa.Core.Application.Notifier.Notify("Import of feed \""+feed+"\" failed.");
                         it_worked = false;
                     }

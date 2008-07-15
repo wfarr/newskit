@@ -27,7 +27,7 @@ using System;
 
 namespace Summa.Core {
     public static class Log {
-        public static void LogException(Exception e) {
+        public static void Exception(Exception e) {
             Summa.Core.Application.Log.Add(e.ToString());
             
             if ( Summa.Core.Application.Log.Count > 100 ) {
@@ -35,7 +35,7 @@ namespace Summa.Core {
             }
         }
         
-        public static void LogException(Exception e, string message) {
+        public static void Exception(Exception e, string message) {
             Summa.Core.Application.Log.Add(e.ToString()+" with message "+message);
             
             if ( Summa.Core.Application.Log.Count > 100 ) {
@@ -43,7 +43,7 @@ namespace Summa.Core {
             }
         }
         
-        public static void LogMessage(string message) {
+        public static void Message(string message) {
             Summa.Core.Application.Log.Add(message);
             
             if ( Summa.Core.Application.Log.Count > 100 ) {
@@ -52,7 +52,7 @@ namespace Summa.Core {
         }
         
         public static void LogFunc(string log_domain, GLib.LogLevelFlags log_level, string message) {
-            LogMessage(message);
+            Message(message);
         }
     }
 }

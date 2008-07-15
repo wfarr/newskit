@@ -102,7 +102,7 @@ namespace Summa.Core {
             try {
                 return parameter;
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e, "Null reference");
+                Summa.Core.Log.Exception(e, "Null reference");
                 return "";
             }
         }

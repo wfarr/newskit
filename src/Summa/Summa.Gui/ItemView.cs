@@ -95,7 +95,7 @@ namespace Summa.Gui {
             try {
                 iter = (TreeIter)itemhash[item.Uri];
             } catch ( NullReferenceException e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
                 iter = store.Append();
                 itemhash.Add(item.Uri, iter);
             }
@@ -124,7 +124,7 @@ namespace Summa.Gui {
                 TreeIter iter = (TreeIter)itemhash[item.Uri];
                 store.Remove(ref iter);
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
             }
         }
         
@@ -204,7 +204,7 @@ namespace Summa.Gui {
                 
                 items = feedobj.Items;
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e, "No feed selected");
+                Summa.Core.Log.Exception(e, "No feed selected");
             }
         }
         

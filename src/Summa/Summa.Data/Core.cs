@@ -29,7 +29,7 @@ using System.Collections;
 namespace Summa.Data {
     public static class Core {
         public static void ApplicationInit(string name) {
-            Summa.Core.Log.LogMessage(String.Format("{0} registered.", name));
+            Summa.Core.Log.Message(String.Format("{0} registered.", name));
         }
         
         public static Summa.Data.Feed RegisterFeed(string uri) {
@@ -42,17 +42,25 @@ namespace Summa.Data {
             Summa.Data.Feed retfeed = null;
             
             if ( !Summa.Core.Application.Database.FeedExists(uri) ) {
-                Summa.Net.Request request = new Summa.Net.Request(uri);
+                Summa.Net.Request request;
+                try {
+                    request = new Summa.Net.Request(uri);
+                } catch ( Summa.Core.Exceptions.NotFound e ) {
+                    Summa.Core.Log.Exception(e);
+                    return null;
+                }
                 
                 if ( request.Status != System.Net.HttpStatusCode.NotFound ) {
                     Summa.Interfaces.IFeedParser parser = Summa.Net.Util.Sniff(request);
                     
-                    Summa.Core.Application.Database.CreateFeed(parser.Uri, parser.Name, parser.Author, parser.Subtitle, parser.Image, parser.License, request.Etag, request.LastModified, "", "All", parser.Favicon);
-                    
-                    parser.Items.Reverse();
-                    
-                    foreach ( Summa.Parser.Item item in parser.Items ) {
-                        Summa.Core.Application.Database.AddItem(uri, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+                    if ( parser != null ) {
+                        Summa.Core.Application.Database.CreateFeed(parser.Uri, parser.Name, parser.Author, parser.Subtitle, parser.Image, parser.License, request.Etag, request.LastModified, "", "All", parser.Favicon);
+                        
+                        parser.Items.Reverse();
+                        
+                        foreach ( Summa.Parser.Item item in parser.Items ) {
+                            Summa.Core.Application.Database.AddItem(uri, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+                        }
                     }
                 } else {
                     throw new Summa.Core.Exceptions.BadFeed();
@@ -85,7 +93,7 @@ namespace Summa.Data {
                     retfeeds.Add(new Summa.Data.Feed(feed[1]));
                 }
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e, "There are no feeds.");
+                Summa.Core.Log.Exception(e, "There are no feeds.");
             }
             
             return retfeeds;
@@ -112,7 +120,7 @@ namespace Summa.Data {
                     }
                 }
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
             }
             
             try {
@@ -124,7 +132,7 @@ namespace Summa.Data {
                     }
                 }
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e, "There are no feeds.");
+                Summa.Core.Log.Exception(e, "There are no feeds.");
             }
             
             return list;
@@ -138,7 +146,7 @@ namespace Summa.Data {
                     count += feed.UnreadCount;
                 }
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e, "There are no feeds.");
+                Summa.Core.Log.Exception(e, "There are no feeds.");
             }
             return count;
         }

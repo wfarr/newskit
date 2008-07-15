@@ -151,7 +151,7 @@ namespace Summa.Gui {
             try {
                 UpdateFeed(new Summa.Data.Feed(args.Uri));
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
             }
             
             if ( args.ItemProperty == "tags" ) {
@@ -165,7 +165,7 @@ namespace Summa.Gui {
             try {
                 UpdateFeed(new Summa.Data.Feed(args.FeedUri));
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
             }
         }
         
@@ -173,7 +173,7 @@ namespace Summa.Gui {
             try {
                 UpdateFeed(new Summa.Data.Feed(args.FeedUri));
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
             }
         }
         
@@ -181,7 +181,7 @@ namespace Summa.Gui {
             try {
                 UpdateFeed(new Summa.Data.Feed(args.FeedUri));
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
             }
         }
         
@@ -236,7 +236,7 @@ namespace Summa.Gui {
                 store.GetIter(out iter, path);
                 store.Remove(ref iter);
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
             }
         }
         
@@ -277,7 +277,7 @@ namespace Summa.Gui {
             try {
                 feedhash.Add(feedurl, store.GetPath(titer));
             } catch ( System.ArgumentException e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
             }
         }
         

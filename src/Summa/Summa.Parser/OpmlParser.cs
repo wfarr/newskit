@@ -40,7 +40,9 @@ namespace Summa.Parser {
     		    string nodeName = reader.Name;
                 
     		    if (nodeName == "outline") {
-        			Uris.Add(reader.GetAttribute("xmlUrl"));
+    		        if ( reader.GetAttribute("xmlUrl") != null ) {
+            			Uris.Add(reader.GetAttribute("xmlUrl"));
+        			}
     			}
     		}
     	}

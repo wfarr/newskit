@@ -188,6 +188,7 @@ namespace Summa.Gui {
             UpdateFromConfig();
             
             Summa.Core.Application.Database.ItemChanged += OnItemChanged;
+            Summa.Core.Application.Database.ItemAdded += OnItemAdded;
             Summa.Core.Application.Notifier.ViewChanged += OnViewChanged;
         }
         
@@ -212,6 +213,14 @@ namespace Summa.Gui {
                     if ( args.ItemProperty == "read" ) {
                         UpdateName();
                     }
+                }
+            }
+        }
+        
+        private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {
+            if ( FeedView.HasSelected ) {
+                if ( FeedView.Selected.Url == args.FeedUri ) {
+                    UpdateName();
                 }
             }
         }

@@ -50,7 +50,7 @@ namespace Summa.Core {
                 try {
                     return (bool)client.Get(KEY_LIBNOTIFY);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_LIBNOTIFY, true);
                     return true;
                 }
@@ -65,7 +65,7 @@ namespace Summa.Core {
                 try {
                     return (int)client.Get(KEY_WIN_HEIGHT);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_WIN_HEIGHT, 400);
                     return 400;
                 }
@@ -80,7 +80,7 @@ namespace Summa.Core {
                 try {
                     return (int)client.Get(KEY_WIN_WIDTH);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_WIN_WIDTH, 700);
                     return 700;
                 }
@@ -95,7 +95,7 @@ namespace Summa.Core {
                 try {
                     return (int)client.Get(KEY_MAIN_PANE_POSITION);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_MAIN_PANE_POSITION, 170);
                     return 170;
                 }
@@ -110,7 +110,7 @@ namespace Summa.Core {
                 try {
                     return (int)client.Get(KEY_LEFT_PANE_POSITION);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_LEFT_PANE_POSITION, 170);
                     return 170;
                 }
@@ -125,7 +125,7 @@ namespace Summa.Core {
                 try {
                     return (int)client.Get(KEY_RIGHT_PANE_POSITION);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_RIGHT_PANE_POSITION, 170);
                     return 170;
                 }
@@ -140,7 +140,7 @@ namespace Summa.Core {
                 try {
                     return (bool)client.Get(KEY_SHOULD_SORT_FEEDVIEW);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_SHOULD_SORT_FEEDVIEW, false);
                     return false;
                 }
@@ -155,7 +155,7 @@ namespace Summa.Core {
                 try {
                     return (int)client.Get(KEY_DEFAULT_ZOOM_LEVEL);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_DEFAULT_ZOOM_LEVEL, 10);
                     return 10;
                 }
@@ -172,7 +172,7 @@ namespace Summa.Core {
                     int a = (int)client.Get(KEY_GLOBAL_UPDATE_INTERVAL);
                     return (uint)a;
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_GLOBAL_UPDATE_INTERVAL, 3600000);
                     return 3600000;
                 }
@@ -187,7 +187,7 @@ namespace Summa.Core {
                 try {
                     return (string)client.Get(KEY_BOOKMARKER);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_BOOKMARKER, "Native");
                     return "Native";
                 }
@@ -202,7 +202,7 @@ namespace Summa.Core {
                 try {
                     return (bool)client.Get(KEY_TABS);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_TABS, false);
                     return false;
                 }
@@ -217,7 +217,7 @@ namespace Summa.Core {
                 try {
                     return (bool)client.Get(KEY_WIDESCREEN);
                 } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     client.Set(KEY_WIDESCREEN, false);
                     return false;
                 }

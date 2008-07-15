@@ -52,7 +52,7 @@ namespace Summa.Net {
                     DateTime m = Convert.ToDateTime(modified);
                     webrequest.IfModifiedSince = m;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                 }
                 
                 webresponse = (HttpWebResponse)webrequest.GetResponse();
@@ -86,11 +86,11 @@ namespace Summa.Net {
                     try {
                         Etag = webresponse.Headers.GetValues("ETag")[0];
                     } catch ( Exception e ) {
-                        Summa.Core.Log.LogException(e, "Etag not found");
+                        Summa.Core.Log.Exception(e, "Etag not found");
                     }
                 }
             } catch ( System.Net.WebException e ) {
-                Summa.Core.Log.LogException(e, "Failed to download");
+                Summa.Core.Log.Exception(e, "Failed to download");
                 throw new Summa.Core.Exceptions.NotFound();
             }
         }

@@ -205,7 +205,7 @@ namespace Summa.Data {
             try {
                 request = new Summa.Net.Request(Url);
             } catch ( Summa.Core.Exceptions.NotFound e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
                 return false;
             }
             

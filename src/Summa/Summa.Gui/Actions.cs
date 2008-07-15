@@ -663,7 +663,6 @@ namespace Summa.Actions {
         public void SetView(object obj, EventArgs args) {
             if ( Summa.Core.Application.Browsers.Count > 0 ) {
                 Summa.Core.Config.WidescreenView = true;
-                Console.WriteLine(true);
             }
         }
     }
@@ -687,7 +686,6 @@ namespace Summa.Actions {
         public void SetView(object obj, EventArgs args) {
             if ( Summa.Core.Application.Browsers.Count > 0 ) {
                 Summa.Core.Config.WidescreenView = false;
-                Console.WriteLine(false);
             }
         }
     }

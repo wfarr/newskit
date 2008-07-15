@@ -34,7 +34,7 @@ namespace Summa.Net {
             try {
                 parser = new Summa.Parser.RssParser(request.Uri, request.Xml);
             } catch ( Exception e ) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
             }
             
             if ( parser != null ) {
@@ -42,14 +42,14 @@ namespace Summa.Net {
                     try {
                         parser = new Summa.Parser.AtomParser(request.Uri, request.Xml);
                     } catch ( Exception e ) {
-                        Summa.Core.Log.LogException(e);
+                        Summa.Core.Log.Exception(e);
                     }
                 }
             } else {
                 try {
                     parser = new Summa.Parser.AtomParser(request.Uri, request.Xml);
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                 }
             }
             

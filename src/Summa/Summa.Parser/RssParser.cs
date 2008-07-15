@@ -39,7 +39,7 @@ namespace Summa.Parser {
                 try {
                     return name;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     return "";
                 }
             }
@@ -51,7 +51,7 @@ namespace Summa.Parser {
                 try {
                     return subtitle;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     return "";
                 }
             }
@@ -63,7 +63,7 @@ namespace Summa.Parser {
                 try {
                     return uri;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     return "";
                 }
             }
@@ -75,7 +75,7 @@ namespace Summa.Parser {
                 try {
                     return author;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     return "";
                 }
             }
@@ -87,7 +87,7 @@ namespace Summa.Parser {
                 try {
                     return image;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     return "";
                 }
             }
@@ -99,7 +99,7 @@ namespace Summa.Parser {
                 try {
                     return license;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     return "";
                 }
             }
@@ -111,7 +111,7 @@ namespace Summa.Parser {
                 try {
                     return etag;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     return "";
                 }
             }
@@ -123,7 +123,7 @@ namespace Summa.Parser {
                 try {
                     return modified;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     return "";
                 }
             }
@@ -135,7 +135,7 @@ namespace Summa.Parser {
                 try {
                     return favicon;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     return "";
                 }
             }
@@ -148,7 +148,7 @@ namespace Summa.Parser {
                 try {
                     return items;
                 } catch ( Exception e ) {
-                    Summa.Core.Log.LogException(e);
+                    Summa.Core.Log.Exception(e);
                     return new ArrayList();
                 }
             }
@@ -162,7 +162,7 @@ namespace Summa.Parser {
             try {
                 document.LoadXml(xml);
             } catch (XmlException e) {
-                Summa.Core.Log.LogException(e);
+                Summa.Core.Log.Exception(e);
                 bool have_stripped_control = false;
                 StringBuilder sb = new StringBuilder ();
 
