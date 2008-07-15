@@ -55,6 +55,9 @@ namespace Summa.Gui {
                 if ( args.Value == "True" ) {
                     unread--;
                     UpdateTooltip();
+                } else if ( args.Value == "False" ) {
+                    unread++;
+                    UpdateTooltip();
                 }
             }
         }

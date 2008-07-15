@@ -38,6 +38,7 @@ namespace Summa.Gui {
         //menus
         public Gtk.Action file_menu;
         public Gtk.Action edit_menu;
+        public Gtk.Action view_menu;
         public Gtk.Action subs_menu;
         public Gtk.Action item_menu;
         public Gtk.Action help_menu;
@@ -70,10 +71,18 @@ namespace Summa.Gui {
         // item menu
         public Summa.Actions.ZoomInAction zoom_in_action;
         public Summa.Actions.ZoomOutAction zoom_out_action;
+        public Gtk.ToggleAction load_images_action;
+        public Gtk.ToggleAction hide_read_action;
         public Gtk.Action next_item_action;
         public Gtk.Action prev_item_action;
         public Summa.Actions.FlagAction flag_action;
+        public Summa.Actions.UnreadAction unread_action;
         public Summa.Actions.EnclosureAction play_action;
+        public Summa.Actions.SaveEnclosureAction save_action;
+        
+        public Summa.Actions.WidescreenViewAction widescreen_view_action;
+        public Summa.Actions.NormalViewAction normal_view_action;
+        public GLib.SList view_slist;
         
         // help menu
         public Gtk.Action help_action;
@@ -249,7 +258,9 @@ namespace Summa.Gui {
             }
             
             flag_action.Populate(ItemView.Selected);
+            unread_action.Populate(ItemView.Selected);
             play_action.Populate(ItemView.Selected);
+            save_action.Populate(ItemView.Selected);
             play_action.SetToPlay();
             
             if ( !ItemView.Selected.Read ) {
@@ -288,7 +299,9 @@ namespace Summa.Gui {
             action_group.Add(file_menu);
             edit_menu = new Gtk.Action("EditMenu", "_Edit", null, null);
             action_group.Add(edit_menu);
-            subs_menu = new Gtk.Action("SubsMenu", "_Subscription", null, null);
+            view_menu = new Gtk.Action("ViewMenu", "_View", null, null);
+            action_group.Add(view_menu);
+            subs_menu = new Gtk.Action("SubsMenu", "_Feed", null, null);
             action_group.Add(subs_menu);
             item_menu = new Gtk.Action("ItemMenu", "_Item", null, null);
             action_group.Add(item_menu);
@@ -366,6 +379,12 @@ namespace Summa.Gui {
             zoom_out_action.Sensitive = false;
             action_group.Add(zoom_out_action, null);
             
+            load_images_action = new Summa.Actions.LoadImagesAction(this);
+            action_group.Add(load_images_action, null);
+            
+            hide_read_action = new Summa.Actions.HideReadAction(this);
+            action_group.Add(hide_read_action, null);
+            
             next_item_action = new Summa.Actions.NextItemAction(this);
             action_group.Add(next_item_action, "n");
             
@@ -376,9 +395,17 @@ namespace Summa.Gui {
             flag_action.Sensitive = false;
             action_group.Add(flag_action);
             
+            unread_action = new Summa.Actions.UnreadAction(this);
+            unread_action.Sensitive = false;
+            action_group.Add(unread_action);
+            
             play_action = new Summa.Actions.EnclosureAction(this);
             play_action.Sensitive = false;
             action_group.Add(play_action);
+            
+            save_action = new Summa.Actions.SaveEnclosureAction(this);
+            save_action.Sensitive = false;
+            action_group.Add(save_action);
             
             // help menu
             help_action = new Summa.Actions.HelpAction(this);
@@ -386,56 +413,82 @@ namespace Summa.Gui {
             
             about_action = new Summa.Actions.AboutAction(this);
             action_group.Add(about_action);
+            
+            view_slist = new GLib.SList(typeof(Gtk.ToggleAction));
+            
+            normal_view_action = new Summa.Actions.NormalViewAction(this);
+            action_group.Add(normal_view_action);
+            normal_view_action.Group = view_slist;
+            view_slist = normal_view_action.Group;
+            
+            widescreen_view_action = new Summa.Actions.WidescreenViewAction(this);
+            action_group.Add(widescreen_view_action);
+            widescreen_view_action.Group = view_slist;
+            view_slist = widescreen_view_action.Group;
         }
         
         public void SetUpUimanager() {
             string ui = @"<ui>
     <menubar name='MenuBar'>
         <menu action='FileMenu'>
-        <menuitem action='Add'/>
-        <menuitem action='Import'/>
-        <separator/>
-        <menuitem action='Update_all'/>
-        <separator/>
-        <menuitem action='Print_preview'/>
-        <menuitem action='Print'/>
-        <menuitem action='Email_link'/>
-        <menuitem action='Bookmark'/>
-        <separator/>
-        <menuitem action='New_tab'/>
-        <menuitem action='New_window'/>
-        <menuitem action='Close_window'/>
+            <menuitem action='Add'/>
+            <menuitem action='Import'/>
+            <separator/>
+            <menuitem action='Update_all'/>
+            <separator/>
+            <menuitem action='Print_preview'/>
+            <menuitem action='Print'/>
+            <separator/>
+            <menuitem action='New_tab'/>
+            <menuitem action='New_window'/>
+            <menuitem action='Close_window'/>
         </menu>
         <menu action='EditMenu'>
-        <menuitem action='Copy'/>
-        <separator/>
-        <menuitem action='Select_all'/>
-        <menuitem action='Find'/>
-        <separator/>
-        <menuitem action='Preferences'/>
+            <menuitem action='Copy'/>
+            <separator/>
+            <menuitem action='Select_all'/>
+            <menuitem action='Find'/>
+            <separator/>
+            <menuitem action='Delete'/>
+            <separator/>
+            <menuitem action='Preferences'/>
+        </menu>
+        <menu action='ViewMenu'>
+            <menuitem action='ZoomIn'/>
+            <menuitem action='ZoomOut'/>
+            <separator/>
+            <menuitem action='Normal_view'/>
+            <menuitem action='Wide_view'/>
+            <separator/>
+            <menuitem action='LoadImages'/>
+            <menuitem action='Hide_read'/>
         </menu>
         <menu action='SubsMenu'>
-        <menuitem action='Update'/>
-        <menuitem action='Mark_read'/>
-        <menuitem action='Delete'/>
-        <menuitem action='Properties'/>
-        <menuitem action='Tags'/>
+            <menuitem action='Update'/>
+            <menuitem action='Mark_read'/>
+            <separator/>
+            <menuitem action='Previous_item'/>
+            <menuitem action='Next_item'/>
+            <separator/>
+            <menuitem action='Properties'/>
+            <menuitem action='Tags'/>
         </menu>
         <menu action='ItemMenu'>
-        <menuitem action='ZoomIn'/>
-        <menuitem action='ZoomOut'/>
-        <separator/>
-        <menuitem action='Previous_item'/>
-        <menuitem action='Next_item'/>
-        <separator/>
-        <menuitem action='Flag_item'/>
-        <menuitem action='Play_pause'/>
+            <menuitem action='Flag_item'/>
+            <menuitem action='Read_item'/>
+            <separator/>
+            <menuitem action='Play_pause'/>
+            <menuitem action='Save_enclosed'/>
+            <separator/>
+            <menuitem action='Email_link'/>
+            <menuitem action='Bookmark'/>
         </menu>
         <menu action='HelpMenu'>
-        <menuitem action='Contents'/>
-        <menuitem action='About'/>
+            <menuitem action='Contents'/>
+            <menuitem action='About'/>
         </menu>
     </menubar>
+    
     <toolbar name='ToolBar'>
         <toolitem action='Add'/>
         <separator/>
@@ -452,7 +505,7 @@ namespace Summa.Gui {
         <separator/>
         <toolitem action='Play_pause'/>
     </toolbar>
-    </ui>";
+</ui>";
             uimanager.AddUiFromString(ui);
         }
     }

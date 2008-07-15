@@ -32,7 +32,7 @@ namespace Summa.Actions {
     public class AddAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public AddAction(Summa.Gui.Browser browser) : base("Add", "_New subscription") {
+        public AddAction(Summa.Gui.Browser browser) : base("Add", "_Add") {
             this.browser = browser;
             
             Tooltip = "Create a new feed";
@@ -65,7 +65,7 @@ namespace Summa.Actions {
     }
     
     public class UpdateAllAction : Gtk.Action {
-        public UpdateAllAction(Summa.Gui.Browser browser) : base("Update_all", "_Update all feeds") {
+        public UpdateAllAction(Summa.Gui.Browser browser) : base("Update_all", "_Update All") {
             Tooltip = "Update all feeds";
             StockId = Gtk.Stock.Refresh;
             Activated += UpdateAll;
@@ -100,7 +100,7 @@ namespace Summa.Actions {
     }
     
     public class PrintPreviewAction : Gtk.Action {
-        public PrintPreviewAction(Summa.Gui.Browser browser) : base("Print_preview", "Print previe_w") {
+        public PrintPreviewAction(Summa.Gui.Browser browser) : base("Print_preview", "Print Previe_w") {
             Tooltip = "Show a preview of the printed document";
             StockId = Gtk.Stock.PrintPreview;
             Activated += PrintPreview;
@@ -112,7 +112,7 @@ namespace Summa.Actions {
     }
     
     public class EmailLinkAction : Gtk.Action {
-        public EmailLinkAction(Summa.Gui.Browser browser) : base("Email_link", "_Email this item") {
+        public EmailLinkAction(Summa.Gui.Browser browser) : base("Email_link", "_Email") {
             Tooltip = "Email a copy of the selected item";
             Activated += EmailLink;
             Sensitive = false;
@@ -126,7 +126,7 @@ namespace Summa.Actions {
         private Summa.Gui.Browser browser;
         private Summa.Interfaces.IBookmarker bookmarker;
         
-        public BookmarkAction(Summa.Gui.Browser browser) : base("Bookmark", "_Bookmark this item") {
+        public BookmarkAction(Summa.Gui.Browser browser) : base("Bookmark", "_Bookmark") {
             this.browser = browser;
             
             IconSet bookmark_iconset = new Gtk.IconSet();
@@ -165,7 +165,7 @@ namespace Summa.Actions {
     public class NewTabAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public NewTabAction(Summa.Gui.Browser browser) : base("New_tab", "Open in a new _tab") {
+        public NewTabAction(Summa.Gui.Browser browser) : base("New_tab", "Open in a New _Tab") {
             this.browser = browser;
             
             Tooltip = "Open the current item in a new tab";
@@ -179,7 +179,7 @@ namespace Summa.Actions {
     }
     
     public class NewWindowAction : Gtk.Action {
-        public NewWindowAction(Summa.Gui.Browser browser) : base("New_window", "New _window") {
+        public NewWindowAction(Summa.Gui.Browser browser) : base("New_window", "New _Window") {
             Tooltip = "Open a new window";
             Activated += NewWindow;
         }
@@ -194,7 +194,7 @@ namespace Summa.Actions {
     public class CloseWindowAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public CloseWindowAction(Summa.Gui.Browser browser) : base("Close_window", "_Close window") {
+        public CloseWindowAction(Summa.Gui.Browser browser) : base("Close_window", "_Close Window") {
             this.browser = browser;
             
             Tooltip = "Close this window";
@@ -220,7 +220,7 @@ namespace Summa.Actions {
     }
     
     public class SelectAllAction : Gtk.Action {
-        public SelectAllAction(Summa.Gui.Browser browser) : base("Select_all", "_Select all text") {
+        public SelectAllAction(Summa.Gui.Browser browser) : base("Select_all", "_Select All Text") {
             Tooltip = "Select all text";
             Activated += SelectAll;
             Sensitive = false;
@@ -262,7 +262,7 @@ namespace Summa.Actions {
     public class UpdateAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public UpdateAction(Summa.Gui.Browser browser) : base("Update", "_Update feed") {
+        public UpdateAction(Summa.Gui.Browser browser) : base("Update", "_Update Feed") {
             this.browser = browser;
             
             Tooltip = "Update selected feed";
@@ -289,7 +289,7 @@ namespace Summa.Actions {
     public class MarkReadAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public MarkReadAction(Summa.Gui.Browser browser) : base("Mark_read", "_Mark feed as read") {
+        public MarkReadAction(Summa.Gui.Browser browser) : base("Mark_read", "_Mark Read") {
             this.browser = browser;
             
             Tooltip = "Mark all items in the selected feed as read";
@@ -307,7 +307,7 @@ namespace Summa.Actions {
     public class DeleteAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public DeleteAction(Summa.Gui.Browser browser) : base("Delete", "_Delete subscription") {
+        public DeleteAction(Summa.Gui.Browser browser) : base("Delete", "_Delete Feed") {
             this.browser = browser;
             
             Tooltip = "Delete the selected feed";
@@ -347,7 +347,7 @@ namespace Summa.Actions {
     public class TagsAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public TagsAction(Summa.Gui.Browser browser) : base("Tags", "Edit subscription _tags") {
+        public TagsAction(Summa.Gui.Browser browser) : base("Tags", "Edit Feed _Tags") {
             this.browser = browser;
             
             Tooltip = "Edit the tags of your feeds by tag";
@@ -364,7 +364,7 @@ namespace Summa.Actions {
     public class ZoomInAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public ZoomInAction(Summa.Gui.Browser browser) : base("ZoomIn", "_Increase text size") {
+        public ZoomInAction(Summa.Gui.Browser browser) : base("ZoomIn", "Zoom _In") {
             this.browser = browser;
             
             Tooltip = "Increase text size";
@@ -386,7 +386,7 @@ namespace Summa.Actions {
     public class ZoomOutAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public ZoomOutAction(Summa.Gui.Browser browser) : base("ZoomOut", "_Decrease text size") {
+        public ZoomOutAction(Summa.Gui.Browser browser) : base("ZoomOut", "Zoom _Out") {
             this.browser = browser;
             
             Tooltip = "Decrease text size";
@@ -409,10 +409,40 @@ namespace Summa.Actions {
         }
     }
     
+    public class LoadImagesAction : Gtk.ToggleAction {
+        private Summa.Gui.Browser browser;
+        
+        public LoadImagesAction(Summa.Gui.Browser browser) : base("LoadImages", "_Load Images", null, null) {
+            Tooltip = "Load images in items";
+            Toggled += LoadImages;
+            
+            Sensitive = false;
+            Active = true;
+        }
+        
+        public void LoadImages(object obj, EventArgs args) {
+        }
+    }
+    
+    public class HideReadAction : Gtk.ToggleAction {
+        private Summa.Gui.Browser browser;
+        
+        public HideReadAction(Summa.Gui.Browser browser) : base("Hide_read", "_Hide Read Items", null, null) {
+            Tooltip = "Hide read items in the item list";
+            Toggled += HideRead;
+            
+            Sensitive = false;
+            Active = false;
+        }
+        
+        public void HideRead(object obj, EventArgs args) {
+        }
+    }
+    
     public class NextItemAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public NextItemAction(Summa.Gui.Browser browser) : base("Next_item", "_Go to next unread item") {
+        public NextItemAction(Summa.Gui.Browser browser) : base("Next_item", "_Next Item") {
             this.browser = browser;
             
             Tooltip = "Go to next unread item";
@@ -442,7 +472,7 @@ namespace Summa.Actions {
     public class PreviousItemAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         
-        public PreviousItemAction(Summa.Gui.Browser browser) : base("Previous_item", "_Go to the previous item") {
+        public PreviousItemAction(Summa.Gui.Browser browser) : base("Previous_item", "_Previous Item") {
             this.browser = browser;
             
             Tooltip = "Go to the previous item";
@@ -462,7 +492,7 @@ namespace Summa.Actions {
         private Summa.Gui.Browser browser;
         private Summa.Data.Item item;
         
-        public FlagAction(Summa.Gui.Browser browser) : base("Flag_item", "Flag this item") {
+        public FlagAction(Summa.Gui.Browser browser) : base("Flag_item", "Flag This Item") {
             this.browser = browser;
             
             Tooltip = "Flag/unflag this item";
@@ -487,11 +517,47 @@ namespace Summa.Actions {
         }
     }
     
+    public class UnreadAction : Gtk.Action {
+        private Summa.Gui.Browser browser;
+        private Summa.Data.Item item;
+        
+        public UnreadAction(Summa.Gui.Browser browser) : base("Read_item", "Mark As Unread") {
+            this.browser = browser;
+            
+            Tooltip = "Mark this item as unread/read";
+            IconName = "feed-item";
+            Activated += Mark;
+        }
+        
+        public void Mark(object obj, EventArgs args) {
+            if ( browser.ItemView.HasSelected ) {
+                if ( browser.ItemView.Selected.Read ) {
+                    browser.ItemView.Selected.Read = false;
+                } else {
+                    browser.ItemView.Selected.Read = true;
+                }
+            }
+            Populate(item);
+        }
+        
+        public void Populate(Summa.Data.Item item) {
+            this.item = item;
+            
+            if ( item.Read ) {
+                Label = "Mark As Unread";
+            } else {
+                Label = "Mark As Read";
+            }
+            
+            Sensitive = true;
+        }
+    }
+    
     public class EnclosureAction : Gtk.Action {
         private Summa.Gui.Browser browser;
         private Summa.Interfaces.IMediaPlayer mediaplayer;
         
-        public EnclosureAction(Summa.Gui.Browser browser) : base("Play_pause", "_Play enclosed media") {
+        public EnclosureAction(Summa.Gui.Browser browser) : base("Play_pause", "_Play") {
             this.browser = browser;
             
             Tooltip = "Play or pause the media enclosed";
@@ -520,13 +586,33 @@ namespace Summa.Actions {
         }
         
         public void SetToPlay() {
-            Label = "_Play enclosed media";
+            Label = "_Play";
             StockId = Gtk.Stock.MediaPlay;
         }
         
         public void SetToPause() {
-            Label = "_Pause enclosed media";
+            Label = "_Pause";
             StockId = Gtk.Stock.MediaPause;
+        }
+    }
+    
+    public class SaveEnclosureAction : Gtk.Action {
+        public SaveEnclosureAction(Summa.Gui.Browser browser) : base("Save_enclosed", "_Save Enclosed Media") {
+            Tooltip = "Save the enclosed media";
+            StockId = Gtk.Stock.Save;
+            Activated += Save;
+            Sensitive = false;
+        }
+        
+        public void Save(object obj, EventArgs args) {
+        }
+        
+        public void Populate(Summa.Data.Item item) {
+            if ( item.EncUri != "" ) {
+                Sensitive = false;
+            } else {
+                Sensitive = false;
+            }
         }
     }
     
@@ -555,6 +641,54 @@ namespace Summa.Actions {
         
         public void ShowAbout(object obj, EventArgs args) {
             browser.AboutDialog.ShowAll();
+        }
+    }
+    
+    public class WidescreenViewAction : Gtk.RadioAction {
+        private Summa.Gui.Browser browser;
+        
+        public WidescreenViewAction(Summa.Gui.Browser browser) : base("Wide_view", "_Use Widescreen View", null, null, 0) {
+            this.browser = browser;
+            
+            Tooltip = "Use the widescreen view";
+            Activated += SetView;
+            
+            if ( Summa.Core.Config.WidescreenView ) {
+                CurrentValue = Value;
+            }
+            
+            //Summa.Core.Application.Notifier.ViewChanged += OnViewChanged;
+        }
+        
+        public void SetView(object obj, EventArgs args) {
+            if ( Summa.Core.Application.Browsers.Count > 0 ) {
+                Summa.Core.Config.WidescreenView = true;
+                Console.WriteLine(true);
+            }
+        }
+    }
+    
+    public class NormalViewAction : Gtk.RadioAction {
+        private Summa.Gui.Browser browser;
+        
+        public NormalViewAction(Summa.Gui.Browser browser) : base("Normal_view", "_Use Normal View", null, null, 0) {
+            this.browser = browser;
+            
+            Tooltip = "Use the normal view";
+            Activated += SetView;
+            
+            if ( !Summa.Core.Config.WidescreenView ) {
+                CurrentValue = Value;
+            }
+            
+            //Summa.Core.Application.Notifier.ViewChanged += OnViewChanged;
+        }
+        
+        public void SetView(object obj, EventArgs args) {
+            if ( Summa.Core.Application.Browsers.Count > 0 ) {
+                Summa.Core.Config.WidescreenView = false;
+                Console.WriteLine(false);
+            }
         }
     }
 }
