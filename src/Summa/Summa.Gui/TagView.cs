@@ -59,7 +59,7 @@ namespace Summa.Gui {
             if ( Summa.Core.Application.Browsers.Count == 0 ) {
                 Gtk.TreeIter tagiter;
                 tagiter = Summa.Core.Application.TagStore.Append();
-                Summa.Core.Application.TagStore.SetValue(tagiter, 0, Gtk.IconTheme.Default.LookupIcon("feed-presence", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon());
+                Summa.Core.Application.TagStore.SetValue(tagiter, 0, Gtk.IconTheme.Default.LookupIcon("feed-presence", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon());
                 Summa.Core.Application.TagStore.SetValue(tagiter, 1, "All feeds");
                 
                 tagiter = Summa.Core.Application.TagStore.Append();
@@ -96,7 +96,7 @@ namespace Summa.Gui {
         public void AppendTag(string tag) {
             Gtk.TreeIter iter;
             iter = Summa.Core.Application.TagStore.Append();
-            Summa.Core.Application.TagStore.SetValue(iter, 0, Gtk.IconTheme.Default.LookupIcon("tag", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon());
+            Summa.Core.Application.TagStore.SetValue(iter, 0, Gtk.IconTheme.Default.LookupIcon("tag", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon(););
             Summa.Core.Application.TagStore.SetValue(iter, 1, tag);
         }
     }
