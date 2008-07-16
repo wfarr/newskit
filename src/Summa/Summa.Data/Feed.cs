@@ -117,13 +117,17 @@ namespace Summa.Data {
                 Summa.Core.Application.Database.ChangeFeedInfo(Url, "tags", jtags);
             }
         }
-        public string Favicon {
+        public Gdk.Pixbuf Favicon {
             get {
                 string[] feed = Summa.Core.Application.Database.GetFeed(Url);
-                return feed[12];
+                if ( feed[12] == "" ) {
+                    return Gtk.IconTheme.Default.LookupIcon("feed-presence", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
+                } else {
+                    return new Gdk.Pixbuf(feed[12]);
+                }
             }
             set {
-                Summa.Core.Application.Database.ChangeFeedInfo(Url, "favicon", value);
+                //Summa.Core.Application.Database.ChangeFeedInfo(Url, "favicon", value);
             }
         }
         

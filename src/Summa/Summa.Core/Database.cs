@@ -28,6 +28,7 @@ using System.Collections;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using System.Web;
 
 using System.Data;
 using Mono.Data.SqliteClient;
@@ -100,7 +101,7 @@ namespace Summa.Core {
         
         private string EscapeParam(string parameter) {
             try {
-                return parameter;
+                return HttpUtility.HtmlEncode(parameter);
             } catch ( Exception e ) {
                 Summa.Core.Log.Exception(e, "Null reference");
                 return "";
@@ -125,7 +126,7 @@ namespace Summa.Core {
             return builder.ToString();
         }
         
-        private string GetGeneratedName(string uri) {
+        public string GetGeneratedName(string uri) {
             return (string)GeneratedNames[uri];
         }
         
@@ -256,7 +257,7 @@ namespace Summa.Core {
         
         public void DeleteFeed(string uri) {
             NonQueryCommand("drop table "+GetGeneratedName(uri));
-            NonQueryCommand(@"delete from Feeds where uri="""+uri+@"""");
+            NonQueryCommand(@"delete from Feeds where uri="""+EscapeParam(uri)+@"""");
             
             GeneratedNames.Remove(uri);
             
@@ -271,7 +272,7 @@ namespace Summa.Core {
             IDbCommand dbcmd = db.CreateCommand();
             dbcmd.CommandText = "select * from Feeds where uri=:uri";
             SqliteParameter param = new SqliteParameter();
-            param.Value = uri;
+            param.Value = EscapeParam(uri);
             param.ParameterName = @":uri";
             dbcmd.Parameters.Add(param);
             IDataReader reader = dbcmd.ExecuteReader();
@@ -370,12 +371,17 @@ namespace Summa.Core {
         
         public string[] GetItem(string feeduri, string uri) {
             string[] item = null;
+            Console.WriteLine(1);
             
             IDbCommand dbcmd = db.CreateCommand();
-            dbcmd.CommandText = "select * from "+GetGeneratedName(feeduri)+@" where uri="""+uri+@"""";
+            Console.WriteLine(2);
+            dbcmd.CommandText = "select * from "+GetGeneratedName(feeduri)+@" where uri="""+EscapeParam(uri)+@"""";
+            Console.WriteLine(3);
             IDataReader reader = dbcmd.ExecuteReader();
+            Console.WriteLine(4);
             while(reader.Read()) {
                 item = new string[10];
+                Console.WriteLine(5);
                 item[0] = reader.GetString(1); //title
                 item[1] = reader.GetString(2); //uri
                 item[2] = reader.GetString(3); //date
@@ -386,17 +392,22 @@ namespace Summa.Core {
                 item[7] = reader.GetString(8); //encuri
                 item[8] = reader.GetString(9); //read
                 item[9] = reader.GetString(10); //flagged
+                Console.WriteLine(6);
             }
             reader.Close();
+            Console.WriteLine(7);
             reader = null;
+            Console.WriteLine(8);
             dbcmd.Dispose();
+            Console.WriteLine(9);
             dbcmd = null;
+            Console.WriteLine(10);
             return item;
         }
         
         public void DeleteItem(string feeduri, string uri) {
             string generated_name = GetGeneratedName(feeduri);
-            string command = "delete from "+generated_name+@" where uri="""+uri+@"""";
+            string command = "delete from "+generated_name+@" where uri="""+EscapeParam(uri)+@"""";
             
             NonQueryCommand(command);
             
@@ -513,7 +524,7 @@ namespace Summa.Core {
         }
         
         public void ChangeFeedInfo(string feeduri, string property, string intended_value) {
-            NonQueryCommand("update Feeds set "+property+@"="""+intended_value+@""" where uri="""+feeduri+@"""");
+            NonQueryCommand("update Feeds set "+property+@"="""+EscapeParam(intended_value)+@""" where uri="""+EscapeParam(feeduri)+@"""");
             
             ChangedEventArgs args = new ChangedEventArgs();
             args.Uri = feeduri;
@@ -523,7 +534,7 @@ namespace Summa.Core {
         }
         
         public void ChangeItemInfo(string feeduri, string itemuri, string property, string intended_value) { //optimize
-            NonQueryCommand("update "+GetGeneratedName(feeduri)+" set "+property+@"="""+intended_value+@""" where uri="""+itemuri+@"""");
+            NonQueryCommand("update "+GetGeneratedName(feeduri)+" set "+property+@"="""+EscapeParam(intended_value)+@""" where uri="""+EscapeParam(itemuri)+@"""");
             
             ChangedEventArgs args = new ChangedEventArgs();
             args.Uri = itemuri;

@@ -25,6 +25,9 @@
 
 using System;
 using System.Xml;
+using System.Net;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Summa.Net {
     public static class Util {
@@ -61,6 +64,45 @@ namespace Summa.Net {
                 }
             } else {
                 return null;
+            }
+        }
+        
+        public static bool FindFeed(string website_url, out string feed_url) {
+            feed_url = "";
+            return false;
+        }
+        
+        public static bool FindFavicon(string website_url, out string feed_url) {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ResolveBaseUri(website_url)+"favicon.ico");
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            
+            if ( response.StatusCode != HttpStatusCode.NotFound ) {
+                Stream stream = response.GetResponseStream();
+                
+                System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
+                Directory.CreateDirectory(Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/icons/");
+                
+                img.Save(Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/icons/"+Summa.Core.Application.Database.GetGeneratedName(website_url), System.Drawing.Imaging.ImageFormat.Png);
+                feed_url = Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/icons/"+Summa.Core.Application.Database.GetGeneratedName(website_url);
+                return true;
+            }
+            feed_url = "";
+            return false;
+        }
+        
+        public static string ResolveBaseUri(string uri) {
+            if ( uri.StartsWith("http://") ) {
+                string[] split_uri = uri.Split('/');
+                string returi = split_uri[2];
+                returi = "http://"+returi+"/";
+                return returi;
+            } else if ( uri.StartsWith("https://") ) {
+                string[] split_uri = uri.Split('/');
+                string returi = split_uri[2];
+                returi = "https://"+returi+"/";
+                return returi;
+            } else {
+                return uri;
             }
         }
     }

@@ -59,7 +59,14 @@ namespace Summa.Data {
                         parser.Items.Reverse();
                         
                         foreach ( Summa.Parser.Item item in parser.Items ) {
-                            Summa.Core.Application.Database.AddItem(uri, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+                            Summa.Core.Application.Database.AddItem(request.Uri, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+                        }
+                        
+                        string file_name = null;
+                        bool icon_found = Summa.Net.Util.FindFavicon(parser.Uri, out file_name);
+                        
+                        if ( icon_found ) {
+                            Summa.Core.Application.Database.ChangeFeedInfo(parser.Uri, "favicon", file_name);
                         }
                     }
                 } else {

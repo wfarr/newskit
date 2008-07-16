@@ -36,7 +36,7 @@ namespace Summa.Interfaces {
         string Image { get; set; }
         string Status { get; set; }
         ArrayList Tags { get; set; }
-        string Favicon { get; set; }
+        Gdk.Pixbuf Favicon { get; set; }
         int UnreadCount { get; }
         bool HasUnread { get; }
         ArrayList Items { get; }

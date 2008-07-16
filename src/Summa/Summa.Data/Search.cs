@@ -85,8 +85,8 @@ namespace Summa.Data {
             set {}
         }
         
-        public string Favicon {
-            get { return ""; }
+        public Gdk.Pixbuf Favicon {
+            get { return new Gdk.Pixbuf(""); }
             set {}
         }
         

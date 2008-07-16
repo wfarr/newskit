@@ -94,6 +94,7 @@ namespace Summa.Data {
         public bool Read {
             get {
                 string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
+                Console.WriteLine(item[1]);
                 string val = item[8];
                 if ( val == "True" ) {
                     return true;

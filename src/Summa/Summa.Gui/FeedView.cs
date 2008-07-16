@@ -252,11 +252,7 @@ namespace Summa.Gui {
             bool unread = feed.HasUnread;
             
             Gdk.Pixbuf icon;
-            if ( unread ) {
-                icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");
-            } else {
-                icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");
-            }
+            icon = feed.Favicon;
             if ( feed.Tags.Contains("summa:Searches") ) {
                 icon = icon_theme.LookupIcon("system-search", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon();
             }

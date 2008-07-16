@@ -13,7 +13,8 @@ ASSEMBLIES = \
 	     -r:Mono.Posix \
 	     -r:System.Core \
 	     -r:System.Data \
-	     -r:System.Web
+	     -r:System.Web \
+	     -r:System.Drawing
 
 SUMMA_CSDISTFILES = \
         Summa.Core/Application.cs \
