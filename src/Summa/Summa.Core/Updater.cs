@@ -37,6 +37,7 @@ namespace Summa.Core {
         private ArrayList updating_queue;
         
         private Summa.Interfaces.ISource updating_feed;
+        private string adding_url;
         
         public ArrayList FeedsUpdating {
             get {
@@ -146,6 +147,33 @@ namespace Summa.Core {
                 
                 return false;
             }
+        }
+        
+        private void AddFeedThread() {
+            Summa.Core.NotificationEventArgs fargs = new Summa.Core.NotificationEventArgs();
+            fargs.Message = "Adding feed "+adding_url;
+            Gtk.Application.Invoke(this, fargs, OnNotify);
+            
+            try {
+                Summa.Data.Core.RegisterFeed(adding_url);
+                
+                fargs = new Summa.Core.NotificationEventArgs();
+                fargs.Message = "Successfully added feed "+adding_url;
+                Gtk.Application.Invoke(this, fargs, OnNotify);
+            } catch ( Exception e ) {
+                Summa.Core.Log.Exception(e);
+                
+                fargs = new Summa.Core.NotificationEventArgs();
+                fargs.Message = "Adding feed "+adding_url+" failed";
+                Gtk.Application.Invoke(this, fargs, OnNotify);
+            }
+        }
+        
+        public void AddFeed(string feedurl) {
+            adding_url = feedurl;
+            
+            System.Threading.Thread addthread = new System.Threading.Thread(AddFeedThread);
+            addthread.Start();
         }
     }
 }
