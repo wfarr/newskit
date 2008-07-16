@@ -141,6 +141,8 @@ namespace Summa.Gui {
             if ( feed.Tags.Contains(SetTag) ) {
                 AddNewFeed(new Summa.Data.Feed(args.Uri));
             }
+            
+            ShowAll();
         }
         
         private void OnFeedDeleted(object obj, Summa.Core.AddedEventArgs args) {
@@ -159,6 +161,8 @@ namespace Summa.Gui {
                     AddNewFeed(new Summa.Data.Feed(args.Uri));
                 }
             }
+            
+            ShowAll();
         }
         
         private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {
@@ -253,9 +257,6 @@ namespace Summa.Gui {
             
             Gdk.Pixbuf icon;
             icon = feed.Favicon;
-            if ( feed.Tags.Contains("summa:Searches") ) {
-                icon = icon_theme.LookupIcon("system-search", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon();
-            }
             
             string feedname = feed.Name;
             string feedurl = feed.Url;

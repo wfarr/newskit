@@ -86,7 +86,7 @@ namespace Summa.Data {
         }
         
         public Gdk.Pixbuf Favicon {
-            get { return new Gdk.Pixbuf(""); }
+            get { return Gtk.IconTheme.Default.LookupIcon("system-search", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon(); }
             set {}
         }
         

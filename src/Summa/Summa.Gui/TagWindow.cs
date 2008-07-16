@@ -115,7 +115,7 @@ namespace Summa.Gui {
         }
         
         private void AddFeedTreeView() {
-            store = new Gtk.ListStore(typeof(bool), typeof(string), typeof(string));
+            store = new Gtk.ListStore(typeof(bool), typeof(string), typeof(string), typeof(Gdk.Pixbuf));
             
             crt = new Gtk.CellRendererToggle();
             crt.Activatable = true;
@@ -135,6 +135,9 @@ namespace Summa.Gui {
             
             TreeViewColumn column_Use = new Gtk.TreeViewColumn("Use", crt, "active", 0);
             treeview.AppendColumn(column_Use);
+            
+            TreeViewColumn column_Icon = new Gtk.TreeViewColumn("Icon", new Gtk.CellRendererPixbuf(), "pixbuf", 3);
+            treeview.AppendColumn(column_Icon);
             
             TreeViewColumn column_Name = new Gtk.TreeViewColumn("Title", trender, "text", 1);
             treeview.AppendColumn(column_Name);
@@ -170,6 +173,7 @@ namespace Summa.Gui {
                 store.SetValue(iter, 0, feed.Tags.Contains(ComboBox.ActiveText));
                 store.SetValue(iter, 1, feed.Name);
                 store.SetValue(iter, 2, feed.Url);
+                store.SetValue(iter, 3, feed.Favicon);
             }
         }
         

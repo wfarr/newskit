@@ -96,7 +96,7 @@ namespace Summa.Gui {
         public void AppendTag(string tag) {
             Gtk.TreeIter iter;
             iter = Summa.Core.Application.TagStore.Append();
-            Summa.Core.Application.TagStore.SetValue(iter, 0, Gtk.IconTheme.Default.LookupIcon("tag", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon(););
+            Summa.Core.Application.TagStore.SetValue(iter, 0, Gtk.IconTheme.Default.LookupIcon("tag", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon());
             Summa.Core.Application.TagStore.SetValue(iter, 1, tag);
         }
     }

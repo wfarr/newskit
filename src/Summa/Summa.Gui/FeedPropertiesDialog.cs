@@ -50,6 +50,7 @@ namespace Summa.Gui {
             feed = f;
             
             Title = "\""+feed.Name+"\" Properties";
+            Icon = feed.Favicon;
             BorderWidth = 5;
             DeleteEvent += OnClose;
             

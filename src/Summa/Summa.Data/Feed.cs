@@ -123,7 +123,7 @@ namespace Summa.Data {
                 if ( feed[12] == "" ) {
                     return Gtk.IconTheme.Default.LookupIcon("feed-presence", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
                 } else {
-                    return new Gdk.Pixbuf(feed[12]);
+                    return new Gdk.Pixbuf(feed[12], 16, 16);
                 }
             }
             set {

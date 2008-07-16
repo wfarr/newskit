@@ -29,8 +29,13 @@ namespace Summa.Data {
     public class Item {
         public string Title {
             get {
-                string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
-                return item[0];
+                try {
+                    string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
+                    return item[0];
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
+                    return "";
+                }
             }
             set {
                 Summa.Core.Application.Database.ChangeItemInfo(FeedUri, Uri, "title", value);
@@ -39,8 +44,13 @@ namespace Summa.Data {
         public string Uri;
         public string Date {
             get {
-                string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
-                return item[2];
+                try {
+                    string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
+                    return item[2];
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
+                    return "";
+                }
             }
             set {
                 Summa.Core.Application.Database.ChangeItemInfo(FeedUri, Uri, "date", value);
@@ -48,8 +58,13 @@ namespace Summa.Data {
         }
         public string LastUpdated {
             get {
-                string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
-                return item[3];
+                try {
+                    string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
+                    return item[3];
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
+                    return "";
+                }
             }
             set {
                 Summa.Core.Application.Database.ChangeItemInfo(FeedUri, Uri, "last_updated", value);
@@ -57,8 +72,13 @@ namespace Summa.Data {
         }
         public string Author {
             get {
-                string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
-                return item[4];
+                try {
+                    string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
+                    return item[4];
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
+                    return "";
+                }
             }
             set {
                 Summa.Core.Application.Database.ChangeItemInfo(FeedUri, Uri, "author", value);
@@ -66,8 +86,13 @@ namespace Summa.Data {
         }
         public string Tags {
             get {
-                string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
-                return item[5];
+                try {
+                    string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
+                    return item[5];
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
+                    return "";
+                }
             }
             set {
                 Summa.Core.Application.Database.ChangeItemInfo(FeedUri, Uri, "title", value);
@@ -75,8 +100,13 @@ namespace Summa.Data {
         }
         public string Contents {
             get {
-                string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
-                return item[6];
+                try {
+                    string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
+                    return item[6];
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
+                    return "";
+                }
             }
             set {
                 Summa.Core.Application.Database.ChangeItemInfo(FeedUri, Uri, "content", value);
@@ -84,8 +114,13 @@ namespace Summa.Data {
         }
         public string EncUri {
             get {
-                string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
-                return item[7];
+                try {
+                    string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
+                    return item[7];
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
+                    return "";
+                }
             }
             set {
                 Summa.Core.Application.Database.ChangeItemInfo(FeedUri, Uri, "encuri", value);
@@ -93,13 +128,18 @@ namespace Summa.Data {
         }
         public bool Read {
             get {
-                string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
-                Console.WriteLine(item[1]);
-                string val = item[8];
-                if ( val == "True" ) {
+                try {
+                    string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
+                    Console.WriteLine(item[1]);
+                    string val = item[8];
+                    if ( val == "True" ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
                     return true;
-                } else {
-                    return false;
                 }
             }
             set {
@@ -112,11 +152,16 @@ namespace Summa.Data {
         }
         public bool Flagged {
             get {
-                string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
-                string val = item[9];
-                if ( val == "True" ) {
-                    return true;
-                } else {
+                try {
+                    string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
+                    string val = item[9];
+                    if ( val == "True" ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
                     return false;
                 }
             }

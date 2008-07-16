@@ -73,19 +73,27 @@ namespace Summa.Net {
         }
         
         public static bool FindFavicon(string website_url, out string feed_url) {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ResolveBaseUri(website_url)+"favicon.ico");
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            
-            if ( response.StatusCode != HttpStatusCode.NotFound ) {
-                Stream stream = response.GetResponseStream();
+            try {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ResolveBaseUri(website_url)+"favicon.ico");
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 
-                System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
-                Directory.CreateDirectory(Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/icons/");
-                
-                img.Save(Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/icons/"+Summa.Core.Application.Database.GetGeneratedName(website_url), System.Drawing.Imaging.ImageFormat.Png);
-                feed_url = Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/icons/"+Summa.Core.Application.Database.GetGeneratedName(website_url);
-                return true;
-            }
+                if ( response.StatusCode != HttpStatusCode.NotFound ) {
+                    Stream stream = response.GetResponseStream();
+                    
+                    try {
+                        System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
+                        Directory.CreateDirectory(Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/icons/");
+                        
+                        img.Save(Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/icons/"+Summa.Core.Application.Database.GetGeneratedName(website_url), System.Drawing.Imaging.ImageFormat.Png);
+                        feed_url = Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/icons/"+Summa.Core.Application.Database.GetGeneratedName(website_url);
+                        return true;
+                    } catch ( ArgumentException e ) {
+                        Summa.Core.Log.Exception(e);
+                    }
+                }
+            } catch ( WebException e ) {
+                Summa.Core.Log.Exception(e);
+            }  
             feed_url = "";
             return false;
         }

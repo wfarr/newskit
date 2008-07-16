@@ -91,7 +91,7 @@ namespace Summa.Gui {
         }
         
         private void OnAdd(object obj, EventArgs args) {
-            Summa.Data.Core.RegisterFeed(entry.Text);
+            Summa.Core.Application.Updater.AddFeed(entry.Text);
             
             Destroy();
         }

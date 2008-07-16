@@ -101,9 +101,20 @@ namespace Summa.Core {
         
         private string EscapeParam(string parameter) {
             try {
-                return HttpUtility.HtmlEncode(parameter);
+                //return HttpUtility.HtmlEncode(parameter);
+                return parameter;
             } catch ( Exception e ) {
                 Summa.Core.Log.Exception(e, "Null reference");
+                return "";
+            }
+        }
+        
+        private string UnescapeParam(string parameter) {
+            try {
+                //return HttpUtility.HtmlDecode(parameter);
+                return parameter;
+            } catch ( Exception e ) {
+                Summa.Core.Log.Exception(e);
                 return "";
             }
         }
@@ -278,19 +289,19 @@ namespace Summa.Core {
             IDataReader reader = dbcmd.ExecuteReader();
             
             while(reader.Read()) {
-                feed[0] = reader.GetString(0).ToString(); // integer primary key
-                feed[1] = reader.GetString(1); // uri
-                feed[2] = reader.GetString(2); // generated_name
-                feed[3] = reader.GetString(3); // name
-                feed[4] = reader.GetString(4); // author
-                feed[5] = reader.GetString(5); // subtitle
-                feed[6] = reader.GetString(6); // image
-                feed[7] = reader.GetString(7); // license
-                feed[8] = reader.GetString(8); // etag
-                feed[9] = reader.GetString(9); // hmodified
-                feed[10] = reader.GetString(10); // status
-                feed[11] = reader.GetString(11); // tags
-                feed[12] = reader.GetString(12); //favicon
+                feed[0] = UnescapeParam(reader.GetString(0).ToString()); // integer primary key
+                feed[1] = UnescapeParam(reader.GetString(1)); // uri
+                feed[2] = UnescapeParam(reader.GetString(2)); // generated_name
+                feed[3] = UnescapeParam(reader.GetString(3)); // name
+                feed[4] = UnescapeParam(reader.GetString(4)); // author
+                feed[5] = UnescapeParam(reader.GetString(5)); // subtitle
+                feed[6] = UnescapeParam(reader.GetString(6)); // image
+                feed[7] = UnescapeParam(reader.GetString(7)); // license
+                feed[8] = UnescapeParam(reader.GetString(8)); // etag
+                feed[9] = UnescapeParam(reader.GetString(9)); // hmodified
+                feed[10] = UnescapeParam(reader.GetString(10)); // status
+                feed[11] = UnescapeParam(reader.GetString(11)); // tags
+                feed[12] = UnescapeParam(reader.GetString(12)); //favicon
             }
             reader.Close();
             reader = null;
@@ -308,19 +319,19 @@ namespace Summa.Core {
             while(reader.Read()) {
                 string[] feed = new string[13];
                 
-                feed[0] = reader.GetString(0).ToString(); // integer primary key
-                feed[1] = reader.GetString(1); // uri
-                feed[2] = reader.GetString(2); // generated_name
-                feed[3] = reader.GetString(3); // name
-                feed[4] = reader.GetString(4); // author
-                feed[5] = reader.GetString(5); // subtitle
-                feed[6] = reader.GetString(6); // image
-                feed[7] = reader.GetString(7); // license
-                feed[8] = reader.GetString(8); // etag
-                feed[9] = reader.GetString(9); // hmodified
-                feed[10] = reader.GetString(10); // status
-                feed[11] = reader.GetString(11); // tags
-                feed[12] = reader.GetString(12); //favicon
+                feed[0] = UnescapeParam(reader.GetString(0).ToString()); // integer primary key
+                feed[1] = UnescapeParam(reader.GetString(1)); // uri
+                feed[2] = UnescapeParam(reader.GetString(2)); // generated_name
+                feed[3] = UnescapeParam(reader.GetString(3)); // name
+                feed[4] = UnescapeParam(reader.GetString(4)); // author
+                feed[5] = UnescapeParam(reader.GetString(5)); // subtitle
+                feed[6] = UnescapeParam(reader.GetString(6)); // image
+                feed[7] = UnescapeParam(reader.GetString(7)); // license
+                feed[8] = UnescapeParam(reader.GetString(8)); // etag
+                feed[9] = UnescapeParam(reader.GetString(9)); // hmodified
+                feed[10] = UnescapeParam(reader.GetString(10)); // status
+                feed[11] = UnescapeParam(reader.GetString(11)); // tags
+                feed[12] = UnescapeParam(reader.GetString(12)); //favicon
                 
                 list.Add(feed);
             }
@@ -349,16 +360,16 @@ namespace Summa.Core {
             IDataReader reader = dbcmd.ExecuteReader();
             while(reader.Read()) {
                 string[] item = new string[10];
-                item[0] = reader.GetString(1); //title
-                item[1] = reader.GetString(2); //uri
-                item[2] = reader.GetString(3); //date
-                item[3] = reader.GetString(4); //last_updated
-                item[4] = reader.GetString(5); //author
-                item[5] = reader.GetString(6); //tags
-                item[6] = reader.GetString(7); //content
-                item[7] = reader.GetString(8); //encuri
-                item[8] = reader.GetString(9); //read
-                item[9] = reader.GetString(10); //flagged
+                item[0] = UnescapeParam(reader.GetString(1)); //title
+                item[1] = UnescapeParam(reader.GetString(2)); //uri
+                item[2] = UnescapeParam(reader.GetString(3)); //date
+                item[3] = UnescapeParam(reader.GetString(4)); //last_updated
+                item[4] = UnescapeParam(reader.GetString(5)); //author
+                item[5] = UnescapeParam(reader.GetString(6)); //tags
+                item[6] = UnescapeParam(reader.GetString(7)); //content
+                item[7] = UnescapeParam(reader.GetString(8)); //encuri
+                item[8] = UnescapeParam(reader.GetString(9)); //read
+                item[9] = UnescapeParam(reader.GetString(10)); //flagged
                 
                 list.Add(item);
             }
@@ -382,16 +393,16 @@ namespace Summa.Core {
             while(reader.Read()) {
                 item = new string[10];
                 Console.WriteLine(5);
-                item[0] = reader.GetString(1); //title
-                item[1] = reader.GetString(2); //uri
-                item[2] = reader.GetString(3); //date
-                item[3] = reader.GetString(4); //last_updated
-                item[4] = reader.GetString(5); //author
-                item[5] = reader.GetString(6); //tags
-                item[6] = reader.GetString(7); //content
-                item[7] = reader.GetString(8); //encuri
-                item[8] = reader.GetString(9); //read
-                item[9] = reader.GetString(10); //flagged
+                item[0] = UnescapeParam(reader.GetString(1)); //title
+                item[1] = UnescapeParam(reader.GetString(2)); //uri
+                item[2] = UnescapeParam(reader.GetString(3)); //date
+                item[3] = UnescapeParam(reader.GetString(4)); //last_updated
+                item[4] = UnescapeParam(reader.GetString(5)); //author
+                item[5] = UnescapeParam(reader.GetString(6)); //tags
+                item[6] = UnescapeParam(reader.GetString(7)); //content
+                item[7] = UnescapeParam(reader.GetString(8)); //encuri
+                item[8] = UnescapeParam(reader.GetString(9)); //read
+                item[9] = UnescapeParam(reader.GetString(10)); //flagged
                 Console.WriteLine(6);
             }
             reader.Close();
@@ -552,7 +563,7 @@ namespace Summa.Core {
                 dbcmd.CommandText = "select tags from "+GetGeneratedName(feeduri);
                 IDataReader reader = dbcmd.ExecuteReader();
                 while(reader.Read()) {
-                    list.Add(reader.GetString(1));
+                    list.Add(UnescapeParam(reader.GetString(1)));
                 }
                 reader.Close();
                 reader = null;
