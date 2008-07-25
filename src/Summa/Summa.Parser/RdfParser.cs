@@ -1,4 +1,4 @@
-// AtomParser.cs
+// RdfParser.cs
 //
 // Copyright (c) 2008 Ethan Osten
 //
@@ -29,7 +29,7 @@ using System.Xml;
 using System.Text;
 
 namespace Summa.Parser {
-    public class AtomParser : Summa.Interfaces.IFeedParser {
+    public class RdfParser : Summa.Interfaces.IFeedParser {
         private XmlDocument document;
         private XmlNamespaceManager mgr;
         
@@ -155,34 +155,53 @@ namespace Summa.Parser {
             set { items = value; }
         }
         
-        public AtomParser(string uri, string xml) {
+        public RdfParser(string uri, string xml) {
             this.uri = uri;
             this.document = new XmlDocument();
-            xml = xml.TrimStart();
             
-            document.LoadXml(xml);
-            
+            try {
+                document.LoadXml(xml);
+            } catch (XmlException e) {
+                Summa.Core.Log.Exception(e);
+                bool have_stripped_control = false;
+                StringBuilder sb = new StringBuilder ();
+
+                foreach (char c in xml) {
+                    if (Char.IsControl(c) && c != '\n') {
+                        have_stripped_control = true;
+                    } else {
+                        sb.Append(c);
+                    }
+                }
+
+                bool loaded = false;
+                if (have_stripped_control) {
+                    try {
+                        document.LoadXml(sb.ToString ());
+                        loaded = true;
+                    } catch (Exception) {
+                    }
+                }
+
+                if (!loaded) {                              
+                }
+            }
             mgr = new XmlNamespaceManager(document.NameTable);
-            this.mgr.AddNamespace("atom", "http://www.w3.org/2005/Atom");
             Parse();
         }
         
-        public AtomParser(string uri, XmlDocument doc) {
+        public RdfParser(string uri, XmlDocument doc) {
             this.uri = uri;
             this.document = doc;
-            this.mgr = new XmlNamespaceManager(document.NameTable);
-			this.mgr.AddNamespace("atom", "http://www.w3.org/2005/Atom");
             Parse();
         }
         
         private void Parse() {
-            Name = GetXmlNodeText(document, "/atom:feed/atom:title");
-            Subtitle = GetXmlNodeText(document, "/atom:feed/atom:subtitle");
-            License = GetXmlNodeText(document, "/atom:feed/atom:license");
-            Image = GetXmlNodeText(document, "/atom:feed/atom:banner");
-            Author = GetXmlNodeText(document, "/atom:feed/atom:author/atom:name");
+            Name = GetXmlNodeText(document, "/rdf:RDF/channel/title");
+            Subtitle = GetXmlNodeText(document, "/rdf:RDF/channel/description");
+            Author = GetXmlNodeText(document, "/rdf:RDF/channel/dc:creator");
             
-            XmlNodeList nodes = document.SelectNodes("//atom:entry", mgr);
+            XmlNodeList nodes = document.SelectNodes("//item");
             
             Items = new ArrayList();
             foreach (XmlNode node in nodes) {
@@ -193,13 +212,13 @@ namespace Summa.Parser {
         private Summa.Parser.Item ParseItem(XmlNode node) {
             Summa.Parser.Item item = new Summa.Parser.Item();
             
-            item.Title = GetXmlNodeText(node, "atom:title");
-            item.Author = GetXmlNodeText(node, "atom:author/atom:name");
-            item.Uri = GetXmlNodeUrl(node, "atom:link");
-            item.Contents = GetXmlNodeContent(node);
-            item.Date = GetRfc822DateTime(node, "atom:updated").ToString();
-            item.LastUpdated = "";
-            item.EncUri = "";
+            item.Title = GetXmlNodeText(node, "title");
+            item.Author = GetXmlNodeText(node, "author");
+            item.Uri = GetXmlNodeText(node, "link");
+            item.Contents = GetXmlNodeText(node, "description");
+            item.Date = GetRfc822DateTime(node, "pubDate").ToString();
+            item.LastUpdated = GetRfc822DateTime(node, "dcterms:modified").ToString();
+            item.EncUri = GetXmlNodeText(node, "enclosure/@url");
             
             return item;
         }
@@ -209,34 +228,16 @@ namespace Summa.Parser {
             return (n == null) ? null : n.InnerText.Trim();
         }
         
-        public string GetXmlNodeContent(XmlNode node) {
-            XmlNode n = node.SelectSingleNode("atom:content", mgr);
-            return (n == null) ? null : n.InnerXml.Trim().Replace("\n", "<br/>\n");
-        }
-        
-        public string GetXmlNodeUrl(XmlNode node, string tag) {
-            XmlNode n = node.SelectSingleNode(tag, mgr);
-            
-            foreach ( XmlAttribute val in n.Attributes ) {
-                string name = (string)val.Name;
-                string sval = (string)val.Value;
-                if ( name == "href" ) {
-                    return sval;
-                }
-            }
-            
-            return null;
-        }
-        
         public DateTime GetRfc822DateTime(XmlNode node, string tag) {
             DateTime ret = DateTime.MinValue;
             string result = GetXmlNodeText(node, tag);
 
             if (!String.IsNullOrEmpty(result)) {
-                Migo.Syndication.Rfc822DateTime.TryAtomParse(result, out ret);
+                Migo.Syndication.Rfc822DateTime.TryParse(result, out ret);
             }
                     
             return ret;              
         }
     }
 }
+

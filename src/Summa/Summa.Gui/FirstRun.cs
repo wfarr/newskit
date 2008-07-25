@@ -28,6 +28,12 @@ using Gtk;
 using System.Collections;
 
 namespace Summa.Gui {
+    public class ProgressEventArgs : EventArgs {
+        public double Progress;
+        
+        public ProgressEventArgs() {}
+    }
+    
     public class FirstRun : Gtk.Window {
         private Gtk.VBox vbox;
         private Gtk.HBox hbox;
@@ -39,6 +45,9 @@ namespace Summa.Gui {
         private Gtk.FileChooserButton fcbutton;
         private Gtk.Button cancel_button;
         private Gtk.Button add_button;
+        private Gtk.ProgressBar pb;
+        
+        private ArrayList failed_feeds;
         
         public FirstRun() : base(Gtk.WindowType.Toplevel) {
             IconName = Gtk.Stock.Convert;
@@ -81,24 +90,23 @@ namespace Summa.Gui {
         }
         
         private void OnCancel(object obj, EventArgs args) {
-            Destroy();/*
-            Summa.Data.register_feed_source("http://planet.gnome.org/rss20.xml");
-            Summa.Data.register_feed_source("http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml");
-            Summa.Data.register_feed_source("http://rss.slashdot.org/Slashdot/slashdot");*/
+            Destroy();
         }
         
         private void OnImport(object obj, EventArgs args) {
             Title = "Importing...";
-            bbox.Sensitive = false;
-            image.Sensitive = false;
-            label.Sensitive = false;
-            foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
-                browser.Sensitive = false;
-            }
+            add_button.Sensitive = false;
             
-            ProgressBar pb = new Gtk.ProgressBar();
+            pb = new Gtk.ProgressBar();
             table.Attach(pb, 1, 2, 1, 2);
             pb.Show();
+            
+            System.Threading.Thread thread = new System.Threading.Thread(ImportThread);
+            thread.Start();
+        }
+        
+        private void ImportThread() {
+            failed_feeds = new ArrayList();
             
             if ( fcdialog.Uris.Length > 0 ) {
                 string uri = fcdialog.Uri;
@@ -107,10 +115,9 @@ namespace Summa.Gui {
                 double progress = 0.0;
                 
                 foreach ( string feed in feeds ) {
-                    Summa.Core.Application.Notifier.Notify("Importing feed \""+feed+"\"");
-                    while ( Gtk.Application.EventsPending() ) {
-                        Gtk.Main.Iteration();
-                    }
+                    Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
+                    args.Message = "Importing feed \""+feed+"\"";
+                    Gtk.Application.Invoke(this, args, new EventHandler(OnNotify));
                     
                     bool it_worked = true;
                     
@@ -119,27 +126,46 @@ namespace Summa.Gui {
                         it_worked = true;
                     } catch ( Summa.Core.Exceptions.BadFeed e ) {
                         Summa.Core.Log.Exception(e);
-                        Summa.Core.Application.Notifier.Notify("Import of feed \""+feed+"\" failed.");
+                        
+                        args = new Summa.Core.NotificationEventArgs();
+                        args.Message = "Import of feed \""+feed+"\" failed";
+                        Gtk.Application.Invoke(this, args, new EventHandler(OnNotify));
+                        
+                        failed_feeds.Add(feed);
+                        
                         it_worked = false;
                     }
                     
-                    pb.Fraction = progress;
+                    Summa.Gui.ProgressEventArgs pargs = new Summa.Gui.ProgressEventArgs();
+                    pargs.Progress = progress;
+                    Gtk.Application.Invoke(this, pargs, new EventHandler(OnProgress));
+                    
                     progress += step;
                     
                     if ( it_worked ) {
-                        Summa.Core.Application.Notifier.Notify("Import of feed\""+feed+"\" was successful.");
-                        
-                        while ( Gtk.Application.EventsPending() ) {
-                            Gtk.Main.Iteration();
-                        }
+                        args = new Summa.Core.NotificationEventArgs();
+                        args.Message = "Import of feed \""+feed+"\" was successful";
+                        Gtk.Application.Invoke(this, args, new EventHandler(OnNotify));
                     }
                 }
             }
-            foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
-                browser.FeedView.Update();
-                browser.Sensitive = true;
-            }
-            Destroy();
+            Gtk.Application.Invoke(this, new EventArgs(), new EventHandler(OnCancel));
+            Gtk.Application.Invoke(this, new EventArgs(), new EventHandler(OnDialog));
+        }
+        
+        private void OnDialog(object obj, EventArgs args) {
+            Window md = new Summa.Gui.MessageDialog(failed_feeds);
+            md.ShowAll();
+        }
+        
+        private void OnNotify(object obj, EventArgs args) {
+            Summa.Core.NotificationEventArgs iargs = (Summa.Core.NotificationEventArgs)args;
+            Summa.Core.Application.Notifier.Notify(iargs.Message);
+        }
+        
+        private void OnProgress(object obj, EventArgs args) {
+            Summa.Gui.ProgressEventArgs pargs = (Summa.Gui.ProgressEventArgs)args;
+            pb.Fraction = pargs.Progress;
         }
     }
 }

@@ -1,4 +1,4 @@
-// Notifier.cs
+// EventArgs.cs
 //
 // Copyright (c) 2008 Ethan Osten
 //
@@ -26,29 +26,35 @@
 using System;
 
 namespace Summa.Core {
-    public class Notifier {
-        public event Summa.Core.NotificationEventHandler Notification;
-        public event EventHandler ZoomChanged;
-        public event EventHandler ViewChanged;
+    public class NotificationEventArgs : EventArgs {
+        public string Message;
         
-        public Notifier() {}
-        
-        public void Notify(string message) {
-            Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
-            args.Message = message;
-            Notification(this, args);
-        }
-        
-        public void PopupNotification(string message) {
-            //FIXME
-        }
-        
-        public void ChangeZoom() {
-            ZoomChanged(this, new EventArgs());
-        }
-        
-        public void ChangeView() {
-            ViewChanged(this, new EventArgs());
-        }
+        public NotificationEventArgs() {}
     }
+    
+    public delegate void NotificationEventHandler(object obj, NotificationEventArgs e);
+    
+    public class ChangedEventArgs : EventArgs {
+        public string Uri;
+        public string FeedUri;
+        public string Value;
+        public string ItemProperty;
+        
+        public ChangedEventArgs() {}
+    }
+    
+    public class AddedEventArgs : EventArgs {
+        public string Uri;
+        public string FeedUri;
+        
+        public AddedEventArgs() {}
+    }
+    
+    public delegate void FeedAddedHandler(object obj, AddedEventArgs e);
+    public delegate void FeedDeletedHandler(object obj, AddedEventArgs e);
+    public delegate void FeedChangedHandler(object obj, ChangedEventArgs e);
+    
+    public delegate void ItemAddedHandler(object obj, AddedEventArgs e);
+    public delegate void ItemDeletedHandler(object obj, AddedEventArgs e);
+    public delegate void ItemChangedHandler(object obj, ChangedEventArgs e);
 }

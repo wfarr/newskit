@@ -1,4 +1,4 @@
-// Notifier.cs
+// NetworkManager.cs
 //
 // Copyright (c) 2008 Ethan Osten
 //
@@ -24,31 +24,22 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using NDesk.DBus;
 
-namespace Summa.Core {
-    public class Notifier {
-        public event Summa.Core.NotificationEventHandler Notification;
-        public event EventHandler ZoomChanged;
-        public event EventHandler ViewChanged;
-        
-        public Notifier() {}
-        
-        public void Notify(string message) {
-            Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
-            args.Message = message;
-            Notification(this, args);
-        }
-        
-        public void PopupNotification(string message) {
-            //FIXME
-        }
-        
-        public void ChangeZoom() {
-            ZoomChanged(this, new EventArgs());
-        }
-        
-        public void ChangeView() {
-            ViewChanged(this, new EventArgs());
+namespace Summa.Net {
+    public static class NetworkManager {
+        public static Summa.Net.ConnectionState Status() {
+            try {
+                Summa.Interfaces.INetworkManager nm = NDesk.DBus.Bus.Session.GetObject<Summa.Interfaces.INetworkManager>("org.freedesktop.NetworkManager", new ObjectPath("/org/freedesktop/NetworkManager"));
+                
+                if ( nm.state() == 3 ) {
+                    return Summa.Net.ConnectionState.Connected;
+                } else {
+                    return Summa.Net.ConnectionState.Offline;
+                }
+            } catch ( Exception ) {
+                return Summa.Net.ConnectionState.Connected;
+            }
         }
     }
 }

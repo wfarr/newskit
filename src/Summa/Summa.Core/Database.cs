@@ -34,41 +34,17 @@ using System.Data;
 using Mono.Data.SqliteClient;
 
 namespace Summa.Core {
-    public class ChangedEventArgs : EventArgs {
-        public string Uri;
-        public string FeedUri;
-        public string Value;
-        public string ItemProperty;
-        
-        public ChangedEventArgs() {}
-    }
-    
-    public class AddedEventArgs : EventArgs {
-        public string Uri;
-        public string FeedUri;
-        
-        public AddedEventArgs() {}
-    }
-    
-    public delegate void FeedAddedHandler(object obj, AddedEventArgs e);
-    public delegate void FeedDeletedHandler(object obj, AddedEventArgs e);
-    public delegate void FeedChangedHandler(object obj, ChangedEventArgs e);
-    
-    public delegate void ItemAddedHandler(object obj, AddedEventArgs e);
-    public delegate void ItemDeletedHandler(object obj, AddedEventArgs e);
-    public delegate void ItemChangedHandler(object obj, ChangedEventArgs e);
-    
     public class Database {
         private static string uri = Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/newskit/database.db";
         private string Uri = "URI=file://"+uri;
         private IDbConnection db;
         
-        public event FeedAddedHandler FeedAdded;
-        public event FeedDeletedHandler FeedDeleted;
-        public event FeedChangedHandler FeedChanged;
-        public event ItemAddedHandler ItemAdded;
-        public event ItemDeletedHandler ItemDeleted;
-        public event ItemChangedHandler ItemChanged;
+        public event Summa.Core.FeedAddedHandler FeedAdded;
+        public event Summa.Core.FeedDeletedHandler FeedDeleted;
+        public event Summa.Core.FeedChangedHandler FeedChanged;
+        public event Summa.Core.ItemAddedHandler ItemAdded;
+        public event Summa.Core.ItemDeletedHandler ItemDeleted;
+        public event Summa.Core.ItemChangedHandler ItemChanged;
         
         private Hashtable GeneratedNames;
         
@@ -259,7 +235,7 @@ namespace Summa.Core {
             
             GeneratedNames.Add(uri, generated_name);
             
-            AddedEventArgs args = new AddedEventArgs();
+            Summa.Core.AddedEventArgs args = new Summa.Core.AddedEventArgs();
             args.Uri = uri;
             FeedAdded(this, args);
             
@@ -272,7 +248,7 @@ namespace Summa.Core {
             
             GeneratedNames.Remove(uri);
             
-            AddedEventArgs args = new AddedEventArgs();
+            Summa.Core.AddedEventArgs args = new Summa.Core.AddedEventArgs();
             args.Uri = uri;
             FeedDeleted(this, args);
         }
@@ -382,17 +358,12 @@ namespace Summa.Core {
         
         public string[] GetItem(string feeduri, string uri) {
             string[] item = null;
-            Console.WriteLine(1);
             
             IDbCommand dbcmd = db.CreateCommand();
-            Console.WriteLine(2);
             dbcmd.CommandText = "select * from "+GetGeneratedName(feeduri)+@" where uri="""+EscapeParam(uri)+@"""";
-            Console.WriteLine(3);
             IDataReader reader = dbcmd.ExecuteReader();
-            Console.WriteLine(4);
             while(reader.Read()) {
                 item = new string[10];
-                Console.WriteLine(5);
                 item[0] = UnescapeParam(reader.GetString(1)); //title
                 item[1] = UnescapeParam(reader.GetString(2)); //uri
                 item[2] = UnescapeParam(reader.GetString(3)); //date
@@ -403,16 +374,11 @@ namespace Summa.Core {
                 item[7] = UnescapeParam(reader.GetString(8)); //encuri
                 item[8] = UnescapeParam(reader.GetString(9)); //read
                 item[9] = UnescapeParam(reader.GetString(10)); //flagged
-                Console.WriteLine(6);
             }
             reader.Close();
-            Console.WriteLine(7);
             reader = null;
-            Console.WriteLine(8);
             dbcmd.Dispose();
-            Console.WriteLine(9);
             dbcmd = null;
-            Console.WriteLine(10);
             return item;
         }
         
@@ -422,7 +388,7 @@ namespace Summa.Core {
             
             NonQueryCommand(command);
             
-            AddedEventArgs args = new AddedEventArgs();
+            Summa.Core.AddedEventArgs args = new Summa.Core.AddedEventArgs();
             args.Uri = uri;
             args.FeedUri = feeduri;
             ItemAdded(this, args);
@@ -528,7 +494,7 @@ namespace Summa.Core {
             dbcmd.Dispose();
             dbcmd = null;
             
-            AddedEventArgs args = new AddedEventArgs();
+            Summa.Core.AddedEventArgs args = new Summa.Core.AddedEventArgs();
             args.Uri = uri;
             args.FeedUri = feeduri;
             ItemAdded(this, args);
@@ -537,7 +503,7 @@ namespace Summa.Core {
         public void ChangeFeedInfo(string feeduri, string property, string intended_value) {
             NonQueryCommand("update Feeds set "+property+@"="""+EscapeParam(intended_value)+@""" where uri="""+EscapeParam(feeduri)+@"""");
             
-            ChangedEventArgs args = new ChangedEventArgs();
+            Summa.Core.ChangedEventArgs args = new Summa.Core.ChangedEventArgs();
             args.Uri = feeduri;
             args.Value = intended_value;
             args.ItemProperty = property;
@@ -547,7 +513,7 @@ namespace Summa.Core {
         public void ChangeItemInfo(string feeduri, string itemuri, string property, string intended_value) { //optimize
             NonQueryCommand("update "+GetGeneratedName(feeduri)+" set "+property+@"="""+EscapeParam(intended_value)+@""" where uri="""+EscapeParam(itemuri)+@"""");
             
-            ChangedEventArgs args = new ChangedEventArgs();
+            Summa.Core.ChangedEventArgs args = new Summa.Core.ChangedEventArgs();
             args.Uri = itemuri;
             args.FeedUri = feeduri;
             args.Value = intended_value;

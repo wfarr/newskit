@@ -227,5 +227,23 @@ namespace Summa.Core {
                 Summa.Core.Application.Notifier.ChangeView();
             }
         }
+        
+        private static bool connected;
+        public static bool Connected {
+            get {
+                try {
+                    if ( Summa.Net.NetworkManager.Status() == Summa.Net.ConnectionState.Connected ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } catch ( Exception ) {
+                    return true;
+                }
+            }
+            set {
+                connected = value;
+            }
+        }
     }
 }

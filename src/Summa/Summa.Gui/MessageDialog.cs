@@ -1,4 +1,4 @@
-// AddFeedDialog.cs
+// MessageDialog.cs
 //
 // Copyright (c) 2008 Ethan Osten
 //
@@ -24,25 +24,28 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
+
 using Gtk;
 
 namespace Summa.Gui {
-    public class AddFeedDialog : Gtk.Window {
+    public class MessageDialog : Gtk.Window {
         private Gtk.VBox vbox;
         private Gtk.HBox hbox;
         private Gtk.HButtonBox bbox;
         private Gtk.Image image;
         private Gtk.Table table;
         private Gtk.Label label;
-        private Gtk.Entry entry;
-        private Gtk.Button cancel_button;
-        private Gtk.Button add_button;
+        private Gtk.TextBuffer buffer;
+        private Gtk.TextView textview;
+        private Gtk.ScrolledWindow textviewsw;
+        private Gtk.Button close_button;
         
-        public AddFeedDialog() : base(Gtk.WindowType.Toplevel) {
-            Title = "Add subscription";
-            IconName = "add";
+        public MessageDialog(ArrayList list) : base(Gtk.WindowType.Toplevel) {
+            Title = "Error";
+            IconName = "dialog-error";
             
-            DeleteEvent += OnCancel;
+            DeleteEvent += OnClose;
             
             Resizable = false;
             BorderWidth = 6;
@@ -53,7 +56,7 @@ namespace Summa.Gui {
             
             vbox.PackStart(hbox);
             
-            image = new Gtk.Image(Gtk.Stock.Add, Gtk.IconSize.Dialog);
+            image = new Gtk.Image(Gtk.Stock.DialogError, Gtk.IconSize.Dialog);
             hbox.PackStart(image);
             
             table = new Gtk.Table(2, 3, false);
@@ -61,38 +64,38 @@ namespace Summa.Gui {
             hbox.PackEnd(table);
             
             label = new Gtk.Label();
-            label.Markup = "<b>Enter the URL of the feed:</b>";
+            label.Markup = "<big><b>Some feeds failed to import</b></big>";
             table.Attach(label, 1, 2, 0, 1);
             
-            entry = new Gtk.Entry();
-            table.Attach(entry, 1, 2, 1, 2);
+            buffer = new Gtk.TextBuffer(new Gtk.TextTagTable());
+            foreach ( string feed in list ) {
+                buffer.Text = buffer.Text + feed+"\n";;
+            }
+            
+            textview = new Gtk.TextView(buffer);
+            textview.Editable = false;
+            textview.WrapMode = Gtk.WrapMode.Word;
+            textview.SetSizeRequest(400, 150);
+            
+            textviewsw = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+            textviewsw.ShadowType = Gtk.ShadowType.In;
+            textviewsw.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+            textviewsw.Add(textview);
+            table.Attach(textviewsw, 1, 2, 1, 2);
             
             bbox = new Gtk.HButtonBox();
             bbox.Layout = Gtk.ButtonBoxStyle.End;
             bbox.Spacing = 6;
             vbox.PackEnd(bbox);
                 
-            cancel_button = new Gtk.Button(Gtk.Stock.Cancel);
-            cancel_button.Clicked += new EventHandler(OnCancel);
-            bbox.PackStart(cancel_button);
+            close_button = new Gtk.Button(Gtk.Stock.Close);
+            close_button.Clicked += new EventHandler(OnClose);
+            bbox.PackStart(close_button);
             
-            add_button = new Gtk.Button(Gtk.Stock.Add);
-            add_button.Clicked += new EventHandler(OnAdd);
-            add_button.GrabFocus();
-            bbox.PackEnd(add_button);
+            TransientFor = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
         }
         
-        new public void Show() {
-            ShowAll();
-        }
-        
-        private void OnCancel(object obj, EventArgs args) {
-            Destroy();
-        }
-        
-        private void OnAdd(object obj, EventArgs args) {
-            Summa.Core.Application.Updater.AddFeed(entry.Text);
-            
+        private void OnClose(object obj, EventArgs args) {
             Destroy();
         }
     }

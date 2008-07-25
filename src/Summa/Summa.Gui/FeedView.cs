@@ -62,7 +62,6 @@ namespace Summa.Gui {
                 } else { store.GetIterFirst(out iter); }
                 
                 string val = (string)store.GetValue(iter, 2);
-                Console.WriteLine(val);
                 
                 if ( val != null ) {
                     return Summa.Data.Core.RegisterFeed(val);
@@ -158,7 +157,11 @@ namespace Summa.Gui {
             
             if ( args.ItemProperty == "tags" ) {
                 if ( args.Value.Split(',').Contains(SetTag) ) {
-                    AddNewFeed(new Summa.Data.Feed(args.Uri));
+                    try {
+                        TreePath path = (TreePath)feedhash[args.Uri];
+                    } catch ( Exception ) {
+                        AddNewFeed(new Summa.Data.Feed(args.Uri));
+                    }
                 }
             }
             

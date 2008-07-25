@@ -34,21 +34,19 @@ namespace Summa.Net {
         public static Summa.Interfaces.IFeedParser Sniff(Summa.Net.Request request) {
             Summa.Interfaces.IFeedParser parser = null;
             
-            try {
-                parser = new Summa.Parser.RssParser(request.Uri, request.Xml);
-            } catch ( Exception e ) {
-                Summa.Core.Log.Exception(e);
-            }
-            
-            if ( parser != null ) {
-                if ( parser.Name == null ) {
-                    try {
-                        parser = new Summa.Parser.AtomParser(request.Uri, request.Xml);
-                    } catch ( Exception e ) {
-                        Summa.Core.Log.Exception(e);
-                    }
+            if ( request.Xml.Contains("<rdf:RDF") ) {
+                try {
+                    parser = new Summa.Parser.RdfParser(request.Uri, request.Xml);
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
                 }
-            } else {
+            } else if ( request.Xml.Contains("<rss") ) {
+                try {
+                    parser = new Summa.Parser.RssParser(request.Uri, request.Xml);
+                } catch ( Exception e ) {
+                    Summa.Core.Log.Exception(e);
+                }
+            } else if ( request.Xml.Contains("<feed") ) {
                 try {
                     parser = new Summa.Parser.AtomParser(request.Uri, request.Xml);
                 } catch ( Exception e ) {

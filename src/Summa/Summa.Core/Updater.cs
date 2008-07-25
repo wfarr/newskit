@@ -83,6 +83,7 @@ namespace Summa.Core {
                         Gtk.Application.Invoke(this, args, new EventHandler(OnNotify));
                     }
                 } catch ( NullReferenceException ) {}
+                updating_queue.Remove(feed);
             }
         }
         

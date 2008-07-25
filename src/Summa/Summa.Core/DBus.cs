@@ -64,7 +64,8 @@ namespace Summa.Core {
         }
         
         public bool SetOnline(bool online) {
-            return online;
+            Summa.Core.Config.Connected = online;
+            return Summa.Core.Config.Connected;
         }
         
         public int GetUnreadItems() {

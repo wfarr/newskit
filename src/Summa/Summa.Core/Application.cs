@@ -48,17 +48,31 @@ namespace Summa.Core {
             Gtk.Application.Init();
             SetProcessName("summa");
             
-            GLib.Log.SetLogHandler(null, GLib.LogLevelFlags.All, new GLib.LogFunc(Summa.Core.Log.LogFunc)); 
+            GLib.Log.SetLogHandler(null, GLib.LogLevelFlags.All, new GLib.LogFunc(Summa.Core.Log.LogFunc)); //FIXME
             
             Log = new ArrayList();
             
+            /*
+             * the ListStore for all Summa.Gui.TagViews, since tags don't
+             * vary by context.
+             */
             TagStore = new Gtk.ListStore(typeof(Gdk.Pixbuf), typeof(string));
             
             Notifier = new Summa.Core.Notifier();
             Database = new Summa.Core.Database();
             Updater = new Summa.Core.Updater();
+            /*
+             * since the ConfigDialog doesn't update based on changes to the
+             * config yet, have only one dialog, which browsers will reparent
+             * to themselves.
+             */
             ConfigDialog = new Summa.Gui.ConfigDialog();
             DBus = new Summa.Core.DBusInterface();
+            /*
+             * a list of browser instances - when a browser is created, it
+             * should be added to this list, and when it is destroyed, it
+             * should be removed.
+             */
             Browsers = new ArrayList();
             Browsers.Add(new Summa.Gui.Browser());
             StatusIcon = new Summa.Gui.StatusIcon();
@@ -103,25 +117,24 @@ namespace Summa.Core {
         }
         
         public static void ToggleShown() {
-            foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
-                if ( WindowsShown ) {
-                    browser.Hide();
-                } else {
-                    browser.Show();
-                }
-            }
-            
             if ( WindowsShown ) {
+                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                    browser.Hide();
+                }
                 WindowsShown = false;
             } else {
+                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                    browser.Show();
+                }
                 WindowsShown = true;
             }
         }
         
+        /* this stuff from Beagle */
         [DllImport("libc")]
 		private static extern int prctl (int option, byte [] arg2, ulong arg3, ulong arg4, ulong arg5);
 
-		// From /usr/include/linux/prctl.h
+		/* From /usr/include/linux/prctl.h */
 		private const int PR_SET_NAME = 15;
 
 		public static void SetProcessName(string name) {

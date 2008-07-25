@@ -47,7 +47,7 @@ namespace Summa.Data {
                     request = new Summa.Net.Request(uri);
                 } catch ( Summa.Core.Exceptions.NotFound e ) {
                     Summa.Core.Log.Exception(e);
-                    return null;
+                    throw new Summa.Core.Exceptions.BadFeed();
                 }
                 
                 if ( request.Status != System.Net.HttpStatusCode.NotFound ) {
@@ -68,6 +68,8 @@ namespace Summa.Data {
                         if ( icon_found ) {
                             Summa.Core.Application.Database.ChangeFeedInfo(parser.Uri, "favicon", file_name);
                         }
+                    } else {
+                        throw new Summa.Core.Exceptions.BadFeed();
                     }
                 } else {
                     throw new Summa.Core.Exceptions.BadFeed();

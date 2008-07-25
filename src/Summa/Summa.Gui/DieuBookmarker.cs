@@ -27,18 +27,13 @@ using System;
 using System.Collections;
 using NDesk.DBus;
 
-[Interface ("org.gnome.Dieu")]
-public interface Dieu {
-    void AddBookmark (string title, string url, string content, string tags);
-}
-
 namespace Summa.Gui {
     public class DieuBookmarker : Summa.Interfaces.IBookmarker {
-        private Dieu dieu;
+        private Summa.Interfaces.IDieu dieu;
         private bool possible;
         
         public DieuBookmarker() {
-            dieu = Bus.Session.GetObject<Dieu>("org.gnome.Dieu", new ObjectPath("/org/gnome/Dieu"));
+            dieu = Bus.Session.GetObject<Summa.Interfaces.IDieu>("org.gnome.Dieu", new ObjectPath("/org/gnome/Dieu"));
             possible = true;
         }
         

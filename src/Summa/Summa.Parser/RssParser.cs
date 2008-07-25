@@ -158,6 +158,7 @@ namespace Summa.Parser {
         public RssParser(string uri, string xml) {
             this.uri = uri;
             this.document = new XmlDocument();
+            xml = xml.TrimStart();
             
             try {
                 document.LoadXml(xml);

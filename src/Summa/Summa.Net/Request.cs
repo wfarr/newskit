@@ -41,56 +41,60 @@ namespace Summa.Net {
         private Stream stream;
         
         public Request(string uri) {
-            this.Uri = uri;
-            
-            try {
-                webrequest = (HttpWebRequest)WebRequest.Create(uri);
-                webrequest.AllowAutoRedirect = true;
+            if ( Summa.Core.Config.Connected ) {
+                this.Uri = uri;
                 
                 try {
-                    string modified = Summa.Core.Application.Database.GetFeed(uri)[9];
-                    DateTime m = Convert.ToDateTime(modified);
-                    webrequest.IfModifiedSince = m;
-                } catch ( Exception e ) {
-                    Summa.Core.Log.Exception(e);
-                }
-                
-                webresponse = (HttpWebResponse)webrequest.GetResponse();
-                Status = webresponse.StatusCode;
-                
-                byte[] buffer = new byte[8192];
-                StringBuilder sb  = new StringBuilder();
-                
-                if ( Status == HttpStatusCode.NotModified ) {
-                    throw new Summa.Core.Exceptions.NotUpdated();
-                } else {
-                    stream = webresponse.GetResponseStream();
-                    string tempString = null;
-                    int count = 0;
+                    webrequest = (HttpWebRequest)WebRequest.Create(uri);
+                    webrequest.AllowAutoRedirect = true;
                     
-                    do {
-                        count = stream.Read(buffer, 0, buffer.Length);
+                    try {
+                        string modified = Summa.Core.Application.Database.GetFeed(uri)[9];
+                        DateTime m = Convert.ToDateTime(modified);
+                        webrequest.IfModifiedSince = m;
+                    } catch ( Exception e ) {
+                        Summa.Core.Log.Exception(e);
+                    }
+                    
+                    webresponse = (HttpWebResponse)webrequest.GetResponse();
+                    Status = webresponse.StatusCode;
+                    
+                    byte[] buffer = new byte[8192];
+                    StringBuilder sb  = new StringBuilder();
+                    
+                    if ( Status == HttpStatusCode.NotModified ) {
+                        throw new Summa.Core.Exceptions.NotUpdated();
+                    } else {
+                        stream = webresponse.GetResponseStream();
+                        string tempString = null;
+                        int count = 0;
                         
-                        if (count != 0) {
-                            tempString = Encoding.ASCII.GetString(buffer, 0, count);
+                        do {
+                            count = stream.Read(buffer, 0, buffer.Length);
                             
-                            sb.Append(tempString);
+                            if (count != 0) {
+                                tempString = Encoding.ASCII.GetString(buffer, 0, count);
+                                
+                                sb.Append(tempString);
+                            }
+                        }
+                        while (count > 0);
+                        
+                        Xml = sb.ToString();
+                        Xml = System.Text.RegularExpressions.Regex.Replace(Xml, "( [a-z]+)=([a-zA-Z0-9:/._%;?=&-]+)", "$1=\"$2\"");
+                        
+                        LastModified = webresponse.LastModified.ToString();
+                        try {
+                            Etag = webresponse.Headers.GetValues("ETag")[0];
+                        } catch ( Exception e ) {
+                            Summa.Core.Log.Exception(e, "Etag not found");
                         }
                     }
-                    while (count > 0);
-                    
-                    Xml = sb.ToString();
-                    Xml = System.Text.RegularExpressions.Regex.Replace(Xml, "( [a-z]+)=([a-zA-Z0-9:/._%;?=&-]+)", "$1=\"$2\"");
-                    
-                    LastModified = webresponse.LastModified.ToString();
-                    try {
-                        Etag = webresponse.Headers.GetValues("ETag")[0];
-                    } catch ( Exception e ) {
-                        Summa.Core.Log.Exception(e, "Etag not found");
-                    }
+                } catch ( System.Net.WebException e ) {
+                    Summa.Core.Log.Exception(e, "Failed to download");
+                    throw new Summa.Core.Exceptions.NotFound();
                 }
-            } catch ( System.Net.WebException e ) {
-                Summa.Core.Log.Exception(e, "Failed to download");
+            } else {
                 throw new Summa.Core.Exceptions.NotFound();
             }
         }

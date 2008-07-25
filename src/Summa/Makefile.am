@@ -21,6 +21,7 @@ SUMMA_CSDISTFILES = \
         Summa.Core/Config.cs \
         Summa.Core/Database.cs \
         Summa.Core/DBus.cs \
+        Summa.Core/EventArgs.cs \
         Summa.Core/Exceptions.cs \
         Summa.Core/Log.cs \
         Summa.Core/Notifier.cs \
@@ -42,6 +43,7 @@ SUMMA_CSDISTFILES = \
         Summa.Gui/FirstRun.cs \
         Summa.Gui/ItemNotebook.cs \
         Summa.Gui/ItemView.cs \
+        Summa.Gui/MessageDialog.cs \
         Summa.Gui/NativeBookmarker.cs \
         Summa.Gui/NotificationBar.cs \
         Summa.Gui/OpmlDialog.cs \
@@ -53,13 +55,17 @@ SUMMA_CSDISTFILES = \
         Summa.Interfaces/IBookmarker.cs \
         Summa.Interfaces/IFeedParser.cs \
         Summa.Interfaces/IMediaPlayer.cs \
+        Summa.Interfaces/INetworkManager.cs \
         Summa.Interfaces/ISource.cs \
+        Summa.Net/ConnectionState.cs \
+        Summa.Net/NetworkManager.cs \
         Summa.Net/Request.cs \
         Summa.Net/Util.cs \
         Summa.Parser/AtomParser.cs \
         Summa.Parser/Item.cs \
         Summa.Parser/MigoRfc822DateTime.cs \
         Summa.Parser/OpmlParser.cs \
+        Summa.Parser/RdfParser.cs \
         Summa.Parser/RssParser.cs
 
 summalibdir = $(prefix)/lib/summa

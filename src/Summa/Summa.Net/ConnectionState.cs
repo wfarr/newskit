@@ -1,4 +1,4 @@
-// Notifier.cs
+// ConnectionState.cs
 //
 // Copyright (c) 2008 Ethan Osten
 //
@@ -25,30 +25,9 @@
 
 using System;
 
-namespace Summa.Core {
-    public class Notifier {
-        public event Summa.Core.NotificationEventHandler Notification;
-        public event EventHandler ZoomChanged;
-        public event EventHandler ViewChanged;
-        
-        public Notifier() {}
-        
-        public void Notify(string message) {
-            Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
-            args.Message = message;
-            Notification(this, args);
-        }
-        
-        public void PopupNotification(string message) {
-            //FIXME
-        }
-        
-        public void ChangeZoom() {
-            ZoomChanged(this, new EventArgs());
-        }
-        
-        public void ChangeView() {
-            ViewChanged(this, new EventArgs());
-        }
+namespace Summa.Net {
+    public enum ConnectionState : int {
+        Connected,
+        Offline
     }
 }
