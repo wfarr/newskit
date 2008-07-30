@@ -149,85 +149,20 @@ namespace Summa.Gui {
             Open(uri);
         }
         
-        /*public string MakeItemHtml(Summa.Data.Item item) {
-            if (content.ToString() != String.Empty) {
-                // Empties the StringBuilder if it has more than ""
-                content.Remove(0, content.Length);
-            }
-
-            content.AppendFormat("<b>{0}</b>", item.Title);
-
-            if ( item.Author != String.Empty ) {
-                content.AppendFormat(" by {0}<br />", item.Author);
-            } else {
-                content.Append("<br />");
-            }
-            content.AppendFormat("<b>URL</b>: <a href=\"{0}\">{0}</a><br />", item.Uri);
-            if ( item.EncUri != String.Empty ) {
-                content.AppendFormat("<b>Enclosure</b>: <a href=\"{0}\">{0}</a><br />", item.EncUri);
-            }
-            content.Append("<hr/>");
-            content.Append(item.Contents);
-            
-            return content.ToString();
-        }*/
-        
-        private const string theme = @"<html>
-  <head>
-    <meta http-equiv=""Content-Type"" content=""text/html; charset=utf-8""/>
-    <title>${title}</title>
-    <base href=""${url}"" />
-  </head>
-  <body>
-    <table border=""1"" cellpadding=""3"" rules=""groups"" width=""100%"">
-      <tr bgcolor=""#bbbbff""><th align=""left""><a href=""${url}""><font color=""#ffffff"" size=""+1"">${title}</font></a></th></tr>
-      <tr bgcolor=""#eeeeee""><td align=""left"">${author}</td></tr>
-    </table>
-
-    ${text}
-  </body>
-</html>";
-        
-        public string MakeItemHtml(Summa.Data.Item item) {
-            string themed_string = theme;
-            
-            themed_string = themed_string.Replace("${title}", item.Title);
-            themed_string = themed_string.Replace("${url}", item.Uri);
-            themed_string = themed_string.Replace("${author}", item.Author);
-            themed_string = themed_string.Replace("${text}", item.Contents);
-            
-            return themed_string;
-        }
-        
         public void Render(Summa.Data.Item item) {
-            Render(MakeItemHtml(item));
+            //FIXME: should look up the set theme and use *that* from the
+            //ThemeManager
+            Summa.Interfaces.ITheme theme = (Summa.Interfaces.ITheme)Summa.Core.ThemeManager.Themes[0];
+            Render(theme.MakeHtml(item));
             SelectedItem = item;
             Summa.Core.Application.Database.ItemChanged += OnItemChanged;
         }
         
         public void Render(Summa.Interfaces.ISource feed) {
-            if (content.ToString() != String.Empty) {
-                // Empties the StringBuilder if it has more than ""
-                content.Remove(0, content.Length);
-            }
-
-            content.AppendFormat("<b>{0}</b>", feed.Name);
-
-            if ( feed.Author != String.Empty ) {
-                content.AppendFormat(" by {0}<br />", feed.Author);
-            } else {
-                content.Append("<br />");
-            }
-
-            if ( feed.Subtitle != String.Empty ) {
-                content.AppendFormat("<b>Subtitle</b>: {0}<br />", feed.Subtitle);
-            }
-
-            content.AppendFormat("<b>URL</b>: <a href=\"{0}\">{0}</a><br />", feed.Url);
-            content.Append("<hr/>");
-            content.AppendFormat("<img src=\"{0}\">", feed.Image);
-            
-            Render(content.ToString());
+            //FIXME: should look up the set theme and use *that* from the
+            //ThemeManager
+            Summa.Interfaces.ITheme theme = (Summa.Interfaces.ITheme)Summa.Core.ThemeManager.Themes[0];
+            Render(theme.MakeHtml(feed));
             SelectedFeed = feed;
             Summa.Core.Application.Database.FeedChanged += OnFeedChanged;
             
@@ -248,7 +183,7 @@ namespace Summa.Gui {
         
         private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
             if ( args.Uri == SelectedItem.Uri ) {
-                Render(MakeItemHtml(SelectedItem));
+                Render(SelectedItem);
             }
         }
     }

@@ -25,6 +25,7 @@ SUMMA_CSDISTFILES = \
         Summa.Core/Exceptions.cs \
         Summa.Core/Log.cs \
         Summa.Core/Notifier.cs \
+        Summa.Core/ThemeManager.cs \
         Summa.Core/Updater.cs \
         Summa.Data/Core.cs \
         Summa.Data/Feed.cs \
@@ -45,6 +46,7 @@ SUMMA_CSDISTFILES = \
         Summa.Gui/ItemView.cs \
         Summa.Gui/MessageDialog.cs \
         Summa.Gui/NativeBookmarker.cs \
+        Summa.Gui/NativeTheme.cs \
         Summa.Gui/NotificationBar.cs \
         Summa.Gui/OpmlDialog.cs \
         Summa.Gui/StatusIcon.cs \
@@ -59,6 +61,7 @@ SUMMA_CSDISTFILES = \
         Summa.Interfaces/INetworkManager.cs \
         Summa.Interfaces/INotification.cs \
         Summa.Interfaces/ISource.cs \
+        Summa.Interfaces/ITheme.cs \
         Summa.Net/ConnectionState.cs \
         Summa.Net/NetworkManager.cs \
         Summa.Net/Request.cs \
