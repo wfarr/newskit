@@ -53,9 +53,11 @@ SUMMA_CSDISTFILES = \
         Summa.Gui/TotemMediaPlayer.cs \
         Summa.Gui/WebKitView.cs \
         Summa.Interfaces/IBookmarker.cs \
+        Summa.Interfaces/IDieu.cs \
         Summa.Interfaces/IFeedParser.cs \
         Summa.Interfaces/IMediaPlayer.cs \
         Summa.Interfaces/INetworkManager.cs \
+        Summa.Interfaces/INotification.cs \
         Summa.Interfaces/ISource.cs \
         Summa.Net/ConnectionState.cs \
         Summa.Net/NetworkManager.cs \

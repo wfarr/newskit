@@ -1,4 +1,4 @@
-// Notifier.cs
+// INotification.cs
 //
 // Copyright (c) 2008 Ethan Osten
 //
@@ -26,34 +26,9 @@
 using System;
 using NDesk.DBus;
 
-namespace Summa.Core {
-    public class Notifier {
-        public event Summa.Core.NotificationEventHandler Notification;
-        public event EventHandler ZoomChanged;
-        public event EventHandler ViewChanged;
-        
-        public Notifier() {}
-        
-        public void Notify(string message) {
-            Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
-            args.Message = message;
-            Notification(this, args);
-        }
-        
-        public void PopupNotification(string message, string body) {
-            Console.WriteLine("Notify");
-            
-            Summa.Interfaces.INotification n = NDesk.DBus.Bus.Session.GetObject<Summa.Interfaces.INotification>("org.freedesktop.Notifications", new ObjectPath("/org/freedesktop/Notifications"));
-            
-            n.Notify("Summa", 0, "summa", message, body, null, null, -1);
-        }
-        
-        public void ChangeZoom() {
-            ZoomChanged(this, new EventArgs());
-        }
-        
-        public void ChangeView() {
-            ViewChanged(this, new EventArgs());
-        }
+namespace Summa.Interfaces {
+    [Interface ("org.freedesktop.Notifications")]
+    public interface INotification {
+        int Notify(string app_name, int replaces_id, string app_icon, string summary, string body, string[] actions, string[] hints, int expire_timeout);
     }
 }

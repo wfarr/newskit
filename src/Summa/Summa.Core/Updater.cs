@@ -76,6 +76,7 @@ namespace Summa.Core {
                     if ( update ) {
                         Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
                         args.Message = feed.Name+" has new items.";
+                        args.Title = feed.Name;
                         Gtk.Application.Invoke(this, args, OnNotify);
                     } else {
                         Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
@@ -90,6 +91,10 @@ namespace Summa.Core {
         private void OnNotify(object obj, EventArgs args) {
             Summa.Core.NotificationEventArgs iargs = (Summa.Core.NotificationEventArgs)args;
             Summa.Core.Application.Notifier.Notify(iargs.Message);
+            
+            if ( iargs.Title != null ) {
+                Summa.Core.Application.Notifier.PopupNotification(iargs.Title, iargs.Message);
+            }
         }
         
         public void Update() {

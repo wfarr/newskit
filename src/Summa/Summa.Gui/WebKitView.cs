@@ -149,7 +149,7 @@ namespace Summa.Gui {
             Open(uri);
         }
         
-        public string MakeItemHtml(Summa.Data.Item item) {
+        /*public string MakeItemHtml(Summa.Data.Item item) {
             if (content.ToString() != String.Empty) {
                 // Empties the StringBuilder if it has more than ""
                 content.Remove(0, content.Length);
@@ -170,6 +170,33 @@ namespace Summa.Gui {
             content.Append(item.Contents);
             
             return content.ToString();
+        }*/
+        
+        private const string theme = @"<html>
+  <head>
+    <meta http-equiv=""Content-Type"" content=""text/html; charset=utf-8""/>
+    <title>${title}</title>
+    <base href=""${url}"" />
+  </head>
+  <body>
+    <table border=""1"" cellpadding=""3"" rules=""groups"" width=""100%"">
+      <tr bgcolor=""#bbbbff""><th align=""left""><a href=""${url}""><font color=""#ffffff"" size=""+1"">${title}</font></a></th></tr>
+      <tr bgcolor=""#eeeeee""><td align=""left"">${author}</td></tr>
+    </table>
+
+    ${text}
+  </body>
+</html>";
+        
+        public string MakeItemHtml(Summa.Data.Item item) {
+            string themed_string = theme;
+            
+            themed_string = themed_string.Replace("${title}", item.Title);
+            themed_string = themed_string.Replace("${url}", item.Uri);
+            themed_string = themed_string.Replace("${author}", item.Author);
+            themed_string = themed_string.Replace("${text}", item.Contents);
+            
+            return themed_string;
         }
         
         public void Render(Summa.Data.Item item) {

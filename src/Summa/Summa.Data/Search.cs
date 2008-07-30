@@ -104,14 +104,7 @@ namespace Summa.Data {
         
         public bool HasUnread {
             get {
-                bool unread = false;
-                foreach ( Summa.Data.Item item in Items ) {
-                    if ( !item.Read ) {
-                        unread = true;
-                        break;
-                    }
-                }
-                return unread;
+                return false;
             }
         }
         

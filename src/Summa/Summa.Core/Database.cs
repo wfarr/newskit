@@ -27,9 +27,6 @@ using System;
 using System.Collections;
 using System.Text;
 using System.IO;
-using System.Diagnostics;
-using System.Web;
-
 using System.Data;
 using Mono.Data.SqliteClient;
 
@@ -80,7 +77,7 @@ namespace Summa.Core {
                 //return HttpUtility.HtmlEncode(parameter);
                 return parameter;
             } catch ( Exception e ) {
-                Summa.Core.Log.Exception(e, "Null reference");
+                Log.Exception(e, "Null reference");
                 return "";
             }
         }
@@ -90,7 +87,7 @@ namespace Summa.Core {
                 //return HttpUtility.HtmlDecode(parameter);
                 return parameter;
             } catch ( Exception e ) {
-                Summa.Core.Log.Exception(e);
+                Log.Exception(e);
                 return "";
             }
         }

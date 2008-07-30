@@ -28,6 +28,7 @@ using System;
 namespace Summa.Core {
     public class NotificationEventArgs : EventArgs {
         public string Message;
+        public string Title;
         
         public NotificationEventArgs() {}
     }

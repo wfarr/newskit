@@ -31,7 +31,6 @@ namespace Summa.Core {
         private static GConf.Client client = new GConf.Client();
         
         //TODO: put these in a schema file.
-        
         private static string KEY_LIBNOTIFY = "/apps/summa/show_notifications";
         private static string KEY_WIN_WIDTH = "/apps/summa/win_width";
         private static string KEY_WIN_HEIGHT = "/apps/summa/win_height";

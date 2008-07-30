@@ -197,9 +197,9 @@ namespace Summa.Parser {
         }
         
         private void Parse() {
-            Name = GetXmlNodeText(document, "/rdf:RDF/channel/title");
-            Subtitle = GetXmlNodeText(document, "/rdf:RDF/channel/description");
-            Author = GetXmlNodeText(document, "/rdf:RDF/channel/dc:creator");
+            Name = GetXmlNodeText(document, "/RDF/channel/title");
+            Subtitle = GetXmlNodeText(document, "/RDF/channel/description");
+            Author = GetXmlNodeText(document, "/RDF/channel/dc:creator");
             
             XmlNodeList nodes = document.SelectNodes("//item");
             
