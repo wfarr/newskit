@@ -150,19 +150,13 @@ namespace Summa.Gui {
         }
         
         public void Render(Summa.Data.Item item) {
-            //FIXME: should look up the set theme and use *that* from the
-            //ThemeManager
-            Summa.Interfaces.ITheme theme = (Summa.Interfaces.ITheme)Summa.Core.ThemeManager.Themes[0];
-            Render(theme.MakeHtml(item));
+            Render(Summa.Core.Config.Theme.MakeHtml(item));
             SelectedItem = item;
             Summa.Core.Application.Database.ItemChanged += OnItemChanged;
         }
         
         public void Render(Summa.Interfaces.ISource feed) {
-            //FIXME: should look up the set theme and use *that* from the
-            //ThemeManager
-            Summa.Interfaces.ITheme theme = (Summa.Interfaces.ITheme)Summa.Core.ThemeManager.Themes[0];
-            Render(theme.MakeHtml(feed));
+            Render(Summa.Core.Config.Theme.MakeHtml(feed));
             SelectedFeed = feed;
             Summa.Core.Application.Database.FeedChanged += OnFeedChanged;
             

@@ -43,6 +43,7 @@ namespace Summa.Core {
         private static string KEY_BOOKMARKER = "/apps/summa/bookmarker";
         private static string KEY_TABS = "/apps/summa/open_in_tabs";
         private static string KEY_WIDESCREEN = "/apps/summa/widescreen_view";
+        private static string KEY_THEME = "/apps/summa/theme";
         
         public static bool ShowNotifications {
             get {
@@ -242,6 +243,27 @@ namespace Summa.Core {
             }
             set {
                 connected = value;
+            }
+        }
+        
+        public static Summa.Interfaces.ITheme Theme {
+            get {
+                try {
+                    string name = (string)client.Get(KEY_THEME);
+                    foreach ( Summa.Interfaces.ITheme theme in Summa.Core.ThemeManager.Themes ) {
+                        if ( theme.Name == name ) {
+                            return theme;
+                        }
+                    }
+                    return new Summa.Gui.NativeTheme();
+                } catch ( Exception ) {
+                    client.Set(KEY_THEME, "Native");
+                    return new Summa.Gui.NativeTheme();
+                }
+            }
+            set {
+                Summa.Interfaces.ITheme theme = (Summa.Interfaces.ITheme)value;
+                client.Set(KEY_THEME, theme.Name);
             }
         }
     }
