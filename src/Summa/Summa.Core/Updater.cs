@@ -36,7 +36,7 @@ namespace Summa.Core {
         
         private ArrayList updating_queue;
         
-        private Summa.Data.Feed updating_feed;
+        private Summa.Interfaces.ISource updating_feed;
         
         public ArrayList FeedsUpdating {
             get {
@@ -123,7 +123,7 @@ namespace Summa.Core {
             } catch ( NullReferenceException ) {}
         }
         
-        public void UpdateFeed(Summa.Data.Feed feed) {
+        public void UpdateFeed(Summa.Interfaces.ISource feed) {
             updating_feed = feed;
             System.Threading.Thread updatethread = new System.Threading.Thread(UpdateFeedThread);
             updatethread.Start();
