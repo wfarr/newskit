@@ -35,7 +35,7 @@ namespace Summa.Gui {
         private Gtk.IconTheme icon_theme;
         private Gdk.Pixbuf icon;
         
-        private Summa.Data.Feed feedobj;
+        private Summa.Interfaces.ISource feedobj;
         private ArrayList items;
         private Hashtable itemhash;
         
@@ -128,7 +128,7 @@ namespace Summa.Gui {
             }
         }
         
-        public void Populate(Summa.Data.Feed feed) {
+        public void Populate(Summa.Interfaces.ISource feed) {
             feedobj = feed;
             items = feed.Items;
             items.Reverse();
@@ -285,7 +285,22 @@ namespace Summa.Gui {
         
         private Summa.Data.Item ItemFromIter(Gtk.TreeIter treeiter) {
             string val = (string)store.GetValue(iter, 5);
-            Summa.Data.Item item = new Summa.Data.Item(val, feedobj.Url);
+            bool fail = false;
+            Summa.Data.Item item = null;
+            
+            try {
+                item = new Summa.Data.Item(val, feedobj.Url);
+                if ( item.Title == null ) {
+                    fail = true;
+                }
+            } catch ( Exception ) {
+                fail = true;
+            }
+            
+            if ( fail ) {
+                item = Summa.Data.Core.GetItem(val);
+            }
+            
             return item;
         }
         

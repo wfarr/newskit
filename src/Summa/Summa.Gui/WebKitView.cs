@@ -42,7 +42,7 @@ namespace Summa.Gui {
     public class WebKitView : WebKit.WebView {
         private StringBuilder content = new StringBuilder();
         public Summa.Data.Item SelectedItem;
-        public Summa.Data.Feed SelectedFeed;
+        public Summa.Interfaces.ISource SelectedFeed;
         public Summa.Gui.ItemNotebook notebook;
         
         public WebKitView() {
@@ -178,7 +178,7 @@ namespace Summa.Gui {
             Summa.Core.Application.Database.ItemChanged += OnItemChanged;
         }
         
-        public void Render(Summa.Data.Feed feed) {
+        public void Render(Summa.Interfaces.ISource feed) {
             if (content.ToString() != String.Empty) {
                 // Empties the StringBuilder if it has more than ""
                 content.Remove(0, content.Length);

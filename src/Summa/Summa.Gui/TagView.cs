@@ -56,20 +56,15 @@ namespace Summa.Gui {
             // set up for NewsKit
             Tags = Summa.Data.Core.GetTags();
             
-            /* Gtk.TreeIter tagiter;
-            store.append(out tagiter);
-            store.set(tagiter, 0, icon_theme.lookup_icon("system-search", Gtk.IconSize.MENU, Gtk.IconLookupFlags.NO_SVG).load_icon(), 1, "Searches", -1);*/
-            
             if ( Summa.Core.Application.Browsers.Count == 0 ) {
                 Gtk.TreeIter tagiter;
                 tagiter = Summa.Core.Application.TagStore.Append();
-                Pixbuf icon = new Gdk.Pixbuf("/usr/share/epiphany-browser/icons/hicolor/16x16/status/feed-presence.png");
-                Summa.Core.Application.TagStore.SetValue(tagiter, 0, icon);
+                Summa.Core.Application.TagStore.SetValue(tagiter, 0, Gtk.IconTheme.Default.LookupIcon("feed-presence", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon());
                 Summa.Core.Application.TagStore.SetValue(tagiter, 1, "All feeds");
                 
-                /*tagiter = Summa.Core.Application.TagStore.Append();
-                Summa.Core.Application.TagStore.SetValue(tagiter, 0, icon_theme.LookupIcon("system-search", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon());
-                Summa.Core.Application.TagStore.SetValue(tagiter, 1, "Searches");*/
+                tagiter = Summa.Core.Application.TagStore.Append();
+                Summa.Core.Application.TagStore.SetValue(tagiter, 0, Gtk.IconTheme.Default.LookupIcon("system-search", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon());
+                Summa.Core.Application.TagStore.SetValue(tagiter, 1, "Searches");
             
                 foreach ( string tag in Tags ) {
                     if ( tag != "All" ) {
@@ -101,7 +96,7 @@ namespace Summa.Gui {
         public void AppendTag(string tag) {
             Gtk.TreeIter iter;
             iter = Summa.Core.Application.TagStore.Append();
-            Summa.Core.Application.TagStore.SetValue(iter, 0, new Gdk.Pixbuf("/home/eosten/Desktop/tag.png"));
+            Summa.Core.Application.TagStore.SetValue(iter, 0, Gtk.IconTheme.Default.LookupIcon("tag", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon());
             Summa.Core.Application.TagStore.SetValue(iter, 1, tag);
         }
     }

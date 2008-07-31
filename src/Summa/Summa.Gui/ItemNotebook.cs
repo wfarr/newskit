@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
 using Gtk;
 
 namespace Summa.Gui {
@@ -36,10 +37,13 @@ namespace Summa.Gui {
         }
         
         public bool CloseFirstTab;
+        private Hashtable hash;
         
         public ItemNotebook() {
             Scrollable = true;
             ShowTabs = false;
+            
+            hash = new Hashtable();
             
             Load("Welcome to <b>Summa</b>, a GNOME feed reader.<br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.");
         }
@@ -60,6 +64,8 @@ namespace Summa.Gui {
             view_swin.Add(view);
             view_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
             view.Render(item);
+            
+            hash.Add(container, view);
             
             AppendPage(view_swin, container);
             container.ShowAll();
@@ -91,6 +97,8 @@ namespace Summa.Gui {
             view_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
             view.Render(content);
             
+            hash.Add(container, view);
+            
             AppendPage(view_swin, container);
             container.ShowAll();
             
@@ -119,6 +127,8 @@ namespace Summa.Gui {
             view_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
             view.RenderUri(uri);
             
+            hash.Add(container, view);
+            
             AppendPage(view_swin, container);
             container.ShowAll();
             
@@ -131,7 +141,11 @@ namespace Summa.Gui {
         }
         
         private void OnClicked(object obj, EventArgs args) {
-            RemovePage(Page);
+            Button b = (Gtk.Button)obj;
+            Gtk.Widget o = (Gtk.Widget)hash[b.Parent];
+            int pos = PageNum(o.Parent);
+            RemovePage(pos);
+            hash.Remove(b.Parent);
             
             ShowAll();
             if ( NPages > 1 ) {

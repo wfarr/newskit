@@ -102,7 +102,7 @@ namespace Summa.Gui {
         public Summa.Gui.NotificationBar StatusBar;
         
         // the currently displayed feed
-        public Summa.Data.Feed curfeed;
+        public Summa.Interfaces.ISource curfeed;
         public Summa.Data.Item curitem;
         
         public Browser() : base(Gtk.WindowType.Toplevel) {
@@ -274,7 +274,7 @@ namespace Summa.Gui {
         }
         
         public void UpdateName() {
-            Summa.Data.Feed feed = FeedView.Selected;
+            Summa.Interfaces.ISource feed = FeedView.Selected;
             Title = feed.Name+" ("+feed.UnreadCount.ToString()+" unread) - Summa";
         }
         

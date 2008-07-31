@@ -55,15 +55,31 @@ namespace Summa.Gui {
             }
         }
         
-        public Summa.Data.Feed Selected {
+        public Summa.Interfaces.ISource Selected {
             get {
                 if ( Selection.CountSelectedRows() != 0 ) {
                     Selection.GetSelected(out selectmodel, out iter);
                 } else { store.GetIterFirst(out iter); }
                 
                 string val = (string)store.GetValue(iter, 2);
+                Console.WriteLine(val);
                 
-                return Summa.Data.Core.RegisterFeed(val);
+                if ( val != null ) {
+                    return Summa.Data.Core.RegisterFeed(val);
+                } else {
+                    if ( (string)store.GetValue(iter, 1) == "Unread items" ) {
+                        Summa.Data.Search search = new Summa.Data.Search("summasearch://read:false");
+                        search.Name = "Unread items";
+                        search.AddSearchTerm("read", "False");
+                        return search;
+                    } else if ( (string)store.GetValue(iter, 1) == "Flagged items" ) {
+                        Summa.Data.Search search = new Summa.Data.Search("summasearch://flagged:true");
+                        search.Name = "Flagged items";
+                        search.AddSearchTerm("flagged", "True");
+                        return search;
+                    }
+                }
+                return null;
             }
         }
         
@@ -174,9 +190,9 @@ namespace Summa.Gui {
                 case "All feeds":
                     PopulateWithFeeds("All");
                     break;
-                /*case "Searches":
+                case "Searches":
                     PopulateWithSearches();
-                    break;*/
+                    break;
                 default:
                     PopulateWithFeeds(tag);
                     break;
@@ -187,11 +203,11 @@ namespace Summa.Gui {
             ArrayList ufeeds = Summa.Data.Core.GetFeeds(SetTag);
             ArrayList haveurls = new ArrayList();
             
-            foreach ( Summa.Data.Feed feed in feeds ) {
+            foreach ( Summa.Interfaces.ISource feed in feeds ) {
                 haveurls.Add(feed.Url);
             }
             
-            foreach (Summa.Data.Feed feed in ufeeds) {
+            foreach (Summa.Interfaces.ISource feed in ufeeds) {
                 if ( !haveurls.Contains(feed.Url) ) {
                     Gtk.TreeIter iter;
                     iter = store.Append();
@@ -206,21 +222,14 @@ namespace Summa.Gui {
             AppendFeed(Selected, iter);
         }
         
-        public void UpdateFeed(Summa.Data.Feed feed) {
+        public void UpdateFeed(Summa.Interfaces.ISource feed) {
             TreePath path = (TreePath)feedhash[feed.Url];
             TreeIter iter;
             store.GetIter(out iter, path);
             AppendFeed(feed, iter);
         }
         
-        /*public void UpdateSearch(Summa.Data.Search search) {
-            TreePath path = (TreePath)feedhash[search.Name];
-            TreeIter iter;
-            store.GetIter(out iter, path);
-            AppendSearch(search, iter);
-        }*/
-        
-        public void DeleteFeed(Summa.Data.Feed feed) {
+        public void DeleteFeed(Summa.Interfaces.ISource feed) {
             try {
                 TreePath path = (TreePath)feedhash[feed.Url];
                 TreeIter iter;
@@ -231,14 +240,14 @@ namespace Summa.Gui {
             }
         }
         
-        public void AddNewFeed(Summa.Data.Feed feed) {
+        public void AddNewFeed(Summa.Interfaces.ISource feed) {
             Gtk.TreeIter iter;
             iter = store.Append();
             
             AppendFeed(feed, iter);
         }
         
-        public void AppendFeed(Summa.Data.Feed feed, Gtk.TreeIter titer) {
+        public void AppendFeed(Summa.Interfaces.ISource feed, Gtk.TreeIter titer) {
             //int count = feed.GetUnreadCount(); // optimize this!
             bool unread = feed.HasUnread;
             
@@ -247,6 +256,9 @@ namespace Summa.Gui {
                 icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");
             } else {
                 icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");
+            }
+            if ( feed.Tags.Contains("summa:Searches") ) {
+                icon = icon_theme.LookupIcon("system-search", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon();
             }
             
             string feedname = feed.Name;
@@ -269,84 +281,21 @@ namespace Summa.Gui {
             }
         }
         
-        public void SetAsUpdating(Summa.Data.Feed feed) {
-            TreePath path = (TreePath)feedhash[feed.Url];
-            TreeIter iter;
-            store.GetIter(out iter, path);
-            store.SetValue(iter, 0, icon_theme.LookupIcon("reload", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon());
-        }
-        
-        public void SetAsNotUpdating(Summa.Data.Feed feed) {
-            TreePath path = (TreePath)feedhash[feed.Url];
-            TreeIter iter;
-            store.GetIter(out iter, path);
-            AppendFeed(feed, iter);
-        }
-        
-        /*public void AppendSearch(Summa.Data.Search search, Gtk.TreeIter titer) {
-            int count = search.GetUnreadCount(); // optimize this!
-            bool unread = false;
-            
-            Gdk.Pixbuf icon;
-            if ( count > 0 ) {
-                /*icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-unread.png");
-                unread = true;
-            } else {
-                /*icon = new Gdk.Pixbuf("/usr/share/pixmaps/summa-inactive.png");
-                unread = false;
-            }
-            
-            string feedname = search.Name;
-            
-            /*store.SetValue(titer, 0, icon);
-            store.SetValue(titer, 1, feedname);
-            store.SetValue(titer, 3, unread);
-            if ( unread ) {
-                store.SetValue(titer, 4, (int)Pango.Weight.Bold);
-            } else {
-                store.SetValue(titer, 4, (int)Pango.Weight.Normal);
-            }
-            
-            try {
-                feedhash.Add(feedname, store.GetPath(titer));
-            } catch ( System.ArgumentException e ) {}
-            
-            while ( Gtk.Application.EventsPending() ) {
-                Gtk.Main.Iteration();
-        }*/
-        
-        /*private void PopulateWithSearches() {
-            store.clear();
-            
-            GLib.List<Summa.Data.Search> searches = Summa.Data.get_searches();
-            
-            foreach (Summa.Data.Search search in searches) {
-                Gtk.TreeIter iter;
-                store.append(out iter);
-                
-                int count = search.get_unread_count();
-                
-                string feedname = search.name;
-                string feedurl = null;
-                
-                store.set(iter, 0, icon_theme.lookup_icon("system-search", Gtk.IconSize.MENU, Gtk.IconLookupFlags.NO_SVG).load_icon(), 1, feedname, 2, feedurl, 3, true, -1);
-            }
-        }*/
-        
-        /*private void PopulateWithSearches() {
+        private void PopulateWithSearches() {
             store.Clear();
             
-            Gtk.TreeIter iter;
-            iter = store.Append();
-            Summa.Data.Search search = new Summa.Data.Search("Unread items");
-            search.AddSearchTerm("IS", "read", "False");
-            AppendSearch(search, iter);
+            SetTag = "Searches";
             
-            iter = store.Append();
-            Summa.Data.Search search = new Summa.Data.Search("Flagged items");
-            search.AddSearchTerm("IS", "flagged", "True");
-            AppendSearch(search, iter);
-        }*/
+            Summa.Data.Search search = new Summa.Data.Search("summasearch://read:false");
+            search.Name = "Unread items";
+            search.AddSearchTerm("read", "False");
+            AddNewFeed(search);
+            
+            search = new Summa.Data.Search("summasearch://flagged:true");
+            search.Name = "Flagged items";
+            search.AddSearchTerm("flagged", "True");
+            AddNewFeed(search);
+        }
         
         private void PopulateWithFeeds(string tag) {            
             store.Clear();

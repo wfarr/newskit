@@ -34,7 +34,7 @@ namespace Summa.Data {
         public ItemEventArgs() {}
     }
     
-    public class Feed {
+    public class Feed : Summa.Interfaces.ISource {
         public string Name {
             get {
                 string[] feed = Summa.Core.Application.Database.GetFeed(Url);
@@ -44,7 +44,11 @@ namespace Summa.Data {
                 Summa.Core.Application.Database.ChangeFeedInfo(Url, "name", value);
             }
         }
-        public string Url;
+        private string url;
+        public string Url {
+            get { return url; }
+            set { url = value; }
+        }
         public string Author {
             get {
                 string[] feed = Summa.Core.Application.Database.GetFeed(Url);

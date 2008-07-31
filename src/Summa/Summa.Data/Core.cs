@@ -147,5 +147,16 @@ namespace Summa.Data {
             Summa.Parser.OpmlParser opml = new Summa.Parser.OpmlParser(filename);
             return opml.Uris;
         }
+        
+        public static Summa.Data.Item GetItem(string itemuri) {
+            foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+                foreach ( Summa.Data.Item item in feed.Items ) {
+                    if ( item.Uri == itemuri ) {
+                        return item;
+                    }
+                }
+            }
+            return null;
+        }
     }
 }

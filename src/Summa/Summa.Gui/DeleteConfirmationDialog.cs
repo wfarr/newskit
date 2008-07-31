@@ -29,7 +29,7 @@ using Gtk;
 
 namespace Summa.Gui {
     public class DeleteConfirmationDialog : Gtk. Window {
-        private Summa.Data.Feed feed;
+        private Summa.Interfaces.ISource feed;
         
         private Gtk.VBox vbox;
         private Gtk.HBox hbox;
@@ -41,7 +41,7 @@ namespace Summa.Gui {
         private Gtk.Button cancel_button;
         private Gtk.Button delete_button;
         
-        public DeleteConfirmationDialog(Summa.Data.Feed delfeed) : base(Gtk.WindowType.Toplevel) {
+        public DeleteConfirmationDialog(Summa.Interfaces.ISource delfeed) : base(Gtk.WindowType.Toplevel) {
             feed = delfeed;
             
             Title = "Delete feed?";

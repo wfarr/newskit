@@ -27,6 +27,7 @@ SUMMA_CSDISTFILES = \
         Summa.Data/Core.cs \
         Summa.Data/Feed.cs \
         Summa.Data/Item.cs \
+        Summa.Data/Search.cs \
         Summa.Gui/AboutDialog.cs \
         Summa.Gui/Actions.cs \
         Summa.Gui/AddFeedDialog.cs \
@@ -51,6 +52,7 @@ SUMMA_CSDISTFILES = \
         Summa.Interfaces/IBookmarker.cs \
         Summa.Interfaces/IFeedParser.cs \
         Summa.Interfaces/IMediaPlayer.cs \
+        Summa.Interfaces/ISource.cs \
         Summa.Net/Request.cs \
         Summa.Net/Util.cs \
         Summa.Parser/AtomParser.cs \

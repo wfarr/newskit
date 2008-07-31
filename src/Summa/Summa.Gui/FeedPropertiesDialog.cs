@@ -29,7 +29,7 @@ using Gtk;
 
 namespace Summa.Gui {
     public class FeedPropertiesDialog : Gtk.Window {
-        public Summa.Data.Feed feed;
+        public Summa.Interfaces.ISource feed;
         
         private Gtk.VBox vbox;
         private Gtk.Notebook notebook;
@@ -46,7 +46,7 @@ namespace Summa.Gui {
         public Gtk.ListStore store_tags;
         private Gtk.CellRendererToggle cr_toggle;
         
-        public FeedPropertiesDialog(Summa.Data.Feed f) : base(Gtk.WindowType.Toplevel) {
+        public FeedPropertiesDialog(Summa.Interfaces.ISource f) : base(Gtk.WindowType.Toplevel) {
             feed = f;
             
             Title = "\""+feed.Name+"\" Properties";
