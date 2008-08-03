@@ -187,21 +187,27 @@ namespace Summa.Parser {
                 }
             }
             mgr = new XmlNamespaceManager(document.NameTable);
+            mgr.AddNamespace("rss10", "http://purl.org/rss/1.0/");
+            mgr.AddNamespace("content", "http://purl.org/rss/1.0/modules/content/");
             Parse();
         }
         
         public RdfParser(string uri, XmlDocument doc) {
             this.uri = uri;
             this.document = doc;
+            this.mgr.AddNamespace("rss10", "http://purl.org/rss/1.0/");
+            this.mgr.AddNamespace("content", "http://purl.org/rss/1.0/modules/content/");
             Parse();
         }
         
         private void Parse() {
-            Name = GetXmlNodeText(document, "/RDF/channel/title");
-            Subtitle = GetXmlNodeText(document, "/RDF/channel/description");
-            Author = GetXmlNodeText(document, "/RDF/channel/dc:creator");
+            XmlNodeList channodes = document.SelectNodes("//rss10:channel", mgr);
+            foreach ( XmlNode node in channodes ) {
+                Name = GetXmlNodeText(node, "rss10:title");
+                Subtitle = GetXmlNodeText(node, "rss10:description");
+            }
             
-            XmlNodeList nodes = document.SelectNodes("//item");
+            XmlNodeList nodes = document.SelectNodes("//rss10:item", mgr);
             
             Items = new ArrayList();
             foreach (XmlNode node in nodes) {
@@ -212,13 +218,17 @@ namespace Summa.Parser {
         private Summa.Parser.Item ParseItem(XmlNode node) {
             Summa.Parser.Item item = new Summa.Parser.Item();
             
-            item.Title = GetXmlNodeText(node, "title");
-            item.Author = GetXmlNodeText(node, "author");
-            item.Uri = GetXmlNodeText(node, "link");
-            item.Contents = GetXmlNodeText(node, "description");
-            item.Date = GetRfc822DateTime(node, "pubDate").ToString();
+            item.Title = GetXmlNodeText(node, "rss10:title");
+            item.Author = GetXmlNodeText(node, "rss10:author");
+            item.Uri = GetXmlNodeText(node, "rss10:link");
+            item.Contents = GetXmlNodeText(node, "rss10:description");
+            if ( item.Contents == null ) {
+                item.Contents = GetXmlNodeText(node, "content:encoded");
+            }
+            item.Date = GetRfc822DateTime(node, "rss10:pubDate").ToString();
+            // should look for dc:date
             item.LastUpdated = GetRfc822DateTime(node, "dcterms:modified").ToString();
-            item.EncUri = GetXmlNodeText(node, "enclosure/@url");
+            
             
             return item;
         }

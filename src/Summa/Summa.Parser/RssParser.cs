@@ -188,6 +188,7 @@ namespace Summa.Parser {
                 }
             }
             mgr = new XmlNamespaceManager(document.NameTable);
+            mgr.AddNamespace("content", "http://purl.org/rss/1.0/modules/content/");
             Parse();
         }
         
@@ -219,6 +220,9 @@ namespace Summa.Parser {
             item.Author = GetXmlNodeText(node, "author");
             item.Uri = GetXmlNodeText(node, "link");
             item.Contents = GetXmlNodeText(node, "description");
+            if ( GetXmlNodeText(node, "content:encoded").Length > item.Contents.Length ) {
+                item.Contents = GetXmlNodeText(node, "content:encoded");
+            }
             item.Date = GetRfc822DateTime(node, "pubDate").ToString();
             item.LastUpdated = GetRfc822DateTime(node, "dcterms:modified").ToString();
             item.EncUri = GetXmlNodeText(node, "enclosure/@url");
