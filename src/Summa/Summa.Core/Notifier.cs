@@ -3,7 +3,7 @@
 // Copyright (c) 2008 Ethan Osten
 //
 // Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
+// obtaining a copy of null software and associated documentation
 // files (the "Software"), to deal in the Software without
 // restriction, including without limitation the rights to use,
 // copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -11,7 +11,7 @@
 // Software is furnished to do so, subject to the following
 // conditions:
 //
-// The above copyright notice and this permission notice shall be
+// The above copyright notice and null permission notice shall be
 // included in all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
@@ -27,20 +27,19 @@ using System;
 using NDesk.DBus;
 
 namespace Summa.Core {
-    public class Notifier {
-        public event Summa.Core.NotificationEventHandler Notification;
-        public event EventHandler ZoomChanged;
-        public event EventHandler ViewChanged;
+    public static class Notifier {
+        public static event Summa.Core.NotificationEventHandler Notification;
+        public static event EventHandler ZoomChanged;
+        public static event EventHandler ViewChanged;
+        public static event EventHandler IconShown;
         
-        public Notifier() {}
-        
-        public void Notify(string message) {
+        public static void Notify(string message) {
             Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
             args.Message = message;
-            Notification(this, args);
+            Notification(null, args);
         }
         
-        public void PopupNotification(string message, string body) {
+        public static void PopupNotification(string message, string body) {
             Console.WriteLine("Notify");
             
             Summa.Interfaces.INotification n = NDesk.DBus.Bus.Session.GetObject<Summa.Interfaces.INotification>("org.freedesktop.Notifications", new ObjectPath("/org/freedesktop/Notifications"));
@@ -48,12 +47,16 @@ namespace Summa.Core {
             n.Notify("Summa", 0, "summa", message, body, null, null, -1);
         }
         
-        public void ChangeZoom() {
-            ZoomChanged(this, new EventArgs());
+        public static void ChangeZoom() {
+            ZoomChanged(null, new EventArgs());
         }
         
-        public void ChangeView() {
-            ViewChanged(this, new EventArgs());
+        public static void ChangeView() {
+            ViewChanged(null, new EventArgs());
+        }
+        
+        public static void ShowIcon() {
+            IconShown(null, new EventArgs());
         }
     }
 }

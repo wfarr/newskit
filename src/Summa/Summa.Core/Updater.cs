@@ -34,7 +34,7 @@ namespace Summa.Core {
         public bool Updating;
         private bool should_automatic_update;
         
-        private ArrayList updating_queue;
+        private Queue updating_queue;
         
         private Summa.Interfaces.ISource updating_feed;
         private string adding_url;
@@ -56,7 +56,7 @@ namespace Summa.Core {
             Updating = false;
             should_automatic_update = true;
             
-            updating_queue = new ArrayList();
+            updating_queue = new Queue();
             
             GLib.Timeout.Add(Summa.Core.Config.GlobalUpdateInterval, new GLib.TimeoutHandler(ScheduledUpdate));
         }
@@ -66,7 +66,7 @@ namespace Summa.Core {
                 Updating = true;
                 bool update = false;
                 
-                try {
+                //try {
                     Summa.Core.NotificationEventArgs fargs = new Summa.Core.NotificationEventArgs();
                     fargs.Message = "Updating feed: "+feed.Name;
                     Gtk.Application.Invoke(this, fargs, OnNotify);
@@ -83,17 +83,16 @@ namespace Summa.Core {
                         args.Message = feed.Name+" has no new items.";
                         Gtk.Application.Invoke(this, args, new EventHandler(OnNotify));
                     }
-                } catch ( NullReferenceException ) {}
-                updating_queue.Remove(feed);
+                //} catch ( NullReferenceException ) {}
             }
         }
         
         private void OnNotify(object obj, EventArgs args) {
             Summa.Core.NotificationEventArgs iargs = (Summa.Core.NotificationEventArgs)args;
-            Summa.Core.Application.Notifier.Notify(iargs.Message);
+            Summa.Core.Notifier.Notify(iargs.Message);
             
             if ( iargs.Title != null ) {
-                Summa.Core.Application.Notifier.PopupNotification(iargs.Title, iargs.Message);
+                Summa.Core.Notifier.PopupNotification(iargs.Title, iargs.Message);
             }
         }
         
@@ -102,7 +101,7 @@ namespace Summa.Core {
                 should_automatic_update = false;
                 
                 foreach ( Summa.Data.Feed feed in Summa.Data.Core.GetFeeds() ) {
-                    updating_queue.Add(feed);
+                    updating_queue.Enqueue(feed);
                 }
             
                 System.Threading.Thread updatethread = new System.Threading.Thread(UpdateThread);
@@ -139,7 +138,7 @@ namespace Summa.Core {
         public bool ScheduledUpdate() {
             if ( !Updating && should_automatic_update ) {
                 foreach ( Summa.Data.Feed feed in Summa.Data.Core.GetFeeds() ) {
-                    updating_queue.Add(feed);
+                    updating_queue.Enqueue(feed);
                 }
             
                 System.Threading.Thread updatethread = new System.Threading.Thread(UpdateThread);

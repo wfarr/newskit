@@ -160,7 +160,7 @@ namespace Summa.Gui {
         
         private void OnNotify(object obj, EventArgs args) {
             Summa.Core.NotificationEventArgs iargs = (Summa.Core.NotificationEventArgs)args;
-            Summa.Core.Application.Notifier.Notify(iargs.Message);
+            Summa.Core.Notifier.Notify(iargs.Message);
         }
         
         private void OnProgress(object obj, EventArgs args) {

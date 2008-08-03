@@ -53,7 +53,7 @@ namespace Summa.Gui {
             Render(starting_content);
             
             ZoomTo(Summa.Core.Config.DefaultZoomLevel);
-            Summa.Core.Application.Notifier.ZoomChanged += OnZoomChanged;
+            Summa.Core.Notifier.ZoomChanged += OnZoomChanged;
         }
         
         private void OnZoomChanged(object obj, EventArgs args) {
@@ -134,9 +134,9 @@ namespace Summa.Gui {
 
             if (text != String.Empty) {
                 if ( text != null ) {
-                    Summa.Core.Application.Notifier.Notify("Click to visit " + text);
+                    Summa.Core.Notifier.Notify("Click to visit " + text);
                 } else {
-                    Summa.Core.Application.Notifier.Notify("");
+                    Summa.Core.Notifier.Notify("");
                 }
             }
         }

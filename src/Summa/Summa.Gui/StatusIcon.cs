@@ -28,22 +28,44 @@ using Gtk;
 
 namespace Summa.Gui {
     public class StatusIcon : Gtk.StatusIcon {
-        private bool shown;
         private int unread;
+        private bool shown;
         
         public StatusIcon() {
             FromIconName = "summa";
-                
             shown = true;
-            unread = Summa.Data.Core.GetUnreadCount();
             
-            UpdateTooltip();
+            if ( Summa.Core.Config.ShowStatusIcon ) {
+                unread = Summa.Data.Core.GetUnreadCount();
+                
+                UpdateTooltip();
+                
+                Activate += new EventHandler(ToggleBrowserStatus);
+                Summa.Core.Application.Database.ItemChanged += OnItemChanged;
+                Summa.Core.Application.Database.ItemAdded += OnItemAdded;
+                
+                PopupMenu += RightClickMenu;
+                
+                Visible = true;
+            } else { Visible = false; }
             
-            Activate += new EventHandler(ToggleBrowserStatus);
-            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
-            Summa.Core.Application.Database.ItemAdded += OnItemAdded;
-            
-            PopupMenu += RightClickMenu;
+            Summa.Core.Notifier.IconShown += OnIconShown;
+        }
+        
+        private void OnIconShown(object obj, EventArgs args) {
+                if ( Summa.Core.Config.ShowStatusIcon ) {
+                unread = Summa.Data.Core.GetUnreadCount();
+                
+                UpdateTooltip();
+                
+                Activate += new EventHandler(ToggleBrowserStatus);
+                Summa.Core.Application.Database.ItemChanged += OnItemChanged;
+                Summa.Core.Application.Database.ItemAdded += OnItemAdded;
+                
+                PopupMenu += RightClickMenu;
+                
+                Visible = true;
+            } else { Visible = false; }
         }
         
         public void ToggleBrowserStatus(object obj, EventArgs args) {

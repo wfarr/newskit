@@ -86,7 +86,6 @@ namespace Summa.Gui {
         
         // help menu
         public Gtk.Action help_action;
-        public Summa.Gui.AboutDialog AboutDialog;
         public Gtk.Action about_action;
         
         public Gtk.Widget menubar;
@@ -183,13 +182,11 @@ namespace Summa.Gui {
             StatusBar = new Summa.Gui.NotificationBar();
             table.Attach(StatusBar, 0, 5, 3, 4, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
             
-            AboutDialog = new Summa.Gui.AboutDialog();
-            
             UpdateFromConfig();
             
             Summa.Core.Application.Database.ItemChanged += OnItemChanged;
             Summa.Core.Application.Database.ItemAdded += OnItemAdded;
-            Summa.Core.Application.Notifier.ViewChanged += OnViewChanged;
+            Summa.Core.Notifier.ViewChanged += OnViewChanged;
         }
         
         private void OnViewChanged(object obj, EventArgs args) {

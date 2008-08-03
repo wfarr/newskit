@@ -44,6 +44,7 @@ namespace Summa.Core {
         private static string KEY_TABS = "/apps/summa/open_in_tabs";
         private static string KEY_WIDESCREEN = "/apps/summa/widescreen_view";
         private static string KEY_THEME = "/apps/summa/theme";
+        private static string KEY_STATUS_ICON = "/apps/summa/show_status_icon";
         
         public static bool ShowNotifications {
             get {
@@ -162,7 +163,7 @@ namespace Summa.Core {
             }
             set {
                 client.Set(KEY_DEFAULT_ZOOM_LEVEL, value);
-                Summa.Core.Application.Notifier.ChangeZoom();
+                Summa.Core.Notifier.ChangeZoom();
             }
         }
         
@@ -224,7 +225,7 @@ namespace Summa.Core {
             }
             set {
                 client.Set(KEY_WIDESCREEN, value);
-                Summa.Core.Application.Notifier.ChangeView();
+                Summa.Core.Notifier.ChangeView();
             }
         }
         
@@ -264,6 +265,22 @@ namespace Summa.Core {
             set {
                 Summa.Interfaces.ITheme theme = (Summa.Interfaces.ITheme)value;
                 client.Set(KEY_THEME, theme.Name);
+            }
+        }
+        
+        public static bool ShowStatusIcon {
+            get {
+                try {
+                    return (bool)client.Get(KEY_STATUS_ICON);
+                } catch ( GConf.NoSuchKeyException e ) {
+                    Summa.Core.Log.Exception(e);
+                    client.Set(KEY_STATUS_ICON, false);
+                    return false;
+                }
+            }
+            set {
+                client.Set(KEY_STATUS_ICON, value);
+                Summa.Core.Notifier.ShowIcon();
             }
         }
     }

@@ -254,8 +254,9 @@ namespace Summa.Actions {
         }
         
         public void ShowConfigDialog(object obj, EventArgs args) {
-            Summa.Core.Application.ConfigDialog.TransientFor = browser;
-            Summa.Core.Application.ConfigDialog.ShowAll();
+            Window w = new Summa.Gui.ConfigDialog();
+            w.TransientFor = browser;
+            w.ShowAll();
         }
     }
     
@@ -461,7 +462,7 @@ namespace Summa.Actions {
                     browser.ItemView.GoToPreviousItem();
                     browser.UpdateHtmlview();
                 } else {
-                    Summa.Core.Application.Notifier.Notify("There are no more unread items.");
+                    Summa.Core.Notifier.Notify("There are no more unread items.");
                 }
             } else {
                 browser.UpdateHtmlview();
@@ -640,7 +641,9 @@ namespace Summa.Actions {
         }
         
         public void ShowAbout(object obj, EventArgs args) {
-            browser.AboutDialog.ShowAll();
+            Window w = new Summa.Gui.AboutDialog();
+            w.TransientFor = browser;
+            w.ShowAll();
         }
     }
     
@@ -657,7 +660,7 @@ namespace Summa.Actions {
                 CurrentValue = Value;
             }
             
-            //Summa.Core.Application.Notifier.ViewChanged += OnViewChanged;
+            //Summa.Core.Notifier.ViewChanged += OnViewChanged;
         }
         
         public void SetView(object obj, EventArgs args) {
@@ -680,7 +683,7 @@ namespace Summa.Actions {
                 CurrentValue = Value;
             }
             
-            //Summa.Core.Application.Notifier.ViewChanged += OnViewChanged;
+            //Summa.Core.Notifier.ViewChanged += OnViewChanged;
         }
         
         public void SetView(object obj, EventArgs args) {

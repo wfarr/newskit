@@ -39,9 +39,7 @@ namespace Summa.Core {
         public static ArrayList Browsers;
         public static Summa.Gui.StatusIcon StatusIcon;
         public static Summa.Core.Updater Updater;
-        public static Summa.Gui.ConfigDialog ConfigDialog;
         public static Summa.Core.DBusInterface DBus;
-        public static Summa.Core.Notifier Notifier;
         public static bool WindowsShown;
         
         public static void Main() {
@@ -58,15 +56,8 @@ namespace Summa.Core {
              */
             TagStore = new Gtk.ListStore(typeof(Gdk.Pixbuf), typeof(string));
             
-            Notifier = new Summa.Core.Notifier();
             Database = new Summa.Core.Database();
             Updater = new Summa.Core.Updater();
-            /*
-             * since the ConfigDialog doesn't update based on changes to the
-             * config yet, have only one dialog, which browsers will reparent
-             * to themselves.
-             */
-            ConfigDialog = new Summa.Gui.ConfigDialog();
             DBus = new Summa.Core.DBusInterface();
             /*
              * a list of browser instances - when a browser is created, it
@@ -82,7 +73,12 @@ namespace Summa.Core {
             }
             WindowsShown = true;
             
+            DebugTest();
+            
             Gtk.Application.Run();
+        }
+        
+        private static void DebugTest() {
         }
         
         public static void CloseWindow(Summa.Gui.Browser browser) {

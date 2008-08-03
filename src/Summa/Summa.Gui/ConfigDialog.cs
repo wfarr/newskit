@@ -37,6 +37,7 @@ namespace Summa.Gui {
         private Gtk.CheckButton cb_notifications;
         private Gtk.CheckButton cb_sortfeedview;
         private Gtk.CheckButton cb_tabs;
+        private Gtk.CheckButton cb_icon;
         private Gtk.CheckButton cb_widescreen;
         private Gtk.ComboBox cb_updateinterval;
         private string[] updateinterval_options;
@@ -100,6 +101,11 @@ namespace Summa.Gui {
             cb_tabs.Active = Summa.Core.Config.OpenTabs;
             cb_tabs.Toggled += new EventHandler(OnCbTabsToggled);
             interface_vbox.PackStart(cb_tabs, false, false, 0);
+            
+            cb_icon = new Gtk.CheckButton("Show the status icon");
+            cb_icon.Active = Summa.Core.Config.ShowStatusIcon;
+            cb_icon.Toggled += new EventHandler(OnCbIconToggled);
+            interface_vbox.PackStart(cb_icon, false, false, 0);
             
             cb_widescreen = new Gtk.CheckButton("Arrange window in widescreen mode");
             cb_widescreen.Active = Summa.Core.Config.WidescreenView;
@@ -166,6 +172,14 @@ namespace Summa.Gui {
                 Summa.Core.Config.OpenTabs = true;
             } else {
                 Summa.Core.Config.OpenTabs = false;
+            }
+        }
+        
+        private void OnCbIconToggled(object obj, EventArgs args) {
+            if ( cb_icon.Active ) {
+                Summa.Core.Config.ShowStatusIcon = true;
+            } else {
+                Summa.Core.Config.ShowStatusIcon = false;
             }
         }
         
