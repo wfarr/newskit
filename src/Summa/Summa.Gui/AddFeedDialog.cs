@@ -65,6 +65,7 @@ namespace Summa.Gui {
             table.Attach(label, 1, 2, 0, 1);
             
             entry = new Gtk.Entry();
+            entry.Activated += OnActivated;
             table.Attach(entry, 1, 2, 1, 2);
             
             bbox = new Gtk.HButtonBox();
@@ -94,6 +95,12 @@ namespace Summa.Gui {
             Summa.Core.Application.Updater.AddFeed(entry.Text);
             
             Destroy();
+        }
+        
+        private void OnActivated(object obj, EventArgs args) {
+            if (!entry.Text.Equals("")) {
+                add_button.Click();
+            }
         }
     }
 }
