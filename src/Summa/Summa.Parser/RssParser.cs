@@ -219,10 +219,18 @@ namespace Summa.Parser {
             item.Title = GetXmlNodeText(node, "title");
             item.Author = GetXmlNodeText(node, "author");
             item.Uri = GetXmlNodeText(node, "link");
+            
             item.Contents = GetXmlNodeText(node, "description");
-            if ( GetXmlNodeText(node, "content:encoded").Length > item.Contents.Length ) {
-                item.Contents = GetXmlNodeText(node, "content:encoded");
-            }
+            try {
+                if ( item.Contents != null ) {
+                    if ( GetXmlNodeText(node, "content:encoded").Length > item.Contents.Length ) {
+                        item.Contents = GetXmlNodeText(node, "content:encoded");
+                    }
+                } else {
+                    item.Contents = GetXmlNodeText(node, "content:encoded");
+                }
+            } catch ( NullReferenceException ) {}
+            
             item.Date = GetRfc822DateTime(node, "pubDate").ToString();
             item.LastUpdated = GetRfc822DateTime(node, "dcterms:modified").ToString();
             item.EncUri = GetXmlNodeText(node, "enclosure/@url");

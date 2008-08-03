@@ -183,6 +183,7 @@ namespace Summa.Gui {
             table.Attach(StatusBar, 0, 5, 3, 4, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
             
             UpdateFromConfig();
+            FeedView.Populate("All");
             
             Summa.Core.Application.Database.ItemChanged += OnItemChanged;
             Summa.Core.Application.Database.ItemAdded += OnItemAdded;

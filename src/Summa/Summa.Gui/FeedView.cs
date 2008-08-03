@@ -230,13 +230,16 @@ namespace Summa.Gui {
         }
         
         public void UpdateFeed(Summa.Interfaces.ISource feed) {
-            TreePath path = (TreePath)feedhash[feed.Url];
-            TreeIter iter;
-            store.GetIter(out iter, path);
-            AppendFeed(feed, iter);
+            Gdk.Threads.Enter();
+                TreePath path = (TreePath)feedhash[feed.Url];
+                TreeIter iter;
+                store.GetIter(out iter, path);
+                AppendFeed(feed, iter);
+            Gdk.Threads.Leave();
         }
         
         public void DeleteFeed(Summa.Interfaces.ISource feed) {
+            Gdk.Threads.Enter();
             try {
                 TreePath path = (TreePath)feedhash[feed.Url];
                 TreeIter iter;
@@ -245,21 +248,21 @@ namespace Summa.Gui {
             } catch ( Exception e ) {
                 Summa.Core.Log.Exception(e);
             }
+            Gdk.Threads.Leave();
         }
         
         public void AddNewFeed(Summa.Interfaces.ISource feed) {
-            Gtk.TreeIter iter;
-            iter = store.Append();
-            
-            AppendFeed(feed, iter);
+            Gdk.Threads.Enter();
+                Gtk.TreeIter iter = store.Append();
+                
+                AppendFeed(feed, iter);
+            Gdk.Threads.Leave();
         }
         
         public void AppendFeed(Summa.Interfaces.ISource feed, Gtk.TreeIter titer) {
-            //int count = feed.GetUnreadCount(); // optimize this!
             bool unread = feed.HasUnread;
             
-            Gdk.Pixbuf icon;
-            icon = feed.Favicon;
+            Gdk.Pixbuf icon = feed.Favicon;
             
             string feedname = feed.Name;
             string feedurl = feed.Url;

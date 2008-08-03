@@ -74,6 +74,10 @@ namespace Summa.Gui {
             }
             
             Summa.Core.Application.Database.FeedChanged += OnFeedChanged;
+            
+            TreeIter iter;
+            Summa.Core.Application.TagStore.GetIterFirst(out iter);
+            Selection.SelectIter(iter);
         }
         
         private void OnFeedChanged(object obj, EventArgs args) {
