@@ -42,18 +42,18 @@ namespace Summa.Data {
             }
         }
         public string Uri;
-        public string Date {
+        public DateTime Date {
             get {
                 try {
                     string[] item = Summa.Core.Application.Database.GetItem(FeedUri, Uri);
-                    return item[2];
+                    return Convert.ToDateTime(item[2]);
                 } catch ( Exception e ) {
                     Summa.Core.Log.Exception(e);
-                    return "";
+                    return DateTime.MinValue;
                 }
             }
             set {
-                Summa.Core.Application.Database.ChangeItemInfo(FeedUri, Uri, "date", value);
+                Summa.Core.Application.Database.ChangeItemInfo(FeedUri, Uri, "date", value.ToString());
             }
         }
         public string LastUpdated {

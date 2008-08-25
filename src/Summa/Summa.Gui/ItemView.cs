@@ -304,10 +304,8 @@ namespace Summa.Gui {
             return item;
         }
         
-        public string MakePrettyDate(string date) {
+        public string MakePrettyDate(DateTime dtdate) {
             try {
-                DateTime dtdate = Convert.ToDateTime(date);
-                
                 string year = "";
                 string month = "";
                 string day = "";

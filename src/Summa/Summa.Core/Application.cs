@@ -33,7 +33,7 @@ using Gtk;
 
 namespace Summa.Core {
     public static class Application {
-        public static ArrayList Log;
+        public static LogList Log;
         public static Summa.Core.Database Database;
         public static Gtk.ListStore TagStore;
         public static ArrayList Browsers;
@@ -43,12 +43,15 @@ namespace Summa.Core {
         public static bool WindowsShown;
         
         public static void Main() {
+            //GLib.Thread.Init();
+            Gdk.Threads.Init();
+            
+            Log = new LogList();
+            
             Gtk.Application.Init();
             SetProcessName("summa");
             
             GLib.Log.SetLogHandler(null, GLib.LogLevelFlags.All, new GLib.LogFunc(Summa.Core.Log.LogFunc)); //FIXME
-            
-            Log = new ArrayList();
             
             /*
              * the ListStore for all Summa.Gui.TagViews, since tags don't

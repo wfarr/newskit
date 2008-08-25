@@ -163,7 +163,11 @@ namespace Summa.Parser {
             document.LoadXml(xml);
             
             mgr = new XmlNamespaceManager(document.NameTable);
-            this.mgr.AddNamespace("atom", "http://www.w3.org/2005/Atom");
+            if ( xml.Contains("xmlns=\"http://purl.org/atom/ns#\"") ) {
+                this.mgr.AddNamespace("atom", "http://purl.org/atom/ns#");
+            } else {
+                this.mgr.AddNamespace("atom", "http://www.w3.org/2005/Atom");
+            }
             Parse();
         }
         
@@ -195,7 +199,9 @@ namespace Summa.Parser {
             
             item.Title = GetXmlNodeText(node, "atom:title");
             item.Author = GetXmlNodeText(node, "atom:author/atom:name");
-            item.Uri = GetXmlNodeUrl(node, "atom:link");
+            XmlNodeList linknodes = node.SelectNodes("atom:link", mgr);
+            ProcessXmlNodeLinks(linknodes, item);
+            //item.Uri = GetXmlNodeUrl(node, "atom:link");
             item.Contents = GetXmlNodeContent(node);
             item.Date = GetRfc822DateTime(node, "atom:updated").ToString();
             item.LastUpdated = "";
@@ -212,6 +218,42 @@ namespace Summa.Parser {
         public string GetXmlNodeContent(XmlNode node) {
             XmlNode n = node.SelectSingleNode("atom:content", mgr);
             return (n == null) ? null : n.InnerXml.Trim().Replace("\n", "<br/>\n");
+        }
+        
+        public void ProcessXmlNodeLinks(XmlNodeList node, Summa.Parser.Item item) {
+            string possible_self = null;
+            int inc = 0;
+            
+            foreach ( XmlNode n in node ) {
+                bool has_rel = false;
+                bool is_self = false;
+                bool is_enclosure = false;
+                foreach ( XmlAttribute val in n.Attributes ) {
+                    if ( (string)val.Name == "rel" ) {
+                        has_rel = true;
+                        if ( (string)val.Value == "self" ) {
+                            is_self = true;
+                        } else if ( (string)val.Value == "enclosure" ) {
+                            is_enclosure = true;
+                        }
+                    }
+                    
+                    if ( (string)val.Name == "href" ) {
+                        if ( has_rel ) {
+                            if ( is_self ) {
+                                item.Uri = (string)val.Value;
+                            } else if ( is_enclosure ){
+                                item.EncUri = (string)val.Value;
+                            }
+                        } else {
+                            possible_self = (string)val.Value;
+                        }
+                    }
+                }
+            }
+            if ( item.Uri == null && possible_self != null ) {
+                item.Uri = possible_self;
+            }
         }
         
         public string GetXmlNodeUrl(XmlNode node, string tag) {

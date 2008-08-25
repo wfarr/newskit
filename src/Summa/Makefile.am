@@ -24,6 +24,7 @@ SUMMA_CSDISTFILES = \
         Summa.Core/EventArgs.cs \
         Summa.Core/Exceptions.cs \
         Summa.Core/Log.cs \
+        Summa.Core/LogList.cs \
         Summa.Core/Notifier.cs \
         Summa.Core/ThemeManager.cs \
         Summa.Core/Updater.cs \

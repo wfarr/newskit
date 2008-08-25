@@ -73,9 +73,11 @@ namespace Summa.Core {
         }
         
         private string EscapeParam(string parameter) {
+            Encoding enc = new ASCIIEncoding();
             try {
+                Byte[] bytes = enc.GetBytes(parameter);
                 //return HttpUtility.HtmlEncode(parameter);
-                return parameter;
+                return enc.GetString(bytes);
             } catch ( Exception e ) {
                 Log.Exception(e, "Null reference");
                 return "";

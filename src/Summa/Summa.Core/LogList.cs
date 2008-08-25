@@ -1,4 +1,4 @@
-// Log.cs
+// LogList.cs
 //
 // Copyright (c) 2008 Ethan Osten
 //
@@ -24,34 +24,28 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
 
 namespace Summa.Core {
-    public static class Log {
-        public static event EventHandler LogAdded;
-        public static event EventHandler LogRemoved;
+    public class LogList : ArrayList {
+        public event EventHandler LogAdded;
+        public event EventHandler LogRemoved;
         
-        public static void Exception(Exception e) {
-            Summa.Core.Application.Log.AddMessage(e.ToString());
+        public LogList() : base() {
         }
         
-        public static void Exception(Exception e, string message) {
-            Summa.Core.Application.Log.AddMessage(e.ToString()+" with message "+message);
+        public void AddMessage(string message) {
+            this.Add(message);
+            
+            Summa.Core.Log.EmitLogAdded();
+            this.Trim();
         }
         
-        public static void Message(string message) {
-            Summa.Core.Application.Log.AddMessage(message);
-        }
-        
-        public static void LogFunc(string log_domain, GLib.LogLevelFlags log_level, string message) {
-            Message(message);
-        }
-        
-        public static void EmitLogAdded() {
-            //LogAdded(null, new EventArgs());
-        }
-        
-        public static void EmitLogRemoved() {
-            LogRemoved(null, new EventArgs());
+        private void Trim() {
+            while ( Count > 100 ) {
+                Remove(this[0]);
+                Summa.Core.Log.EmitLogRemoved();
+            }
         }
     }
 }
