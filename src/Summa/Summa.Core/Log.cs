@@ -51,7 +51,7 @@ namespace Summa.Core {
         }
         
         public static void EmitLogRemoved() {
-            LogRemoved(null, new EventArgs());
+            //LogRemoved(null, new EventArgs());
         }
     }
 }

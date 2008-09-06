@@ -146,7 +146,7 @@ namespace Summa.Gui {
             }
             
             Summa.Core.Application.Database.FeedDeleted += OnFeedDeleted;
-            Summa.Core.Application.Database.ItemAdded += OnItemAdded;
+            //Summa.Core.Application.Database.ItemAdded += OnItemAdded;
             Summa.Core.Application.Database.ItemDeleted += OnItemDeleted;
             Summa.Core.Application.Database.ItemChanged += OnItemChanged;
         }

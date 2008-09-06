@@ -50,7 +50,7 @@ namespace Summa.Core {
             
             bool exists = File.Exists(uri);
             
-            db = new SqliteConnection("Version=3,"+Uri);
+            db = new SqliteConnection("Version=3,encoding=utf-8,"+Uri);
             db.Open();
             
             GeneratedNames = new Hashtable();
