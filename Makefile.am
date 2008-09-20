@@ -27,7 +27,7 @@ dist-hook:
 	done
 
 run:
-	mono --debug src/Summa/summa.exe
+	mono --debug src/summa.exe
 
 install-data-local:
 		if test -z "$(DESTDIR)" ; then \

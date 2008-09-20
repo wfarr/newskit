@@ -40,7 +40,6 @@ PKG_CHECK_MODULES(SUMMA,
 AC_CONFIG_FILES([
 Makefile
 src/Makefile
-src/Summa/Makefile
 data/Makefile
 ])
 

@@ -76,7 +76,6 @@ SUMMA_CSDISTFILES = \
     Summa.Data.Feed.cs \
     Summa.Net.NetworkManager.cs
 
-
 summalibdir = $(prefix)/lib/summa
 all:
 	$(CSC) $(FLAGS) $(ASSEMBLIES) $(SUMMA_CSDISTFILES) -out:summa.exe 
