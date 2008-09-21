@@ -6,9 +6,10 @@ using System.Text.RegularExpressions;
 
 namespace NewsKit {
     public static class Core {
-        public static bool ParseUri(string uri, out NewsKit.IFeedParser parser) {
+        public static bool ParseUri(string uri, string last_modified, out NewsKit.IFeedParser parser) {
+            // if no last_modified, put ""
             try {
-                Request request = new NewsKit.Request(uri);
+                Request request = new NewsKit.Request(uri, last_modified);
                 
                 if ( request.Status != System.Net.HttpStatusCode.NotFound ) {
                     parser = Sniff(request);

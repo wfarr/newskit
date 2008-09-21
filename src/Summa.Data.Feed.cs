@@ -207,7 +207,7 @@ namespace Summa.Data {
         public bool Update() {
             NewsKit.IFeedParser parser;
             
-            bool success = NewsKit.Core.ParseUri(Url, out parser);
+            bool success = NewsKit.Core.ParseUri(Url, Summa.Core.Application.Database.GetFeed(Url)[9], out parser);
             if ( !success ) {
                 return false;
             }

@@ -17,7 +17,7 @@ namespace NewsKit {
         private HttpWebResponse webresponse;
         private Stream stream;
         
-        public Request(string uri) {
+        public Request(string uri, string last_modified) {
             Uri = uri;
             
             if ( NewsKit.Globals.Connected ) {
@@ -28,9 +28,10 @@ namespace NewsKit {
                     /* this often should be commented out, if you don't care
                      * about last-modified */
                     try {
-                        string modified = Summa.Core.Application.Database.GetFeed(uri)[9];
-                        DateTime m = Convert.ToDateTime(modified);
-                        webrequest.IfModifiedSince = m;
+                        if ( last_modified != "" ) {
+                            DateTime m = Convert.ToDateTime(last_modified);
+                            webrequest.IfModifiedSince = m;
+                        }
                     } catch ( Exception e ) {
                         NewsKit.Globals.Exception(e);
                     }

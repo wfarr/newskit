@@ -43,7 +43,7 @@ namespace Summa.Data {
             
             if ( !Summa.Core.Application.Database.FeedExists(uri) ) {
                 NewsKit.IFeedParser parser;
-                bool success = NewsKit.Core.ParseUri(uri, out parser);
+                bool success = NewsKit.Core.ParseUri(uri, "", out parser);
                 
                 if ( success ) {
                     if ( parser != null ) {
