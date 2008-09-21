@@ -56,7 +56,7 @@ namespace Summa.Data {
                         }
                         
                         string file_name = null;
-                        bool icon_found = NewsKit.Core.FindFavicon(parser.Uri, out file_name);
+                        bool icon_found = NewsKit.Core.FindFavicon(parser.Uri, Summa.Core.Application.Database.GetGeneratedName(parser.Uri), out file_name);
                         
                         if ( icon_found ) {
                             Summa.Core.Application.Database.ChangeFeedInfo(parser.Uri, "favicon", file_name);

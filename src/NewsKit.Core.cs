@@ -66,7 +66,7 @@ namespace NewsKit {
             return false;
         }
         
-        public static bool FindFavicon(string website_url, out string feed_url) {
+        public static bool FindFavicon(string website_url, string unique_name, out string feed_uri) {
             try {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ResolveBaseUri(website_url)+"favicon.ico");
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -78,10 +78,9 @@ namespace NewsKit {
                         System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
                         Directory.CreateDirectory(NewsKit.Globals.ImageDirectory);
                         
-                        // FIXME; call to the Summa namespace
-                        feed_url = NewsKit.Globals.ImageDirectory + Summa.Core.Application.Database.GetGeneratedName(website_url);
+                        feed_uri = NewsKit.Globals.ImageDirectory + unique_name;
                         //feed_url = "";
-                        img.Save(feed_url, System.Drawing.Imaging.ImageFormat.Png);
+                        img.Save(feed_uri, System.Drawing.Imaging.ImageFormat.Png);
                         return true;
                     } catch ( ArgumentException e ) {
                         NewsKit.Globals.Exception(e);
@@ -90,7 +89,7 @@ namespace NewsKit {
             } catch ( WebException e ) {
                 NewsKit.Globals.Exception(e);
             }  
-            feed_url = "";
+            feed_uri = "";
             return false;
         }
         
