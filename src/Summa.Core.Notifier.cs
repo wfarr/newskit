@@ -29,7 +29,7 @@ using Notifications;
 
 namespace Summa.Core {
     public static class Notifier {
-        public static event Summa.Core.NotificationEventHandler Notification;
+        public static event Summa.Core.NotificationEventHandler NewMessage;
         public static event EventHandler ZoomChanged;
         public static event EventHandler ViewChanged;
         public static event EventHandler IconShown;
@@ -37,11 +37,11 @@ namespace Summa.Core {
         public static void Notify(string message) {
             Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
             args.Message = message;
-            Notification(null, args);
+            NewMessage(null, args);
         }
         
         public static void PopupNotification(string message, string body) {
-            Notification n = new Notification(message, body, "summa");
+            Notifications.Notification n = new Notifications.Notification(message, body, "summa");
             if ( Summa.Core.Config.ShowStatusIcon ) {
                 //n.AttachToStatusIcon(Summa.Core.Application.StatusIcon);
             }

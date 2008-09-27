@@ -27,9 +27,6 @@ using System;
 
 namespace Summa.Core {
     public static class Log {
-        public static event EventHandler LogAdded;
-        public static event EventHandler LogRemoved;
-        
         public static void Exception(Exception e) {
             Summa.Core.Application.Log.AddMessage(e.ToString());
         }

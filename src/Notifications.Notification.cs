@@ -100,8 +100,6 @@ namespace Notifications {
 		private IDictionary <string, ActionTuple> action_map = new Dictionary<string, ActionTuple> ();
 		private IDictionary <string, object> hints  = new Dictionary<string, object> ();
 
-		public event EventHandler Closed;
-
 		static Notification () {
 			BusG.Init ();
 		}
@@ -327,16 +325,6 @@ namespace Notifications {
 			nf.CloseNotification (id);
 			id = 0;
 			shown = false;
-		}
-
-		private void OnClosed (uint id, uint reason) {
-			if (this.id == id) {
-				this.id = 0;
-				shown = false;
-				if (Closed != null) {
-					Closed (this, new CloseArgs ((CloseReason) reason));
-				}
-			}
 		}
 
 		public void AddAction (string action, string label, ActionHandler handler) {

@@ -238,7 +238,6 @@ namespace NewsKit {
         
         public void ProcessXmlNodeLinks(XmlNodeList node, NewsKit.Item item) {
             string possible_self = null;
-            int inc = 0;
             
             foreach ( XmlNode n in node ) {
                 bool has_rel = false;

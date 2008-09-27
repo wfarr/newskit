@@ -28,9 +28,6 @@ using System.Collections;
 
 namespace Summa.Core {
     public class LogList : ArrayList {
-        public event EventHandler LogAdded;
-        public event EventHandler LogRemoved;
-        
         public LogList() : base() {
         }
         

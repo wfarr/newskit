@@ -34,7 +34,6 @@ using Pango;
 namespace Summa.Gui {
     public class FeedView : Gtk.TreeView{
         public Gtk.ListStore store;
-        private Gtk.IconTheme icon_theme;
         public string SetTag;
         
         private ArrayList feeds;
@@ -122,9 +121,6 @@ namespace Summa.Gui {
             
             feedhash = new Hashtable();
             feeds = new ArrayList();
-
-            // set up the icon theme so that we can make stuff pretty
-            icon_theme = Gtk.IconTheme.Default;
             
             Summa.Core.Application.Database.FeedAdded += OnFeedAdded;
             Summa.Core.Application.Database.FeedDeleted += OnFeedDeleted;
@@ -158,7 +154,6 @@ namespace Summa.Gui {
             if ( args.ItemProperty == "tags" ) {
                 if ( args.Value.Split(',').Contains(SetTag) ) {
                     try {
-                        TreePath path = (TreePath)feedhash[args.Uri];
                     } catch ( Exception ) {
                         AddNewFeed(new Summa.Data.Feed(args.Uri));
                     }

@@ -231,7 +231,6 @@ namespace Summa.Core {
             }
         }
         
-        private static bool connected;
         public static bool Connected {
             get {
                 try {
@@ -245,7 +244,6 @@ namespace Summa.Core {
                 }
             }
             set {
-                connected = value;
             }
         }
         

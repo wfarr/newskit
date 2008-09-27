@@ -16,6 +16,7 @@ namespace NewsKit {
                     try {
                         parser.Request = request;
                     } catch ( NullReferenceException e ) {
+                        NewsKit.Globals.Exception(e);
                         return false;
                     }
                 } else {
@@ -24,9 +25,11 @@ namespace NewsKit {
                 }
                 return true;
             } catch ( NewsKit.Exceptions.NotFound e ) {
+                NewsKit.Globals.Exception(e);
                 parser = null;
                 return false;
             } catch ( NewsKit.Exceptions.NotUpdated e ) {
+                NewsKit.Globals.Exception(e);
                 parser = null;
                 return false;
             }

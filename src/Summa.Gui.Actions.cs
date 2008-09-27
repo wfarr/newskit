@@ -411,8 +411,6 @@ namespace Summa.Actions {
     }
     
     public class LoadImagesAction : Gtk.ToggleAction {
-        private Summa.Gui.Browser browser;
-        
         public LoadImagesAction(Summa.Gui.Browser browser) : base("LoadImages", "_Load Images", null, null) {
             Tooltip = "Load images in items";
             Toggled += LoadImages;
@@ -426,8 +424,6 @@ namespace Summa.Actions {
     }
     
     public class HideReadAction : Gtk.ToggleAction {
-        private Summa.Gui.Browser browser;
-        
         public HideReadAction(Summa.Gui.Browser browser) : base("Hide_read", "_Hide Read Items", null, null) {
             Tooltip = "Hide read items in the item list";
             Toggled += HideRead;
@@ -648,11 +644,7 @@ namespace Summa.Actions {
     }
     
     public class WidescreenViewAction : Gtk.RadioAction {
-        private Summa.Gui.Browser browser;
-        
         public WidescreenViewAction(Summa.Gui.Browser browser) : base("Wide_view", "_Use Widescreen View", null, null, 0) {
-            this.browser = browser;
-            
             Tooltip = "Use the widescreen view";
             Activated += SetView;
             
@@ -671,11 +663,7 @@ namespace Summa.Actions {
     }
     
     public class NormalViewAction : Gtk.RadioAction {
-        private Summa.Gui.Browser browser;
-        
         public NormalViewAction(Summa.Gui.Browser browser) : base("Normal_view", "_Use Normal View", null, null, 0) {
-            this.browser = browser;
-            
             Tooltip = "Use the normal view";
             Activated += SetView;
             

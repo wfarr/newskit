@@ -32,7 +32,7 @@ namespace Summa.Gui {
         
         public NotificationBar() {
             cid = 0;
-            Summa.Core.Notifier.Notification += OnNotification;
+            Summa.Core.Notifier.NewMessage += OnNotification;
         }
         
         private void OnNotification(object obj, Summa.Core.NotificationEventArgs args) {
