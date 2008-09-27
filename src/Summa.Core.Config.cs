@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
 using GConf;
 
 namespace Summa.Core {
@@ -45,6 +46,7 @@ namespace Summa.Core {
         private static string KEY_WIDESCREEN = "/apps/summa/widescreen_view";
         private static string KEY_THEME = "/apps/summa/theme";
         private static string KEY_STATUS_ICON = "/apps/summa/show_status_icon";
+        private static string KEY_ICON_FEEDS = "/apps/summa/show_status_icon_for";
         
         public static bool ShowNotifications {
             get {
@@ -281,6 +283,31 @@ namespace Summa.Core {
             set {
                 client.Set(KEY_STATUS_ICON, value);
                 Summa.Core.Notifier.ShowIcon();
+            }
+        }
+        
+        public static ArrayList IconFeedUris {
+            get {
+                try {
+                    string feeds = (string)client.Get(KEY_ICON_FEEDS);
+                    string[] urls = feeds.Split(',');
+                    ArrayList returls = new ArrayList();
+                    foreach ( string url in urls ) {
+                        if ( url != "" && url != null ) {
+                            returls.Add(url);
+                        }
+                    }
+                    return returls;
+                } catch ( GConf.NoSuchKeyException e ) {
+                    Summa.Core.Log.Exception(e);
+                    client.Set(KEY_ICON_FEEDS, "");
+                    return new ArrayList();
+                }
+            }
+            set {
+                string[] array = (string[])value.ToArray(typeof(string));
+                string retstring = String.Join(",", array);
+                client.Set(KEY_ICON_FEEDS, retstring);
             }
         }
     }

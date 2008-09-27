@@ -23,8 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-
 using System;
+using System.Collections;
 using Gtk;
 
 namespace Summa.Gui {
@@ -33,6 +33,8 @@ namespace Summa.Gui {
         private Gtk.Notebook notebook;
         private Gtk.ButtonBox bbox;
         private Gtk.VBox general_vbox;
+        private Gtk.VBox statusicon_vbox;
+        private Gtk.VBox feeds_vbox;
         
         private Gtk.CheckButton cb_notifications;
         private Gtk.CheckButton cb_sortfeedview;
@@ -41,6 +43,7 @@ namespace Summa.Gui {
         private Gtk.CheckButton cb_widescreen;
         private Gtk.ComboBox cb_updateinterval;
         private string[] updateinterval_options;
+        private Gtk.ListStore store;
         
         public ConfigDialog() : base(Gtk.WindowType.Toplevel) {
             Title = "Summa Preferences";
@@ -59,6 +62,7 @@ namespace Summa.Gui {
             vbox.PackStart(bbox, false, false, 0);
             
             AddGeneralTab();
+            AddStatusIconTab();
             AddCloseButton();
         }
         
@@ -102,11 +106,6 @@ namespace Summa.Gui {
             cb_tabs.Toggled += new EventHandler(OnCbTabsToggled);
             interface_vbox.PackStart(cb_tabs, false, false, 0);
             
-            cb_icon = new Gtk.CheckButton("Show the status icon");
-            cb_icon.Active = Summa.Core.Config.ShowStatusIcon;
-            cb_icon.Toggled += new EventHandler(OnCbIconToggled);
-            interface_vbox.PackStart(cb_icon, false, false, 0);
-            
             cb_widescreen = new Gtk.CheckButton("Arrange window in widescreen mode");
             cb_widescreen.Active = Summa.Core.Config.WidescreenView;
             cb_widescreen.Toggled += new EventHandler(OnCbWidescreenToggled);
@@ -149,6 +148,41 @@ namespace Summa.Gui {
             updateinterval_hbox.PackStart(cb_updateinterval);
             
             notebook.AppendPage(general_vbox, new Gtk.Label("General"));
+        }
+        
+        private void AddStatusIconTab() {
+            statusicon_vbox = new Gtk.VBox();
+            statusicon_vbox.BorderWidth = 5;
+            statusicon_vbox.Spacing = 10;
+            
+            cb_icon = new Gtk.CheckButton("Show the status icon");
+            cb_icon.Active = Summa.Core.Config.ShowStatusIcon;
+            cb_icon.Toggled += new EventHandler(OnCbIconToggled);
+            statusicon_vbox.PackStart(cb_icon, false, false, 0);
+            
+            Frame feeds_frame = new Gtk.Frame();
+            Label feeds_label = new Gtk.Label();
+            feeds_label.Markup = ("<b>Feeds to show icon for</b>");
+            feeds_label.UseUnderline = true;
+            feeds_frame.LabelWidget = feeds_label;
+            feeds_frame.LabelXalign = 0.0f;
+            feeds_frame.LabelYalign = 0.5f;
+            feeds_frame.Shadow = ShadowType.None;
+            statusicon_vbox.PackStart(feeds_frame, false, false, 0);
+            
+            Alignment feeds_alignment = new Gtk.Alignment(0.0f, 0.0f, 1.0f, 1.0f);
+            feeds_alignment.TopPadding = (uint)(feeds_frame == null ? 0 : 5);
+            feeds_alignment.LeftPadding = 12;
+            feeds_frame.Add(feeds_alignment);
+            
+            feeds_vbox = new Gtk.VBox();
+            feeds_vbox.BorderWidth = 5;
+            feeds_vbox.Spacing = 6;
+            feeds_alignment.Add(feeds_vbox);
+            
+            AddFeedTreeView();
+            
+            notebook.AppendPage(statusicon_vbox, new Gtk.Label("Status Icon"));
         }
         
         private void OnCbNotificationsToggled(object obj, EventArgs args) {
@@ -234,6 +268,73 @@ namespace Summa.Gui {
                 case "Daily":
                     Summa.Core.Config.GlobalUpdateInterval = 86400000;
                     break;
+            }
+        }
+        
+        private void AddFeedTreeView() {
+            store = new Gtk.ListStore(typeof(bool), typeof(string), typeof(string), typeof(Gdk.Pixbuf));
+            
+            CellRendererToggle crt = new Gtk.CellRendererToggle();
+            crt.Activatable = true;
+            crt.Toggled += new Gtk.ToggledHandler(OnCrtToggled);
+            
+            CellRendererText trender = new Gtk.CellRendererText();
+            trender.Ellipsize = Pango.EllipsizeMode.End;
+            
+            TreeView treeview = new Gtk.TreeView();
+            treeview.Model = store;
+            
+            ScrolledWindow treeview_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+            treeview_swin.Add(treeview);
+            treeview_swin.SetSizeRequest(200, 300);
+            treeview_swin.ShadowType = Gtk.ShadowType.In;
+            treeview_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+            
+            TreeViewColumn column_Use = new Gtk.TreeViewColumn("Use", crt, "active", 0);
+            treeview.AppendColumn(column_Use);
+            
+            TreeViewColumn column_Icon = new Gtk.TreeViewColumn("Icon", new Gtk.CellRendererPixbuf(), "pixbuf", 3);
+            treeview.AppendColumn(column_Icon);
+            
+            TreeViewColumn column_Name = new Gtk.TreeViewColumn("Title", trender, "text", 1);
+            treeview.AppendColumn(column_Name);
+            
+            feeds_vbox.PackStart(treeview_swin);
+            Populate("All");
+        }
+        
+        private void OnCrtToggled(object obj, ToggledArgs args) {
+            TreeIter iter;
+            store.GetIter(out iter, new Gtk.TreePath(args.Path));
+            
+            if ( (bool)store.GetValue(iter, 0) ) {
+                store.SetValue(iter, 0, false);
+                Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed((string)store.GetValue(iter, 2));
+                
+                ArrayList uris = Summa.Core.Config.IconFeedUris;
+                uris.Remove(feed.Url);
+                Summa.Core.Config.IconFeedUris = uris;
+            } else {
+                store.SetValue(iter, 0, true);
+                Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed((string)store.GetValue(iter, 2));
+                
+                ArrayList uris = Summa.Core.Config.IconFeedUris;
+                uris.Add(feed.Url);
+                Summa.Core.Config.IconFeedUris = uris;
+            }
+            Summa.Core.Application.StatusIcon.CheckVisibility();
+        }
+        
+        private void Populate(string tag) {
+            store.Clear();
+            
+            foreach ( Summa.Data.Feed feed in Summa.Data.Core.GetFeeds() ) {
+                Gtk.TreeIter iter = store.Append();
+                
+                store.SetValue(iter, 0, Summa.Core.Config.IconFeedUris.Contains(feed.Url));
+                store.SetValue(iter, 1, feed.Name);
+                store.SetValue(iter, 2, feed.Url);
+                store.SetValue(iter, 3, feed.Favicon);
             }
         }
         

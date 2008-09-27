@@ -28,119 +28,76 @@ using Gtk;
 
 namespace Summa.Gui {
     public class StatusIcon : Gtk.StatusIcon {
-        private int unread;
-        private bool shown;
+        private int Unread;
         
         public StatusIcon() {
             FromIconName = "summa";
-            shown = true;
             
+            Unread = Summa.Data.Core.GetUnreadCount();
+            
+            Activate += new EventHandler(ToggleBrowserStatus);
+            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
+            Summa.Core.Application.Database.ItemAdded += OnItemAdded;
+            Summa.Core.Application.Database.ItemDeleted += OnItemDeleted;
+            
+            UpdateTooltip();
+            CheckVisibility();
+        }
+        
+        private void UpdateTooltip() {
+            string us = Unread.ToString();
+            
+            Tooltip = us + " Unread items.";
+        }
+        
+        public void CheckVisibility() {
             if ( Summa.Core.Config.ShowStatusIcon ) {
-                unread = Summa.Data.Core.GetUnreadCount();
-                
-                UpdateTooltip();
-                
-                Activate += new EventHandler(ToggleBrowserStatus);
-                Summa.Core.Application.Database.ItemChanged += OnItemChanged;
-                Summa.Core.Application.Database.ItemAdded += OnItemAdded;
-                
-                PopupMenu += RightClickMenu;
-                
-                Visible = true;
-            } else { Visible = false; }
-            
-            Summa.Core.Notifier.IconShown += OnIconShown;
+                bool found = false;
+                foreach ( string url in Summa.Core.Config.IconFeedUris ) {
+                    Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed(url);
+                    
+                    if ( feed.HasUnread ) {
+                        Visible = true;
+                        found = true;
+                        break;
+                    }
+                }
+                if ( !found ) {
+                    Visible = false;
+                }
+            } else {
+                Visible = false;
+            }
         }
         
-        private void OnIconShown(object obj, EventArgs args) {
-                if ( Summa.Core.Config.ShowStatusIcon ) {
-                unread = Summa.Data.Core.GetUnreadCount();
-                
-                UpdateTooltip();
-                
-                Activate += new EventHandler(ToggleBrowserStatus);
-                Summa.Core.Application.Database.ItemChanged += OnItemChanged;
-                Summa.Core.Application.Database.ItemAdded += OnItemAdded;
-                
-                PopupMenu += RightClickMenu;
-                
-                Visible = true;
-            } else { Visible = false; }
-        }
-        
-        public void ToggleBrowserStatus(object obj, EventArgs args) {
+        private void ToggleBrowserStatus(object obj, EventArgs args) {
             Summa.Core.Application.ToggleShown();
         }
         
         private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
             if ( args.ItemProperty == "read" ) {
                 if ( args.Value == "True" ) {
-                    unread--;
+                    Unread--;
                     UpdateTooltip();
+                    CheckVisibility();
                 } else if ( args.Value == "False" ) {
-                    unread++;
+                    Unread++;
                     UpdateTooltip();
+                    CheckVisibility();
                 }
             }
         }
         
         private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {
-            unread++;
+            Unread++;
             UpdateTooltip();
+            CheckVisibility();
         }
         
-        private void UpdateTooltip() {
-            string us = unread.ToString();
-            
-            Tooltip = us + " unread items.";
-        }
-
-        private void RightClickMenu(object obj, EventArgs args) {
-            Gtk.Menu menu = new Gtk.Menu();
-
-            // Add Button
-            ImageMenuItem add_button = new ImageMenuItem("Add New Feed");
-            Gtk.Image add_button_img = new Gtk.Image(Gtk.Stock.Add, Gtk.IconSize.Menu);
-            add_button.Image = add_button_img;
-            menu.Append(add_button);
-            
-            // Refresh Button
-            ImageMenuItem refresh_button = new ImageMenuItem("Refresh Feeds");
-            Gtk.Image refresh_button_img = new Gtk.Image(Gtk.Stock.Refresh, Gtk.IconSize.Menu);
-            refresh_button.Image = refresh_button_img;
-            menu.Append(refresh_button);
-
-            // Preferences Button
-            ImageMenuItem prefs_button = new ImageMenuItem("Preferences");
-            Gtk.Image prefs_button_img = new Gtk.Image(Gtk.Stock.Preferences, Gtk.IconSize.Menu);
-            prefs_button.Image = prefs_button_img;
-            menu.Append(prefs_button);
-            
-            // Show/hide Button
-            ImageMenuItem show_button;
-            if ( shown ) {
-                show_button = new ImageMenuItem("Hide the window");
-            } else {
-                show_button = new ImageMenuItem("Show the window");
-            }
-            menu.Append(show_button);
-
-            // Quit Button
-            ImageMenuItem quit_button = new ImageMenuItem("Quit");
-            Gtk.Image quit_button_img = new Gtk.Image(Gtk.Stock.Quit, Gtk.IconSize.Menu);
-            quit_button.Image = quit_button_img;
-            menu.Append(quit_button);
-
-            menu.ShowAll();
-            menu.Popup();
-            
-            Summa.Gui.Browser b = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
-
-            add_button.Activated += new EventHandler(b.addaction.NewAddFeedDialog);
-            refresh_button.Activated += new EventHandler(b.Up_all_action.UpdateAll);
-            prefs_button.Activated += new EventHandler(b.prefs_action.ShowConfigDialog);
-            show_button.Activated += new EventHandler(ToggleBrowserStatus);
-            quit_button.Activated += new EventHandler(b.CloseWindow);
+        private void OnItemDeleted(object obj, Summa.Core.AddedEventArgs args) {
+            Unread = Summa.Data.Core.GetUnreadCount();
+            UpdateTooltip();
+            CheckVisibility();
         }
     }
 }
