@@ -146,34 +146,53 @@ namespace Summa.Gui {
             }
             
             Summa.Core.Application.Database.FeedDeleted += OnFeedDeleted;
-            //Summa.Core.Application.Database.ItemAdded += OnItemAdded;
+            Summa.Core.Application.Database.ItemAdded += OnItemAdded;
             Summa.Core.Application.Database.ItemDeleted += OnItemDeleted;
             Summa.Core.Application.Database.ItemChanged += OnItemChanged;
         }
         
         private void OnFeedDeleted(object obj, Summa.Core.AddedEventArgs args) {
             if ( feedobj.Url == args.Uri ) {
-                store.Clear();
+                Gtk.Application.Invoke(this, new EventArgs(), new EventHandler(InvokeStoreClear));
             }
+        }
+        
+        private void InvokeStoreClear(object obj, EventArgs args) {
+            store.Clear();
         }
         
         private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {
             if ( feedobj.Url == args.FeedUri ) {
-                PopulateItem(new Summa.Data.Item(args.Uri, args.FeedUri));
+                Gtk.Application.Invoke(this, args, new EventHandler(InvokeAddItem));
             }
+        }
+        
+        private void InvokeAddItem(object obj, EventArgs args) {
+            Summa.Core.AddedEventArgs aargs = (Summa.Core.AddedEventArgs)args;
+            PopulateItem(new Summa.Data.Item(aargs.Uri, aargs.FeedUri));
         }
         
         private void OnItemDeleted(object obj, Summa.Core.AddedEventArgs args) {
             if ( feedobj.Url == args.FeedUri ) {
-                DeleteItem(new Summa.Data.Item(args.Uri, args.FeedUri));
+                Gtk.Application.Invoke(this, args, new EventHandler(InvokeDeleteItem));
             }
         }
         
+        private void InvokeDeleteItem(object obj, EventArgs args) {
+            Summa.Core.AddedEventArgs aargs = (Summa.Core.AddedEventArgs)args;
+            DeleteItem(new Summa.Data.Item(aargs.Uri, aargs.FeedUri));
+        }
+            
+        
         private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args ) {
             if ( args.FeedUri == feedobj.Url ) {
-                Summa.Data.Item item = new Summa.Data.Item(args.Uri, args.FeedUri);
-                PopulateItem(item);
+                Gtk.Application.Invoke(this, args, new EventHandler(InvokeChangeItem));
             }
+        }
+        
+        private void InvokeChangeItem(object obj, EventArgs args) {
+            Summa.Core.ChangedEventArgs aargs = (Summa.Core.ChangedEventArgs)args;
+            PopulateItem(new Summa.Data.Item(aargs.Uri, aargs.FeedUri));
         }
         
         public void Update() {

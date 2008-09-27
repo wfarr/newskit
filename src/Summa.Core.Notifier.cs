@@ -25,6 +25,7 @@
 
 using System;
 using NDesk.DBus;
+using Notifications;
 
 namespace Summa.Core {
     public static class Notifier {
@@ -40,11 +41,11 @@ namespace Summa.Core {
         }
         
         public static void PopupNotification(string message, string body) {
-            Console.WriteLine("Notify");
-            
-            Summa.Core.INotification n = NDesk.DBus.Bus.Session.GetObject<Summa.Core.INotification>("org.freedesktop.Notifications", new ObjectPath("/org/freedesktop/Notifications"));
-            
-            n.Notify("Summa", 0, "summa", message, body, null, null, -1);
+            Notification n = new Notification(message, body, "summa");
+            if ( Summa.Core.Config.ShowStatusIcon ) {
+                //n.AttachToStatusIcon(Summa.Core.Application.StatusIcon);
+            }
+            n.Show();
         }
         
         public static void ChangeZoom() {
