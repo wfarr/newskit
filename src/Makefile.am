@@ -18,8 +18,8 @@ ASSEMBLIES = \
 
 SUMMA_CSDISTFILES = \
     Summa.Data.ISource.cs \
+    NewsKit.RssCommon.cs \
     Summa.Data.Item.cs \
-    MigoRfc822DateTime.cs \
     Summa.Data.Search.cs \
     NewsKit.AtomParser.cs \
     Summa.Gui.AboutDialog.cs \
@@ -57,7 +57,6 @@ SUMMA_CSDISTFILES = \
     Summa.Gui.NativeTheme.cs \
     Summa.Core.IMediaPlayer.cs \
     Summa.Gui.NotificationBar.cs \
-    Summa.Core.INotification.cs \
     Summa.Gui.OpmlDialog.cs \
     Summa.Core.ITheme.cs \
     Summa.Gui.StatusIcon.cs \
@@ -74,7 +73,9 @@ SUMMA_CSDISTFILES = \
     Summa.Data.Core.cs \
     Summa.Net.INetworkManager.cs \
     Summa.Data.Feed.cs \
-    Summa.Net.NetworkManager.cs
+    Summa.Net.NetworkManager.cs \
+    Notifications.Global.cs \
+    Notifications.Notification.cs
 
 summalibdir = $(prefix)/lib/summa
 all:
