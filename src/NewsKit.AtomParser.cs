@@ -212,6 +212,9 @@ namespace NewsKit {
             ProcessXmlNodeLinks(linknodes, item);
             //item.Uri = GetXmlNodeUrl(node, "atom:link");
             item.Contents = GetXmlNodeContent(node);
+            if ( item.Contents == null ) {
+                item.Contents = GetXmlNodeSummary(node);
+            }
             item.Date = GetRfc822DateTime(node, "atom:updated").ToString();
             item.LastUpdated = "";
             item.EncUri = "";
@@ -226,6 +229,10 @@ namespace NewsKit {
         
         public string GetXmlNodeContent(XmlNode node) {
             XmlNode n = node.SelectSingleNode("atom:content", mgr);
+            return (n == null) ? null : n.InnerXml.Trim().Replace("\n", "<br/>\n");
+        }
+        public string GetXmlNodeSummary(XmlNode node) {
+            XmlNode n = node.SelectSingleNode("atom:summary", mgr);
             return (n == null) ? null : n.InnerXml.Trim().Replace("\n", "<br/>\n");
         }
         
@@ -284,7 +291,7 @@ namespace NewsKit {
             string result = GetXmlNodeText(node, tag);
 
             if (!String.IsNullOrEmpty(result)) {
-                Migo.Syndication.Rfc822DateTime.TryAtomParse(result, out ret);
+                ret = Convert.ToDateTime(result);
             }
                     
             return ret;              

@@ -13,7 +13,11 @@ namespace NewsKit {
                 
                 if ( request.Status != System.Net.HttpStatusCode.NotFound ) {
                     parser = Sniff(request);
-                    parser.Request = request;
+                    try {
+                        parser.Request = request;
+                    } catch ( NullReferenceException e ) {
+                        return false;
+                    }
                 } else {
                     parser = null;
                     return false;

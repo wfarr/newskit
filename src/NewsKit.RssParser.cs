@@ -29,7 +29,7 @@ using System.Xml;
 using System.Text;
 
 namespace NewsKit {
-    public class RssParser : NewsKit.IFeedParser {
+    public class RssParser : IFeedParser {
         private XmlDocument document;
         private XmlNamespaceManager mgr;
         
@@ -183,31 +183,16 @@ namespace NewsKit {
                         sb.Append(c);
                     }
                 }
-
-                bool loaded = false;
+                
                 if (have_stripped_control) {
                     try {
-                        document.LoadXml(sb.ToString ());
-                        loaded = true;
-                    } catch (Exception) {
-                    }
-                }
-
-                if (!loaded) {                              
+                        document.LoadXml(sb.ToString());
+                    } catch (Exception) {}
                 }
             }
             mgr = new XmlNamespaceManager(document.NameTable);
             mgr.AddNamespace("content", "http://purl.org/rss/1.0/modules/content/");
-            Parse();
-        }
-        
-        public RssParser(string uri, XmlDocument doc) {
-            this.uri = uri;
-            this.document = doc;
-            Parse();
-        }
-        
-        private void Parse() {
+            
             Name = GetXmlNodeText(document, "/rss/channel/title");
             Subtitle = GetXmlNodeText(document, "/rss/channel/description");
             License = GetXmlNodeText(document, "/rss/channel/copyright");
@@ -257,11 +242,10 @@ namespace NewsKit {
             string result = GetXmlNodeText(node, tag);
 
             if (!String.IsNullOrEmpty(result)) {
-                Migo.Syndication.Rfc822DateTime.TryParse(result, out ret);
+                ret = NewsKit.RssCommon.Parse(result);
             }
                     
             return ret;              
         }
     }
 }
-

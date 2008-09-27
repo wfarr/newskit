@@ -231,10 +231,17 @@ namespace NewsKit {
             item.Author = GetXmlNodeText(node, "rss10:author");
             item.Uri = GetXmlNodeText(node, "rss10:link");
             item.Contents = GetXmlNodeText(node, "rss10:description");
-            if ( item.Contents == null ) {
+            try {
+                if ( item.Contents.Length < GetXmlNodeText(node, "content:encoded").Length ) {
+                    item.Contents = GetXmlNodeText(node, "content:encoded");
+                }
+            } catch ( Exception ) {
                 item.Contents = GetXmlNodeText(node, "content:encoded");
             }
             item.Date = GetRfc822DateTime(node, "rss10:pubDate").ToString();
+            /*if ( item.Date == DateTime.MinValue.ToString() ) {
+                item.Date = GetRfc822DateTime(node, "dc:date").ToString();
+            }*/
             // should look for dc:date
             item.LastUpdated = GetRfc822DateTime(node, "dcterms:modified").ToString();
             
@@ -252,7 +259,7 @@ namespace NewsKit {
             string result = GetXmlNodeText(node, tag);
 
             if (!String.IsNullOrEmpty(result)) {
-                Migo.Syndication.Rfc822DateTime.TryParse(result, out ret);
+                ret = NewsKit.RssCommon.Parse(result);
             }
                     
             return ret;              

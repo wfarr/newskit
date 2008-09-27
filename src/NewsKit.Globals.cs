@@ -41,7 +41,7 @@ namespace NewsKit {
         }
         
         public static void Exception(Exception e) {
-            Console.WriteLine(e);
+            Summa.Core.Log.Exception(e);
         }
     }
 }

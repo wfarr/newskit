@@ -24,9 +24,10 @@ namespace NewsKit {
                 try {
                     webrequest = (HttpWebRequest)WebRequest.Create(uri);
                     webrequest.AllowAutoRedirect = true;
+                    webrequest.UserAgent = NewsKit.Globals.UserAgent;
+                    webrequest.MaximumAutomaticRedirections = 4;
+                    webrequest.MaximumResponseHeadersLength = 4;
                     
-                    /* this often should be commented out, if you don't care
-                     * about last-modified */
                     try {
                         if ( last_modified != "" ) {
                             DateTime m = Convert.ToDateTime(last_modified);
@@ -40,7 +41,7 @@ namespace NewsKit {
                     Status = webresponse.StatusCode;
                     
                     byte[] buffer = new byte[8192];
-                    StringBuilder sb  = new StringBuilder();
+                    StringBuilder sb = new StringBuilder();
                     
                     if ( Status == HttpStatusCode.NotModified ) {
                         throw new NewsKit.Exceptions.NotUpdated();
@@ -61,7 +62,7 @@ namespace NewsKit {
                         while (count > 0);
                         
                         Xml = sb.ToString();
-                        Xml = System.Text.RegularExpressions.Regex.Replace(Xml, "( [a-z]+)=([a-zA-Z0-9:/._%;?=&-]+)", "$1=\"$2\"");
+                        Xml = System.Text.RegularExpressions.Regex.Replace(Xml, "<( [a-z]+)=([a-zA-Z0-9:/._%;?=&-]+)", "$1=\"$2\"");
                         
                         LastModified = webresponse.LastModified.ToString();
                         try {
@@ -70,8 +71,15 @@ namespace NewsKit {
                             NewsKit.Globals.Exception(e);
                         }
                     }
+                    webresponse.Close();
                 } catch ( System.Net.WebException e ) {
                     NewsKit.Globals.Exception(e);
+                    
+                    try {
+                        webresponse.Close();
+                        stream.Close();
+                    } catch ( Exception ) {}
+                    
                     throw new NewsKit.Exceptions.NotFound();
                 }
             } else {
