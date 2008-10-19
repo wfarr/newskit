@@ -26,22 +26,22 @@
 using System;
 using System.Collections;
 
+using Summa.Core;
+
 namespace Summa.Core {
     public class LogList : ArrayList {
-        public LogList() : base() {
-        }
+        public LogList() : base() {}
         
         public void AddMessage(string message) {
             this.Add(message);
             
-            Summa.Core.Log.EmitLogAdded();
             this.Trim();
         }
         
         private void Trim() {
             while ( Count > 100 ) {
                 Remove(this[0]);
-                Summa.Core.Log.EmitLogRemoved();
+                Log.RemoveLog();
             }
         }
     }

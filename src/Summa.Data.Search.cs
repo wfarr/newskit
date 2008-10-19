@@ -26,6 +26,11 @@
 using System;
 using System.Collections;
 
+using Gtk;
+
+using Summa.Core;
+using Summa.Data;
+
 namespace Summa.Data {
     // simple dummy implementation of Search, only powerful enough for things
     // like "get all unread items." Real search support, with multiple params
@@ -86,14 +91,14 @@ namespace Summa.Data {
         }
         
         public Gdk.Pixbuf Favicon {
-            get { return Gtk.IconTheme.Default.LookupIcon("system-search", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon(); }
+            get { return IconTheme.Default.LookupIcon("system-search", (int)IconSize.Menu, IconLookupFlags.NoSvg).LoadIcon(); }
             set {}
         }
         
         public int UnreadCount {
             get {
                 int count = 0;
-                foreach ( Summa.Data.Item item in Items ) {
+                foreach ( Item item in Items ) {
                     if ( !item.Read ) {
                         count++;
                     }
@@ -113,11 +118,11 @@ namespace Summa.Data {
                 ArrayList items = new ArrayList();
                 
                 foreach ( ArrayList term in terms ) {
-                    foreach ( Summa.Data.Feed feed in Summa.Data.Core.GetFeeds() ) {
+                    foreach ( Feed feed in Feeds.GetFeeds() ) {
                         if ( (string)term[0] == "read" && (string)term[1] == "False" && !feed.HasUnread ) {
                             continue;
                         } else {
-                            foreach ( Summa.Data.Item item in feed.Items ) {
+                            foreach ( Item item in feed.Items ) {
                                 if ( (string)term[0] == "read" ) {
                                     if ( (string)term[1] == "True" && item.Read ) {
                                         items.Add(item);
@@ -151,7 +156,7 @@ namespace Summa.Data {
         public bool Update() { return false; }
         
         public void MarkItemsRead() {
-            foreach ( Summa.Data.Item item in Items ) {
+            foreach ( Item item in Items ) {
                 item.Read = true;
             }
         }

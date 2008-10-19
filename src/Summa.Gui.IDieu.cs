@@ -26,6 +26,9 @@
 using System;
 using NDesk.DBus;
 
+using Summa.Core;
+using Summa.Gui;
+
 namespace Summa.Gui {
     [Interface ("org.gnome.Dieu")]
     public interface IDieu {

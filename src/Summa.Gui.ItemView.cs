@@ -29,20 +29,24 @@ using Gdk;
 using System.Collections;
 using System.Linq;
 
+using Summa.Core;
+using Summa.Data;
+using Summa.Gui;
+
 namespace Summa.Gui {
-    public class ItemView : Gtk.TreeView {
-        public Gtk.ListStore store;
-        private Gtk.IconTheme icon_theme;
+    public class ItemView : TreeView {
+        public ListStore store;
+        private IconTheme icon_theme;
         private Gdk.Pixbuf icon;
         
-        private Summa.Data.ISource feedobj;
+        private ISource feedobj;
         private ArrayList items;
         private Hashtable itemhash;
         
-        private Gtk.TreeIter iter;
+        private TreeIter iter;
         
-        private Gtk.TreeViewColumn column_Date;
-        private Gtk.TreeViewColumn column_Title;
+        private TreeViewColumn column_Date;
+        private TreeViewColumn column_Title;
         
         public bool HasSelected {
             get {
@@ -56,7 +60,7 @@ namespace Summa.Gui {
         
         public Summa.Data.Item Selected {
             get {
-                Gtk.TreeModel selectmodel;
+                TreeModel selectmodel;
                 if ( Selection.CountSelectedRows() != 0 ) {
                     Selection.GetSelected(out selectmodel, out iter);
                 } else { store.GetIterFirst(out iter); }
@@ -66,28 +70,28 @@ namespace Summa.Gui {
         
         public ItemView() {
             // set up the liststore for the view
-            store = new Gtk.ListStore(typeof(Gdk.Pixbuf), typeof(bool), typeof(bool), typeof(string), typeof(string), typeof(string), typeof(int));
+            store = new ListStore(typeof(Gdk.Pixbuf), typeof(bool), typeof(bool), typeof(string), typeof(string), typeof(string), typeof(int));
             Model = store;
             
             // set up the columns for the view
-            InsertColumn(-1, "Read", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
-            CellRendererText trender = new Gtk.CellRendererText();
+            InsertColumn(-1, "Read", new CellRendererPixbuf(), "pixbuf", 0);
+            CellRendererText trender = new CellRendererText();
             
-            column_Date = new Gtk.TreeViewColumn("Date", trender, "text", 3);
+            column_Date = new TreeViewColumn("Date", trender, "text", 3);
             column_Date.AddAttribute(trender, "weight", 6);
             column_Date.SortColumnId = 3;
             column_Date.SortIndicator = true;
             AppendColumn(column_Date);
-            column_Title = new Gtk.TreeViewColumn("Title", trender, "text", 4);
+            column_Title = new TreeViewColumn("Title", trender, "text", 4);
             column_Title.AddAttribute(trender, "weight", 6);
             AppendColumn(column_Title);
             
             RulesHint = true;
             HeadersClickable = true;
-            store.SetSortColumnId(3, Gtk.SortType.Descending);
+            store.SetSortColumnId(3, SortType.Descending);
             
             // set up the icon theme so that we can make stuff pretty 
-            icon_theme = Gtk.IconTheme.Default;
+            icon_theme = IconTheme.Default;
         }
         
         private void PopulateItem(Summa.Data.Item item) {
@@ -95,16 +99,16 @@ namespace Summa.Gui {
             try {
                 iter = (TreeIter)itemhash[item.Uri];
             } catch ( NullReferenceException e ) {
-                Summa.Core.Log.Exception(e);
+                Log.Exception(e);
                 iter = store.Append();
                 itemhash.Add(item.Uri, iter);
             }
             
             if (!item.Read) {
-                icon = icon_theme.LookupIcon("feed-item", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
+                icon = icon_theme.LookupIcon("feed-item", 16, IconLookupFlags.NoSvg).LoadIcon();
                 store.SetValue(iter, 6, (int)Pango.Weight.Bold);
             } else if (item.Flagged) {
-                icon = icon_theme.LookupIcon("emblem-important", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
+                icon = icon_theme.LookupIcon("emblem-important", 16, IconLookupFlags.NoSvg).LoadIcon();
                 store.SetValue(iter, 6, (int)Pango.Weight.Normal);
             } else {
                 icon = new Gdk.Pixbuf(Gdk.Colorspace.Rgb, false, 0, 0, 0);
@@ -124,11 +128,11 @@ namespace Summa.Gui {
                 TreeIter iter = (TreeIter)itemhash[item.Uri];
                 store.Remove(ref iter);
             } catch ( Exception e ) {
-                Summa.Core.Log.Exception(e);
+                Log.Exception(e);
             }
         }
         
-        public void Populate(Summa.Data.ISource feed) {
+        public void Populate(ISource feed) {
             feedobj = feed;
             items = feed.Items;
             items.Reverse();
@@ -145,13 +149,13 @@ namespace Summa.Gui {
                 }
             }
             
-            Summa.Core.Application.Database.FeedDeleted += OnFeedDeleted;
-            Summa.Core.Application.Database.ItemAdded += OnItemAdded;
-            Summa.Core.Application.Database.ItemDeleted += OnItemDeleted;
-            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
+            Database.FeedDeleted += OnFeedDeleted;
+            Database.ItemAdded += OnItemAdded;
+            Database.ItemDeleted += OnItemDeleted;
+            Database.ItemChanged += OnItemChanged;
         }
         
-        private void OnFeedDeleted(object obj, Summa.Core.AddedEventArgs args) {
+        private void OnFeedDeleted(object obj, AddedEventArgs args) {
             if ( feedobj.Url == args.Uri ) {
                 Gtk.Application.Invoke(this, new EventArgs(), new EventHandler(InvokeStoreClear));
             }
@@ -161,37 +165,37 @@ namespace Summa.Gui {
             store.Clear();
         }
         
-        private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {
+        private void OnItemAdded(object obj, AddedEventArgs args) {
             if ( feedobj.Url == args.FeedUri ) {
                 Gtk.Application.Invoke(this, args, new EventHandler(InvokeAddItem));
             }
         }
         
         private void InvokeAddItem(object obj, EventArgs args) {
-            Summa.Core.AddedEventArgs aargs = (Summa.Core.AddedEventArgs)args;
+            AddedEventArgs aargs = (AddedEventArgs)args;
             PopulateItem(new Summa.Data.Item(aargs.Uri, aargs.FeedUri));
         }
         
-        private void OnItemDeleted(object obj, Summa.Core.AddedEventArgs args) {
+        private void OnItemDeleted(object obj, AddedEventArgs args) {
             if ( feedobj.Url == args.FeedUri ) {
                 Gtk.Application.Invoke(this, args, new EventHandler(InvokeDeleteItem));
             }
         }
         
         private void InvokeDeleteItem(object obj, EventArgs args) {
-            Summa.Core.AddedEventArgs aargs = (Summa.Core.AddedEventArgs)args;
+            AddedEventArgs aargs = (AddedEventArgs)args;
             DeleteItem(new Summa.Data.Item(aargs.Uri, aargs.FeedUri));
         }
             
         
-        private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args ) {
+        private void OnItemChanged(object obj, ChangedEventArgs args ) {
             if ( args.FeedUri == feedobj.Url ) {
                 Gtk.Application.Invoke(this, args, new EventHandler(InvokeChangeItem));
             }
         }
         
         private void InvokeChangeItem(object obj, EventArgs args) {
-            Summa.Core.ChangedEventArgs aargs = (Summa.Core.ChangedEventArgs)args;
+            ChangedEventArgs aargs = (ChangedEventArgs)args;
             PopulateItem(new Summa.Data.Item(aargs.Uri, aargs.FeedUri));
         }
         
@@ -223,7 +227,7 @@ namespace Summa.Gui {
                 
                 items = feedobj.Items;
             } catch ( Exception e ) {
-                Summa.Core.Log.Exception(e, "No feed selected");
+                Log.Exception(e, "No feed selected");
             }
         }
         
@@ -239,7 +243,7 @@ namespace Summa.Gui {
         
         public void GoToPreviousItem() {
             if ( Selection.CountSelectedRows() != 0 ) {
-                Gtk.TreeModel selectmodel;
+                TreeModel selectmodel;
                 Selection.GetSelected(out selectmodel, out iter);
             } else {
                 store.GetIterFirst(out iter);
@@ -257,14 +261,14 @@ namespace Summa.Gui {
         
         public bool GoToNextItem() {
             if ( Selection.CountSelectedRows() != 0 ) {
-                Gtk.TreeModel selectmodel;
+                TreeModel selectmodel;
                 Selection.GetSelected(out selectmodel, out iter);
             } else { store.GetIterFirst(out iter); }
             
             bool has_unread = false;
             
             while ( !has_unread ) {
-                GLib.Value readvalue = new GLib.Value(false);
+                GLib.Value readvalue = GLib.Value.Empty;
                 if ( !store.IterIsValid(iter) ) {
                     break;
                 }
@@ -286,7 +290,7 @@ namespace Summa.Gui {
             store.GetIterFirst(out iter);
             
             while ( true ) {
-                GLib.Value readvalue = new GLib.Value(false);
+                GLib.Value readvalue = GLib.Value.Empty;
                 if (!store.IterIsValid(iter)) {
                     break;
                 }
@@ -302,7 +306,7 @@ namespace Summa.Gui {
             }
         }
         
-        private Summa.Data.Item ItemFromIter(Gtk.TreeIter treeiter) {
+        private Summa.Data.Item ItemFromIter(TreeIter treeiter) {
             string val = (string)store.GetValue(iter, 5);
             bool fail = false;
             Summa.Data.Item item = null;
@@ -317,7 +321,7 @@ namespace Summa.Gui {
             }
             
             if ( fail ) {
-                item = Summa.Data.Core.GetItem(val);
+                item = Feeds.GetItem(val);
             }
             
             return item;
@@ -366,7 +370,7 @@ namespace Summa.Gui {
                 
                 return year+"/"+month+"/"+day+" at "+hour+":"+minute+":"+second;
             } catch ( Exception e ) {
-                Summa.Core.Log.Exception(e);
+                Log.Exception(e);
                 return "";
             }
         }

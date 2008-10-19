@@ -25,23 +25,25 @@
 
 using System;
 using System.Collections;
-
 using Gtk;
 
+using Summa.Core;
+using Summa.Gui;
+
 namespace Summa.Gui {
-    public class MessageDialog : Gtk.Window {
-        private Gtk.VBox vbox;
-        private Gtk.HBox hbox;
-        private Gtk.HButtonBox bbox;
-        private Gtk.Image image;
-        private Gtk.Table table;
-        private Gtk.Label label;
-        private Gtk.TextBuffer buffer;
-        private Gtk.TextView textview;
-        private Gtk.ScrolledWindow textviewsw;
-        private Gtk.Button close_button;
+    public class MessageDialog : Window {
+        private VBox vbox;
+        private HBox hbox;
+        private HButtonBox bbox;
+        private Image image;
+        private Table table;
+        private Label label;
+        private TextBuffer buffer;
+        private TextView textview;
+        private ScrolledWindow textviewsw;
+        private Button close_button;
         
-        public MessageDialog(ArrayList list) : base(Gtk.WindowType.Toplevel) {
+        public MessageDialog(ArrayList list) : base(WindowType.Toplevel) {
             Title = "Error";
             IconName = "dialog-error";
             
@@ -50,49 +52,49 @@ namespace Summa.Gui {
             Resizable = false;
             BorderWidth = 6;
             
-            vbox = new Gtk.VBox(false, 6);
+            vbox = new VBox(false, 6);
             Add(vbox);
-            hbox = new Gtk.HBox(false, 6);
+            hbox = new HBox(false, 6);
             
             vbox.PackStart(hbox);
             
-            image = new Gtk.Image(Gtk.Stock.DialogError, Gtk.IconSize.Dialog);
+            image = new Image(Stock.DialogError, IconSize.Dialog);
             hbox.PackStart(image);
             
-            table = new Gtk.Table(2, 3, false);
+            table = new Table(2, 3, false);
             table.RowSpacing = 6;
             hbox.PackEnd(table);
             
-            label = new Gtk.Label();
+            label = new Label();
             label.Markup = "<big><b>Some feeds failed to import</b></big>";
             table.Attach(label, 1, 2, 0, 1);
             
-            buffer = new Gtk.TextBuffer(new Gtk.TextTagTable());
+            buffer = new TextBuffer(new TextTagTable());
             foreach ( string feed in list ) {
                 buffer.Text = buffer.Text + feed+"\n";;
             }
             
-            textview = new Gtk.TextView(buffer);
+            textview = new TextView(buffer);
             textview.Editable = false;
-            textview.WrapMode = Gtk.WrapMode.Word;
+            textview.WrapMode = WrapMode.Word;
             textview.SetSizeRequest(400, 150);
             
-            textviewsw = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
-            textviewsw.ShadowType = Gtk.ShadowType.In;
-            textviewsw.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+            textviewsw = new ScrolledWindow(new Adjustment(0, 0, 0, 0, 0, 0), new Adjustment(0, 0, 0, 0, 0, 0));
+            textviewsw.ShadowType = ShadowType.In;
+            textviewsw.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
             textviewsw.Add(textview);
             table.Attach(textviewsw, 1, 2, 1, 2);
             
-            bbox = new Gtk.HButtonBox();
-            bbox.Layout = Gtk.ButtonBoxStyle.End;
+            bbox = new HButtonBox();
+            bbox.Layout = ButtonBoxStyle.End;
             bbox.Spacing = 6;
             vbox.PackEnd(bbox);
                 
-            close_button = new Gtk.Button(Gtk.Stock.Close);
+            close_button = new Button(Stock.Close);
             close_button.Clicked += new EventHandler(OnClose);
             bbox.PackStart(close_button);
             
-            TransientFor = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
+            TransientFor = (Browser)Summa.Core.Application.Browsers[0];
         }
         
         private void OnClose(object obj, EventArgs args) {

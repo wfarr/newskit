@@ -26,6 +26,8 @@
 using System;
 using System.Collections;
 
+using Summa.Core;
+
 namespace Summa.Data {
     public interface ISource {
         string Name { get; set; }

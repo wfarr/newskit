@@ -28,6 +28,8 @@ using System.Collections;
 using System.Xml;
 using System.Text;
 
+using NewsKit;
+
 namespace NewsKit {
     public class RssParser : IFeedParser {
         private XmlDocument document;
@@ -39,7 +41,7 @@ namespace NewsKit {
                 try {
                     return name;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -51,7 +53,7 @@ namespace NewsKit {
                 try {
                     return subtitle;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -63,7 +65,7 @@ namespace NewsKit {
                 try {
                     return uri;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -75,7 +77,7 @@ namespace NewsKit {
                 try {
                     return author;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -87,7 +89,7 @@ namespace NewsKit {
                 try {
                     return image;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -99,7 +101,7 @@ namespace NewsKit {
                 try {
                     return license;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -111,7 +113,7 @@ namespace NewsKit {
                 try {
                     return etag;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -123,7 +125,7 @@ namespace NewsKit {
                 try {
                     return modified;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -135,7 +137,7 @@ namespace NewsKit {
                 try {
                     return favicon;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -157,7 +159,7 @@ namespace NewsKit {
                 try {
                     return items;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return new ArrayList();
                 }
             }
@@ -172,7 +174,7 @@ namespace NewsKit {
             try {
                 document.LoadXml(xml);
             } catch (XmlException e) {
-                NewsKit.Globals.Exception(e);
+                Globals.Exception(e);
                 bool have_stripped_control = false;
                 StringBuilder sb = new StringBuilder ();
 
@@ -207,8 +209,8 @@ namespace NewsKit {
             }
         }
         
-        private NewsKit.Item ParseItem(XmlNode node) {
-            NewsKit.Item item = new NewsKit.Item();
+        private Item ParseItem(XmlNode node) {
+            Item item = new Item();
             
             item.Title = GetXmlNodeText(node, "title");
             item.Author = GetXmlNodeText(node, "author");
@@ -242,7 +244,7 @@ namespace NewsKit {
             string result = GetXmlNodeText(node, tag);
 
             if (!String.IsNullOrEmpty(result)) {
-                ret = NewsKit.RssCommon.Parse(result);
+                ret = RssCommon.Parse(result);
             }
                     
             return ret;              

@@ -25,6 +25,9 @@
 
 using System;
 
+using Summa.Core;
+using Summa.Net;
+
 namespace Summa.Net {
     public enum ConnectionState : int {
         Connected,

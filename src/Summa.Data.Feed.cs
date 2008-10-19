@@ -27,21 +27,25 @@ using System;
 using System.Collections;
 using System.Linq;
 
+using NewsKit;
+using Summa.Core;
+using Summa.Data;
+
 namespace Summa.Data {
     public class ItemEventArgs : EventArgs {
-        public Summa.Data.Item Item;
+        public Item Item;
         
         public ItemEventArgs() {}
     }
     
-    public class Feed : Summa.Data.ISource {
+    public class Feed : ISource {
         public string Name {
             get {
-                string[] feed = Summa.Core.Application.Database.GetFeed(Url);
+                string[] feed = Database.GetFeed(Url);
                 return feed[3];
             }
             set {
-                Summa.Core.Application.Database.ChangeFeedInfo(Url, "name", value);
+                Database.ChangeFeedInfo(Url, "name", value);
             }
         }
         private string url;
@@ -51,54 +55,54 @@ namespace Summa.Data {
         }
         public string Author {
             get {
-                string[] feed = Summa.Core.Application.Database.GetFeed(Url);
+                string[] feed = Database.GetFeed(Url);
                 return feed[4];
             }
             set {
-                Summa.Core.Application.Database.ChangeFeedInfo(Url, "author", value);
+                Database.ChangeFeedInfo(Url, "author", value);
             }
         }
         public string Subtitle {
             get {
-                string[] feed = Summa.Core.Application.Database.GetFeed(Url);
+                string[] feed = Database.GetFeed(Url);
                 return feed[5];
             }
             set {
-                Summa.Core.Application.Database.ChangeFeedInfo(Url, "subtitle", value);
+                Database.ChangeFeedInfo(Url, "subtitle", value);
             }
         }
         public string License {
             get {
-                string[] feed = Summa.Core.Application.Database.GetFeed(Url);
+                string[] feed = Database.GetFeed(Url);
                 return feed[7];
             }
             set {
-                Summa.Core.Application.Database.ChangeFeedInfo(Url, "license", value);
+                Database.ChangeFeedInfo(Url, "license", value);
             }
         }
         public string Image {
             get {
-                string[] feed = Summa.Core.Application.Database.GetFeed(Url);
+                string[] feed = Database.GetFeed(Url);
                 return feed[6];
             }
             set {
-                Summa.Core.Application.Database.ChangeFeedInfo(Url, "image", value);
+                Database.ChangeFeedInfo(Url, "image", value);
             }
         }
         public string Status {
             get {
-                string[] feed = Summa.Core.Application.Database.GetFeed(Url);
+                string[] feed = Database.GetFeed(Url);
                 return feed[10];
             }
             set {
-                Summa.Core.Application.Database.ChangeFeedInfo(Url, "status", value);
+                Database.ChangeFeedInfo(Url, "status", value);
             }
         }
         public ArrayList Tags {
             get {
-                string[] feed = Summa.Core.Application.Database.GetFeed(Url);
+                string[] feed = Database.GetFeed(Url);
                 string tags = feed[11];
-                ArrayList al = new System.Collections.ArrayList();
+                ArrayList al = new ArrayList();
                 foreach ( string tag in tags.Split(',') ) {
                     al.Add(tag);
                 }
@@ -114,12 +118,12 @@ namespace Summa.Data {
                 }
                 
                 string jtags = String.Join(",", tags);
-                Summa.Core.Application.Database.ChangeFeedInfo(Url, "tags", jtags);
+                Database.ChangeFeedInfo(Url, "tags", jtags);
             }
         }
         public Gdk.Pixbuf Favicon {
             get {
-                string[] feed = Summa.Core.Application.Database.GetFeed(Url);
+                string[] feed = Database.GetFeed(Url);
                 if ( feed[12] == "" ) {
                     return Gtk.IconTheme.Default.LookupIcon("feed-presence", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon();
                 } else {
@@ -127,17 +131,17 @@ namespace Summa.Data {
                 }
             }
             set {
-                //Summa.Core.Application.Database.ChangeFeedInfo(Url, "favicon", value);
+                //Database.ChangeFeedInfo(Url, "favicon", value);
             }
         }
         
         public ArrayList Items {
             get {
-                ArrayList uris = Summa.Core.Application.Database.GetPosts(Url);
+                ArrayList uris = Database.GetPosts(Url);
                 ArrayList items = new ArrayList();
                 
                 foreach ( string[] item in uris ) {
-                    items.Add(new Summa.Data.Item(item[1], Url));
+                    items.Add(new Item(item[1], Url));
                 }
                 
                 return items;
@@ -148,7 +152,7 @@ namespace Summa.Data {
             get {
                 int count = 0;
                 
-                foreach (string[] item in Summa.Core.Application.Database.GetPosts(Url)) {
+                foreach (string[] item in Database.GetPosts(Url)) {
                     if ( item[8] == "False" ) {
                         count++;
                     }
@@ -159,7 +163,7 @@ namespace Summa.Data {
         
         public bool HasUnread {
             get {
-                foreach ( string[] item in Summa.Core.Application.Database.GetPosts(Url)) {
+                foreach ( string[] item in Database.GetPosts(Url)) {
                     if ( item[8] == "False" ) {
                         return true;
                     }
@@ -205,44 +209,60 @@ namespace Summa.Data {
         }
         
         public bool Update() {
-            NewsKit.IFeedParser parser;
-            
-            bool success = NewsKit.Core.ParseUri(Url, Summa.Core.Application.Database.GetFeed(Url)[9], out parser);
+            IFeedParser p;
+            bool success = Parsing.ParseUri(Url, Database.GetFeed(Url)[9], out p);
             if ( !success ) {
                 return false;
             }
             
-            parser.Items.Reverse();
-            bool update = false;
+            bool updated = false;
             
-            ArrayList urls = new ArrayList();
+            ArrayList urls_we_have = new ArrayList();
             
-            foreach ( string[] item in Summa.Core.Application.Database.GetPosts(Url)) {
-                urls.Add(item[1]);
+            foreach ( string[] item in Database.GetPosts(Url)) {
+                urls_we_have.Add(item[1]);
             }
             
-            foreach ( NewsKit.Item item in parser.Items ) {
-                if ( !urls.Contains(item.Uri) ) {
-                    update = true;
-                    Summa.Core.Application.Database.AddItem(Url, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+            ArrayList items_to_add = new ArrayList();
+            foreach ( Item item in p.Items ) {
+                if ( !urls_we_have.Contains(item.Uri) ) {
+                    updated = true;
+                    
+                    items_to_add.Add(item);
+                } else {
+                    // we do this because otherwise we have to deal with feeds
+                    // like Cat and Girl, which have hundreds of items in 
+                    // them. Once we delete them (later in this function), we
+                    // end up adding them again on the next update, only to
+                    // delete them again. However, this means that items added
+                    // in-between old items aren't caught. This is a problem,
+                    // but it's rare enough that it doesn't really matter.
+                    break;
                 }
             }
             
-            if ( update ) {
-                // set the limit for the number of items we have at 100, but increase it by the number of flagged items so that they aren't dropped.
-                int limit = 100;
-                foreach ( string[] item in Summa.Core.Application.Database.GetPosts(Url) ) {
+            items_to_add.Reverse();
+            foreach ( Item item in items_to_add ) {
+                Database.AddItem(Url, item.Title, item.Uri, item.Date.ToString(), item.LastUpdated.ToString(), item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+            }
+            
+            if ( updated ) {
+                // set the limit for the number of items we have at 100, 
+                // but increase it by the number of flagged items so that
+                // they aren't dropped.
+                int limit = Config.NumberOfItems;
+                foreach ( string[] item in Database.GetPosts(Url) ) {
                     if ( item[9] == "True" ) {
                         limit++;
                     }
                 }
                 
-                ArrayList del_items = Summa.Core.Application.Database.GetPosts(Url);
+                ArrayList del_items = Database.GetPosts(Url);
                 
                 foreach ( string[] item in del_items ) {
-                    if ( Summa.Core.Application.Database.GetPosts(Url).Count > limit ) {
+                    if ( Database.GetPosts(Url).Count > limit ) {
                         if ( item[9] == "False" ) {
-                            Summa.Core.Application.Database.DeleteItem(Url, item[1]);
+                            Database.DeleteItem(Url, item[1]);
                         }
                     } else {
                         break;
@@ -250,11 +270,11 @@ namespace Summa.Data {
                 }
             }
             
-            return update;
+            return updated;
         }
         
         public void MarkItemsRead() {
-            foreach (Summa.Data.Item item in Items) {
+            foreach (Item item in Items) {
                 item.Read = true;
             }
         }

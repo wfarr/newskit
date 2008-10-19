@@ -24,8 +24,14 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Gtk;
 using System.Collections;
+using System.Threading;
+using Gtk;
+
+using Summa.Core;
+using Summa.Core.Exceptions;
+using Summa.Data;
+using Summa.Gui;
 
 namespace Summa.Gui {
     public class ProgressEventArgs : EventArgs {
@@ -34,57 +40,57 @@ namespace Summa.Gui {
         public ProgressEventArgs() {}
     }
     
-    public class FirstRun : Gtk.Window {
-        private Gtk.VBox vbox;
-        private Gtk.HBox hbox;
-        private Gtk.HButtonBox bbox;
-        private Gtk.Image image;
-        private Gtk.Table table;
-        private Gtk.Label label;
-        private Gtk.FileChooserDialog fcdialog;
-        private Gtk.FileChooserButton fcbutton;
-        private Gtk.Button cancel_button;
-        private Gtk.Button add_button;
-        private Gtk.ProgressBar pb;
+    public class FirstRun : Window {
+        private VBox vbox;
+        private HBox hbox;
+        private HButtonBox bbox;
+        private Image image;
+        private Table table;
+        private Label label;
+        private FileChooserDialog fcdialog;
+        private FileChooserButton fcbutton;
+        private Button cancel_button;
+        private Button add_button;
+        private ProgressBar pb;
         
         private ArrayList failed_feeds;
         
-        public FirstRun() : base(Gtk.WindowType.Toplevel) {
-            IconName = Gtk.Stock.Convert;
+        public FirstRun() : base(WindowType.Toplevel) {
+            IconName = Stock.Convert;
             Title = "Import OPML file";
             
             Resizable = false;
             BorderWidth = 6;
             
-            vbox = new Gtk.VBox(false, 6);
+            vbox = new VBox(false, 6);
             Add(vbox);
             
-            hbox = new Gtk.HBox(false, 6);
+            hbox = new HBox(false, 6);
             vbox.PackStart(hbox);
             
-            image = new Gtk.Image("dialog-question", Gtk.IconSize.Dialog);
+            image = new Image("dialog-question", IconSize.Dialog);
             hbox.PackStart(image);
             
-            table = new Gtk.Table(2, 3, false);
+            table = new Table(2, 3, false);
             table.RowSpacing = 6;
             hbox.PackStart(table);
             
-            label = new Gtk.Label("To import feeds, select an OPML file.");
+            label = new Label("To import feeds, select an OPML file.");
             label.LineWrap = true;
             table.Attach(label, 1, 2, 0, 1);
             
-            fcdialog = new Summa.Gui.OpmlDialog();
-            fcbutton = new Gtk.FileChooserButton(fcdialog);
+            fcdialog = new OpmlDialog();
+            fcbutton = new FileChooserButton(fcdialog);
             table.Attach(fcbutton, 1, 2, 1, 2);
             
-            bbox = new Gtk.HButtonBox();
+            bbox = new HButtonBox();
             vbox.PackEnd(bbox);
             
-            cancel_button = new Gtk.Button(Gtk.Stock.Cancel);
+            cancel_button = new Button(Stock.Cancel);
             cancel_button.Clicked += OnCancel;
             bbox.PackEnd(cancel_button);
             
-            add_button = new Gtk.Button(Gtk.Stock.Convert);
+            add_button = new Button(Stock.Convert);
             add_button.Clicked += new EventHandler(OnImport);
             bbox.PackEnd(add_button);
         }
@@ -97,11 +103,11 @@ namespace Summa.Gui {
             Title = "Importing...";
             add_button.Sensitive = false;
             
-            pb = new Gtk.ProgressBar();
+            pb = new ProgressBar();
             table.Attach(pb, 1, 2, 1, 2);
             pb.Show();
             
-            System.Threading.Thread thread = new System.Threading.Thread(ImportThread);
+            Thread thread = new Thread(ImportThread);
             thread.Start();
         }
         
@@ -110,24 +116,24 @@ namespace Summa.Gui {
             
             if ( fcdialog.Uris.Length > 0 ) {
                 string uri = fcdialog.Uri;
-                ArrayList feeds = Summa.Data.Core.ImportOpml(uri);
+                ArrayList feeds = Feeds.ImportOpml(uri);
                 double step = 1.0/feeds.Count;
                 double progress = 0.0;
                 
                 foreach ( string feed in feeds ) {
-                    Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
+                    NotificationEventArgs args = new NotificationEventArgs();
                     args.Message = "Importing feed \""+feed+"\"";
                     Gtk.Application.Invoke(this, args, new EventHandler(OnNotify));
                     
                     bool it_worked = true;
                     
                     try {
-                        Summa.Data.Core.RegisterFeed(feed);
+                        Feeds.RegisterFeed(feed);
                         it_worked = true;
-                    } catch ( Summa.Core.Exceptions.BadFeed e ) {
-                        Summa.Core.Log.Exception(e);
+                    } catch ( BadFeed e ) {
+                        Log.Exception(e);
                         
-                        args = new Summa.Core.NotificationEventArgs();
+                        args = new NotificationEventArgs();
                         args.Message = "Import of feed \""+feed+"\" failed";
                         Gtk.Application.Invoke(this, args, new EventHandler(OnNotify));
                         
@@ -136,14 +142,14 @@ namespace Summa.Gui {
                         it_worked = false;
                     }
                     
-                    Summa.Gui.ProgressEventArgs pargs = new Summa.Gui.ProgressEventArgs();
+                    ProgressEventArgs pargs = new ProgressEventArgs();
                     pargs.Progress = progress;
                     Gtk.Application.Invoke(this, pargs, new EventHandler(OnProgress));
                     
                     progress += step;
                     
                     if ( it_worked ) {
-                        args = new Summa.Core.NotificationEventArgs();
+                        args = new NotificationEventArgs();
                         args.Message = "Import of feed \""+feed+"\" was successful";
                         Gtk.Application.Invoke(this, args, new EventHandler(OnNotify));
                     }
@@ -154,17 +160,17 @@ namespace Summa.Gui {
         }
         
         private void OnDialog(object obj, EventArgs args) {
-            Window md = new Summa.Gui.MessageDialog(failed_feeds);
+            Window md = new MessageDialog(failed_feeds);
             md.ShowAll();
         }
         
         private void OnNotify(object obj, EventArgs args) {
-            Summa.Core.NotificationEventArgs iargs = (Summa.Core.NotificationEventArgs)args;
-            Summa.Core.Notifier.Notify(iargs.Message);
+            NotificationEventArgs iargs = (NotificationEventArgs)args;
+            Notifier.Notify(iargs.Message);
         }
         
         private void OnProgress(object obj, EventArgs args) {
-            Summa.Gui.ProgressEventArgs pargs = (Summa.Gui.ProgressEventArgs)args;
+            ProgressEventArgs pargs = (ProgressEventArgs)args;
             pb.Fraction = pargs.Progress;
         }
     }

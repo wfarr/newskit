@@ -27,37 +27,41 @@ using System;
 using NDesk.DBus;
 using Notifications;
 
+using Summa.Core;
+
 namespace Summa.Core {
     public static class Notifier {
-        public static event Summa.Core.NotificationEventHandler NewMessage;
+        public static event NotificationEventHandler NewMessage;
         public static event EventHandler ZoomChanged;
         public static event EventHandler ViewChanged;
         public static event EventHandler IconShown;
         
         public static void Notify(string message) {
-            Summa.Core.NotificationEventArgs args = new Summa.Core.NotificationEventArgs();
+            NotificationEventArgs args = new NotificationEventArgs();
             args.Message = message;
-            NewMessage(null, args);
+            NewMessage("", args);
         }
         
         public static void PopupNotification(string message, string body) {
             Notifications.Notification n = new Notifications.Notification(message, body, "summa");
-            if ( Summa.Core.Config.ShowStatusIcon ) {
-                //n.AttachToStatusIcon(Summa.Core.Application.StatusIcon);
+            if ( Config.ShowStatusIcon ) {
+                //n.AttachToStatusIcon(Application.StatusIcon);
             }
             n.Show();
         }
         
         public static void ChangeZoom() {
-            ZoomChanged(null, new EventArgs());
+            ZoomChanged("", new EventArgs());
         }
         
         public static void ChangeView() {
-            ViewChanged(null, new EventArgs());
+            ViewChanged("", new EventArgs());
         }
         
         public static void ShowIcon() {
-            IconShown(null, new EventArgs());
+            try {
+                IconShown("", new EventArgs());
+            } catch ( Exception ) {}
         }
     }
 }

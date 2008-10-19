@@ -27,6 +27,9 @@ using System;
 using NDesk.DBus;
 using org.freedesktop.DBus;
 
+using Summa.Core;
+using Summa.Data;
+
 namespace Summa.Core {
     [Interface("org.gnome.feed.Reader")]
     public interface SummaDBus { // make sure to keep up with Liferea
@@ -42,14 +45,14 @@ namespace Summa.Core {
         public string ObjPath = "/org/gnome/feed/Reader";
         
         public DBusInterface() {
-            NDesk.DBus.BusG.Init();
+            BusG.Init();
             
             Bus.Session.RequestName(BusName);
             Bus.Session.Register(new ObjectPath(ObjPath), this);
         }
         
         public bool Subscribe(string url) {
-            Summa.Data.Core.RegisterFeed(url);
+            Feeds.RegisterFeed(url);
             
             return true;
         }
@@ -59,16 +62,16 @@ namespace Summa.Core {
         }
         
         public bool SetOnline(bool online) {
-            Summa.Core.Config.Connected = online;
-            return Summa.Core.Config.Connected;
+            Config.Connected = online;
+            return Config.Connected;
         }
         
         public int GetUnreadItems() {
-            return Summa.Data.Core.GetUnreadCount();
+            return Feeds.GetUnreadCount();
         }
         
         public int GetNewItems() {
-            return Summa.Data.Core.GetUnreadCount();
+            return Feeds.GetUnreadCount();
         }
     }
 }

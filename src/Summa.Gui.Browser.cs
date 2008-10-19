@@ -19,7 +19,7 @@
 // OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 // NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
 // HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// WHETHER IN AN Gtk.Action OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
@@ -27,13 +27,17 @@ using System;
 using System.Collections;
 using Gtk;
 
+using Summa.Core;
+using Summa.Data;
+using Summa.Gui;
+
 namespace Summa.Gui {
-    public class Browser : Gtk.Window {
+    public class Browser : Window {
         public Gtk.ActionGroup action_group;
-        public Gtk.IconFactory factory;
-        public Gtk.UIManager uimanager;
+        public IconFactory factory;
+        public UIManager uimanager;
         
-        public Gtk.Table table;
+        public Table table;
         
         //menus
         public Gtk.Action file_menu;
@@ -71,8 +75,8 @@ namespace Summa.Gui {
         // item menu
         public Summa.Actions.ZoomInAction zoom_in_action;
         public Summa.Actions.ZoomOutAction zoom_out_action;
-        public Gtk.ToggleAction load_images_action;
-        public Gtk.ToggleAction hide_read_action;
+        public ToggleAction load_images_action;
+        public ToggleAction hide_read_action;
         public Gtk.Action next_item_action;
         public Gtk.Action prev_item_action;
         public Summa.Actions.FlagAction flag_action;
@@ -88,37 +92,37 @@ namespace Summa.Gui {
         public Gtk.Action help_action;
         public Gtk.Action about_action;
         
-        public Gtk.Widget menubar;
-        public Gtk.Widget toolbar;
+        public Widget menubar;
+        public Widget toolbar;
         
-        public Gtk.Paned main_paned;
-        public Gtk.Paned left_paned;
-        public Gtk.Paned right_paned;
+        public Paned main_paned;
+        public Paned left_paned;
+        public Paned right_paned;
         
-        public Summa.Gui.TagView TagView;
-        public Gtk.ScrolledWindow TagView_swin;
-        public Summa.Gui.FeedView FeedView;
-        public Gtk.ScrolledWindow FeedView_swin;
-        public Summa.Gui.ItemView ItemView;
-        public Gtk.ScrolledWindow ItemView_swin;
+        public TagView TagView;
+        public ScrolledWindow TagView_swin;
+        public FeedView FeedView;
+        public ScrolledWindow FeedView_swin;
+        public ItemView ItemView;
+        public ScrolledWindow ItemView_swin;
         
         public Summa.Data.Item item;
         
-        public Summa.Gui.ItemNotebook ItemNotebook;
+        public ItemNotebook ItemNotebook;
         
-        public Gtk.Button connection_button;
-        public Summa.Gui.NotificationBar StatusBar;
+        public Button connection_button;
+        public NotificationBar StatusBar;
         
         // the currently displayed feed
-        public Summa.Data.ISource curfeed;
+        public ISource curfeed;
         public Summa.Data.Item curitem;
         
-        public Browser() : base(Gtk.WindowType.Toplevel) {
+        public Browser() : base(WindowType.Toplevel) {
             Title = "Summa";
             IconName = "summa";
             
             action_group = new Gtk.ActionGroup("general");
-            factory = new Gtk.IconFactory();
+            factory = new IconFactory();
             factory.AddDefault();
             
             DestroyEvent += CloseWindow;
@@ -126,79 +130,79 @@ namespace Summa.Gui {
             
             SetUpActionGroup();
             
-            uimanager = new Gtk.UIManager();
+            uimanager = new UIManager();
             uimanager.InsertActionGroup(action_group, 0);
             AddAccelGroup(uimanager.AccelGroup);
             SetUpUimanager();
             
-            table = new Gtk.Table(5, 5, false);
+            table = new Table(5, 5, false);
             Add(table);
             
             menubar = uimanager.GetWidget("/MenuBar");
-            table.Attach(menubar, 0, 5, 0, 1, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
+            table.Attach(menubar, 0, 5, 0, 1, AttachOptions.Fill, AttachOptions.Fill, 0, 0);
             
             toolbar = uimanager.GetWidget("/ToolBar");
-            table.Attach(toolbar, 0, 5, 1, 2, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
+            table.Attach(toolbar, 0, 5, 1, 2, AttachOptions.Fill, AttachOptions.Fill, 0, 0);
             
-            main_paned = new Gtk.HPaned();
+            main_paned = new HPaned();
             table.Attach(main_paned, 0, 5, 2, 3);
             
-            left_paned = new Gtk.VPaned();
+            left_paned = new VPaned();
             main_paned.Pack1(left_paned, true, true);
             
-            TagView = new Summa.Gui.TagView();
+            TagView = new TagView();
             TagView.CursorChanged += new EventHandler(TagviewChanged);
-            TagView_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+            TagView_swin = new ScrolledWindow(new Adjustment(0, 0, 0, 0, 0, 0), new Adjustment(0, 0, 0, 0, 0, 0));
             TagView_swin.Add(TagView);
-            TagView_swin.ShadowType = Gtk.ShadowType.In;
-            TagView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+            TagView_swin.ShadowType = ShadowType.In;
+            TagView_swin.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
             left_paned.Pack1(TagView_swin, true, true);
             
-            FeedView = new Summa.Gui.FeedView();
+            FeedView = new FeedView();
             FeedView.CursorChanged += new EventHandler(FeedviewChanged);
-            FeedView_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+            FeedView_swin = new ScrolledWindow(new Adjustment(0, 0, 0, 0, 0, 0), new Adjustment(0, 0, 0, 0, 0, 0));
             FeedView_swin.Add(FeedView);
-            FeedView_swin.ShadowType = Gtk.ShadowType.In;
-            FeedView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+            FeedView_swin.ShadowType = ShadowType.In;
+            FeedView_swin.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
             left_paned.Pack2(FeedView_swin, true, true);
             
-            if ( Summa.Core.Config.WidescreenView ) {
-                right_paned = new Gtk.HPaned();
+            if ( Config.WidescreenView ) {
+                right_paned = new HPaned();
             } else {
-                right_paned = new Gtk.VPaned();
+                right_paned = new VPaned();
             }
             main_paned.Pack2(right_paned, true, true);
             
-            ItemView = new Summa.Gui.ItemView();
+            ItemView = new ItemView();
             ItemView.CursorChanged += new EventHandler(ItemviewChanged);
-            ItemView_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+            ItemView_swin = new ScrolledWindow(new Adjustment(0, 0, 0, 0, 0, 0), new Adjustment(0, 0, 0, 0, 0, 0));
             ItemView_swin.Add(ItemView);
-            ItemView_swin.ShadowType = Gtk.ShadowType.In;
-            ItemView_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+            ItemView_swin.ShadowType = ShadowType.In;
+            ItemView_swin.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
             right_paned.Pack1(ItemView_swin, true, true);
             
-            ItemNotebook = new Summa.Gui.ItemNotebook();
+            ItemNotebook = new ItemNotebook();
             right_paned.Pack2(ItemNotebook, true, true);
             
-            StatusBar = new Summa.Gui.NotificationBar();
-            table.Attach(StatusBar, 0, 5, 3, 4, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
+            StatusBar = new NotificationBar();
+            table.Attach(StatusBar, 0, 5, 3, 4, AttachOptions.Fill, AttachOptions.Fill, 0, 0);
             
             UpdateFromConfig();
             FeedView.Populate("All");
             
-            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
-            Summa.Core.Application.Database.ItemAdded += OnItemAdded;
-            Summa.Core.Notifier.ViewChanged += OnViewChanged;
+            Database.ItemChanged += OnItemChanged;
+            Database.ItemAdded += OnItemAdded;
+            Notifier.ViewChanged += OnViewChanged;
         }
         
         private void OnViewChanged(object obj, EventArgs args) {
             right_paned.Remove(ItemView_swin);
             right_paned.Remove(ItemNotebook);
             main_paned.Remove(right_paned);
-            if ( Summa.Core.Config.WidescreenView ) {
-                right_paned = new Gtk.HPaned();
+            if ( Config.WidescreenView ) {
+                right_paned = new HPaned();
             } else {
-                right_paned = new Gtk.VPaned();
+                right_paned = new VPaned();
             }
             main_paned.Pack2(right_paned, true, true);
             right_paned.Add1(ItemView_swin);
@@ -206,7 +210,7 @@ namespace Summa.Gui {
             ShowAll();
         }
         
-        private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
+        private void OnItemChanged(object obj, ChangedEventArgs args) {
             if ( FeedView.HasSelected ) {
                 if ( FeedView.Selected.Url == args.FeedUri ) {
                     if ( args.ItemProperty == "read" ) {
@@ -216,7 +220,7 @@ namespace Summa.Gui {
             }
         }
         
-        private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {
+        private void OnItemAdded(object obj, AddedEventArgs args) {
             if ( FeedView.HasSelected ) {
                 if ( FeedView.Selected.Url == args.FeedUri ) {
                     UpdateName();
@@ -240,7 +244,7 @@ namespace Summa.Gui {
         
         public void ItemviewChanged(object obj, EventArgs args) {
             UpdateHtmlview();
-            play_action.StockId = Gtk.Stock.MediaPlay;
+            play_action.StockId = Stock.MediaPlay;
             
             if ( ItemView.Selected.EncUri != "" ) {
                 play_action.Sensitive = true;
@@ -251,8 +255,8 @@ namespace Summa.Gui {
         
         public void UpdateHtmlview() {
             curitem = ItemView.Selected;
-            Gtk.Bin c = (Gtk.Bin)ItemNotebook.GetNthPage(0);
-            Summa.Gui.WebKitView view = (Summa.Gui.WebKitView)c.Child;
+            Bin c = (Bin)ItemNotebook.GetNthPage(0);
+            WebKitView view = (WebKitView)c.Child;
             view.Render(curitem);
             ItemNotebook.ShowAll();
             
@@ -277,15 +281,15 @@ namespace Summa.Gui {
         }
         
         public void UpdateFromConfig() {
-            Resize(Summa.Core.Config.WindowWidth, Summa.Core.Config.WindowHeight);
+            Resize(Config.WindowWidth, Config.WindowHeight);
         
-            main_paned.Position  = Summa.Core.Config.MainPanePosition;
-            left_paned.Position  = Summa.Core.Config.LeftPanePosition;
-            right_paned.Position  = Summa.Core.Config.RightPanePosition;
+            main_paned.Position  = Config.MainPanePosition;
+            left_paned.Position  = Config.LeftPanePosition;
+            right_paned.Position  = Config.RightPanePosition;
         }
         
-        public void ShowNotification(Summa.Data.Feed feed) {
-            /*if (Summa.Core.Config.ShowNotifications) {
+        public void ShowNotification(Feed feed) {
+            /*if (Config.ShowNotifications) {
                 var not = new Notify.Notification("New feed items", "Feed \""+feed.name+"\" has new unread items.", "internet-news-reader", null);
                 not.set_urgency(Notify.Urgency.NORMAL);
                 not.show();
@@ -293,7 +297,7 @@ namespace Summa.Gui {
         }
         
         public void UpdateName() {
-            Summa.Data.ISource feed = FeedView.Selected;
+            ISource feed = FeedView.Selected;
             Title = feed.Name+" ("+feed.UnreadCount.ToString()+" unread) - Summa";
         }
         
@@ -422,7 +426,7 @@ namespace Summa.Gui {
             about_action = new Summa.Actions.AboutAction(this);
             action_group.Add(about_action);
             
-            view_slist = new GLib.SList(typeof(Gtk.ToggleAction));
+            view_slist = new GLib.SList(typeof(ToggleAction));
             
             normal_view_action = new Summa.Actions.NormalViewAction(this);
             action_group.Add(normal_view_action);
@@ -438,7 +442,7 @@ namespace Summa.Gui {
         public void SetUpUimanager() {
             string ui = @"<ui>
     <menubar name='MenuBar'>
-        <menu action='FileMenu'>
+        <menu Gtk.Action='FileMenu'>
             <menuitem action='Add'/>
             <menuitem action='Import'/>
             <separator/>
@@ -451,7 +455,7 @@ namespace Summa.Gui {
             <menuitem action='New_window'/>
             <menuitem action='Close_window'/>
         </menu>
-        <menu action='EditMenu'>
+        <menu Gtk.Action='EditMenu'>
             <menuitem action='Copy'/>
             <separator/>
             <menuitem action='Select_all'/>
@@ -461,7 +465,7 @@ namespace Summa.Gui {
             <separator/>
             <menuitem action='Preferences'/>
         </menu>
-        <menu action='ViewMenu'>
+        <menu Gtk.Action='ViewMenu'>
             <menuitem action='ZoomIn'/>
             <menuitem action='ZoomOut'/>
             <separator/>
@@ -471,7 +475,7 @@ namespace Summa.Gui {
             <menuitem action='LoadImages'/>
             <menuitem action='Hide_read'/>
         </menu>
-        <menu action='SubsMenu'>
+        <menu Gtk.Action='SubsMenu'>
             <menuitem action='Update'/>
             <menuitem action='Mark_read'/>
             <separator/>
@@ -481,7 +485,7 @@ namespace Summa.Gui {
             <menuitem action='Properties'/>
             <menuitem action='Tags'/>
         </menu>
-        <menu action='ItemMenu'>
+        <menu Gtk.Action='ItemMenu'>
             <menuitem action='Flag_item'/>
             <menuitem action='Read_item'/>
             <separator/>
@@ -491,7 +495,7 @@ namespace Summa.Gui {
             <menuitem action='Email_link'/>
             <menuitem action='Bookmark'/>
         </menu>
-        <menu action='HelpMenu'>
+        <menu Gtk.Action='HelpMenu'>
             <menuitem action='Contents'/>
             <menuitem action='About'/>
         </menu>

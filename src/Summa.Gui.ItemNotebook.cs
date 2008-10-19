@@ -27,12 +27,16 @@ using System;
 using System.Collections;
 using Gtk;
 
+using Summa.Core;
+using Summa.Data;
+using Summa.Gui;
+
 namespace Summa.Gui {
-    public class ItemNotebook : Gtk.Notebook {
-        public Summa.Gui.WebKitView CurrentView {
+    public class ItemNotebook : Notebook {
+        public WebKitView CurrentView {
             get {
-                Bin c = (Gtk.Bin)GetNthPage(Page);
-                return (Summa.Gui.WebKitView)c.Child;
+                Bin c = (Bin)GetNthPage(Page);
+                return (WebKitView)c.Child;
             }
         }
         
@@ -49,20 +53,20 @@ namespace Summa.Gui {
         }
         
         public void Load(Summa.Data.Item item) {
-            Gtk.HBox container = new Gtk.HBox();
-            Gtk.Label label = new Gtk.Label(item.Title);
+            HBox container = new HBox();
+            Label label = new Label(item.Title);
             container.PackStart(label);
-            Gtk.Button button = new Gtk.Button(new Gtk.Image(Gtk.IconTheme.Default.LookupIcon("gtk-close", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon()));
+            Button button = new Button(new Image(IconTheme.Default.LookupIcon("gtk-close", 16, IconLookupFlags.NoSvg).LoadIcon()));
             button.Clicked += OnClicked;
-            button.Relief = Gtk.ReliefStyle.None;
+            button.Relief = ReliefStyle.None;
             button.SetSizeRequest(20, 20);
             container.PackEnd(button);
             
-            Summa.Gui.WebKitView view = new Summa.Gui.WebKitView();
+            WebKitView view = new WebKitView();
             view.notebook = this;
-            ScrolledWindow view_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+            ScrolledWindow view_swin = new ScrolledWindow(new Adjustment(0, 0, 0, 0, 0, 0), new Adjustment(0, 0, 0, 0, 0, 0));
             view_swin.Add(view);
-            view_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+            view_swin.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
             view.Render(item);
             
             hash.Add(container, view);
@@ -79,22 +83,22 @@ namespace Summa.Gui {
         }
         
         public void Load(string content) {
-            Gtk.HBox container = new Gtk.HBox();
-            Gtk.Label label = new Gtk.Label("Summa");
+            HBox container = new HBox();
+            Label label = new Label("Summa");
             container.PackStart(label);
             if ( NPages != 0 ) {
-                Gtk.Button button = new Gtk.Button(new Gtk.Image(Gtk.IconTheme.Default.LookupIcon("gtk-close", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon()));
+                Button button = new Button(new Image(IconTheme.Default.LookupIcon("gtk-close", 16, IconLookupFlags.NoSvg).LoadIcon()));
                 button.Clicked += OnClicked;
-                button.Relief = Gtk.ReliefStyle.None;
+                button.Relief = ReliefStyle.None;
                 button.SetSizeRequest(20, 20);
                 container.PackEnd(button);
             }
             
-            Summa.Gui.WebKitView view = new Summa.Gui.WebKitView();
+            WebKitView view = new WebKitView();
             view.notebook = this;
-            ScrolledWindow view_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+            ScrolledWindow view_swin = new ScrolledWindow(new Adjustment(0, 0, 0, 0, 0, 0), new Adjustment(0, 0, 0, 0, 0, 0));
             view_swin.Add(view);
-            view_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+            view_swin.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
             view.Render(content);
             
             hash.Add(container, view);
@@ -111,20 +115,20 @@ namespace Summa.Gui {
         }
         
         public void LoadUri(string uri) {
-            Gtk.HBox container = new Gtk.HBox();
-            Gtk.Label label = new Gtk.Label(uri);
+            HBox container = new HBox();
+            Label label = new Label(uri);
             container.PackStart(label);
-            Gtk.Button button = new Gtk.Button(new Gtk.Image(Gtk.IconTheme.Default.LookupIcon("gtk-close", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon()));
+            Button button = new Button(new Image(IconTheme.Default.LookupIcon("gtk-close", 16, IconLookupFlags.NoSvg).LoadIcon()));
             button.Clicked += OnClicked;
-            button.Relief = Gtk.ReliefStyle.None;
+            button.Relief = ReliefStyle.None;
             button.SetSizeRequest(20, 20);
             container.PackEnd(button);
             
-            Summa.Gui.WebKitView view = new Summa.Gui.WebKitView();
+            WebKitView view = new WebKitView();
             view.notebook = this;
-            ScrolledWindow view_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+            ScrolledWindow view_swin = new ScrolledWindow(new Adjustment(0, 0, 0, 0, 0, 0), new Adjustment(0, 0, 0, 0, 0, 0));
             view_swin.Add(view);
-            view_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+            view_swin.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
             view.RenderUri(uri);
             
             hash.Add(container, view);
@@ -141,8 +145,8 @@ namespace Summa.Gui {
         }
         
         private void OnClicked(object obj, EventArgs args) {
-            Button b = (Gtk.Button)obj;
-            Gtk.Widget o = (Gtk.Widget)hash[b.Parent];
+            Button b = (Button)obj;
+            Widget o = (Widget)hash[b.Parent];
             int pos = PageNum(o.Parent);
             RemovePage(pos);
             hash.Remove(b.Parent);

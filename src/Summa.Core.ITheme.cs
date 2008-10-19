@@ -26,12 +26,14 @@
 using System;
 using System.Collections;
 
+using Summa.Data;
+
 namespace Summa.Core {
     public interface ITheme {
         string Name {get;}
         string Uri {get; set;}
         
-        string MakeHtml(Summa.Data.ISource feed);
-        string MakeHtml(Summa.Data.Item item);
+        string MakeHtml(ISource feed);
+        string MakeHtml(Item item);
     }
 }

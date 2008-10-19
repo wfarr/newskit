@@ -26,16 +26,19 @@
 using System;
 using System.Collections;
 
+using Summa.Core;
+using Summa.Gui;
+
 namespace Summa.Core {
     public static class ThemeManager {
         public static ArrayList Themes {
             get {
                 ArrayList list = new ArrayList();
                 
-                //FIXME: a foreach here, iterating over installed themes other
-                //than the default one
+                // FIXME: a foreach here, iterating over installed themes other
+                // than the default one
                 
-                list.Add(new Summa.Gui.NativeTheme());
+                list.Add(new NativeTheme());
                 return list;
             }
         }

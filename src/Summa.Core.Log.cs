@@ -25,30 +25,40 @@
 
 using System;
 
+using Summa.Core;
+
 namespace Summa.Core {
     public static class Log {
+        public static event EventHandler LogAdded;
+        public static event EventHandler LogRemoved;
+        
+        private static LogList log_list;
+        
+        static Log() {
+            log_list = new LogList();
+        }
+        
         public static void Exception(Exception e) {
-            Summa.Core.Application.Log.AddMessage(e.ToString());
+            log_list.AddMessage(e.ToString());
+            //Log.LogAdded(null, new EventArgs());
         }
         
         public static void Exception(Exception e, string message) {
-            Summa.Core.Application.Log.AddMessage(e.ToString()+" with message "+message);
+            log_list.AddMessage(e.ToString()+" with message "+message);
+            //Log.LogAdded(null, new EventArgs());
         }
         
         public static void Message(string message) {
-            Summa.Core.Application.Log.AddMessage(message);
+            log_list.AddMessage(message);
+            //Log.LogAdded(null, new EventArgs());
         }
         
         public static void LogFunc(string log_domain, GLib.LogLevelFlags log_level, string message) {
             Message(message);
         }
         
-        public static void EmitLogAdded() {
-            //LogAdded(null, new EventArgs());
-        }
-        
-        public static void EmitLogRemoved() {
-            //LogRemoved(null, new EventArgs());
+        public static void RemoveLog() {
+            //Log.LogRemoved(null, new EventArgs());
         }
     }
 }

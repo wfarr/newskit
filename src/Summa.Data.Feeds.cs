@@ -26,50 +26,56 @@
 using System;
 using System.Collections;
 
+using NewsKit;
+
+using Summa.Core;
+using Summa.Core.Exceptions;
+using Summa.Data;
+
 namespace Summa.Data {
-    public static class Core {
+    public static class Feeds {
         public static void ApplicationInit(string name) {
-            Summa.Core.Log.Message(String.Format("{0} registered.", name));
+            Log.Message(String.Format("{0} registered.", name));
         }
         
-        public static Summa.Data.Feed RegisterFeed(string uri) {
+        public static Feed RegisterFeed(string uri) {
             ArrayList urls = new ArrayList();
             
-            foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+            foreach ( Feed feed in GetFeeds() ) {
                 urls.Add(feed.Url);
             }
             
-            Summa.Data.Feed retfeed = null;
+            Feed retfeed = null;
             
-            if ( !Summa.Core.Application.Database.FeedExists(uri) ) {
-                NewsKit.IFeedParser parser;
-                bool success = NewsKit.Core.ParseUri(uri, "", out parser);
+            if ( !Database.FeedExists(uri) ) {
+                IFeedParser parser;
+                bool success = Parsing.ParseUri(uri, "", out parser);
                 
                 if ( success ) {
                     if ( parser != null ) {
-                        Summa.Core.Application.Database.CreateFeed(parser.Uri, parser.Name, parser.Author, parser.Subtitle, parser.Image, parser.License, parser.Request.Etag, parser.Request.LastModified, "", "All", parser.Favicon);
+                        Database.CreateFeed(parser.Uri, parser.Name, parser.Author, parser.Subtitle, parser.Image, parser.License, parser.Request.Etag, parser.Request.LastModified, "", "All", parser.Favicon);
                         
                         parser.Items.Reverse();
                         
-                        foreach ( NewsKit.Item item in parser.Items ) {
-                            Summa.Core.Application.Database.AddItem(parser.Request.Uri, item.Title, item.Uri, item.Date, item.LastUpdated, item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
+                        foreach ( Item item in parser.Items ) {
+                            Database.AddItem(parser.Request.Uri, item.Title, item.Uri, item.Date.ToString(), item.LastUpdated.ToString(), item.Author, item.Tags, item.Contents, item.EncUri, "False", "False");
                         }
                         
                         string file_name = null;
-                        bool icon_found = NewsKit.Core.FindFavicon(parser.Uri, Summa.Core.Application.Database.GetGeneratedName(parser.Uri), out file_name);
+                        bool icon_found = Parsing.FindFavicon(parser.Uri, Database.GetGeneratedName(parser.Uri), out file_name);
                         
                         if ( icon_found ) {
-                            Summa.Core.Application.Database.ChangeFeedInfo(parser.Uri, "favicon", file_name);
+                            Database.ChangeFeedInfo(parser.Uri, "favicon", file_name);
                         }
                     } else {
-                        throw new Summa.Core.Exceptions.BadFeed();
+                        throw new BadFeed();
                     }
                 } else {
-                    throw new Summa.Core.Exceptions.BadFeed();
+                    throw new BadFeed();
                 }
             }
             
-            foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+            foreach ( Feed feed in GetFeeds() ) {
                 if ( feed.Url == uri ) {
                     retfeed = feed;
                     break;
@@ -78,24 +84,24 @@ namespace Summa.Data {
             return retfeed;
         }
         
-        public static Summa.Data.Feed RegisterFeed(string uri, string username, string password) {
-            return null; //not implemented
+        public static Feed RegisterFeed(string uri, string username, string password) {
+            return null; // FIXME: not implemented
         }
         
         public static void DeleteFeed(string uri) {
-            Summa.Core.Application.Database.DeleteFeed(uri);
+            Database.DeleteFeed(uri);
         }
         
         public static ArrayList GetFeeds() {
-            ArrayList feeds = Summa.Core.Application.Database.GetFeeds();
+            ArrayList feeds = Database.GetFeeds();
             ArrayList retfeeds = new ArrayList();
             
             try {
                 foreach (string[] feed in feeds) {
-                    retfeeds.Add(new Summa.Data.Feed(feed[1]));
+                    retfeeds.Add(new Feed(feed[1]));
                 }
             } catch ( Exception e ) {
-                Summa.Core.Log.Exception(e, "There are no feeds.");
+                Log.Exception(e, "There are no feeds.");
             }
             
             return retfeeds;
@@ -104,7 +110,7 @@ namespace Summa.Data {
         public static ArrayList GetFeeds(string tag) {
             ArrayList retfeeds = new ArrayList();
             
-            foreach (Summa.Data.Feed feed  in GetFeeds()) {
+            foreach (Feed feed  in GetFeeds()) {
                 if (feed.Tags.Contains(tag)) {
                     retfeeds.Add(feed);
                 }
@@ -116,17 +122,17 @@ namespace Summa.Data {
             ArrayList list = new ArrayList();
             
             try {
-                foreach ( string tag in Summa.Core.Application.Database.GetTags() ) {
+                foreach ( string tag in Database.GetTags() ) {
                     if ( !list.Contains(tag) ) {
                         list.Add(tag);
                     }
                 }
             } catch ( Exception e ) {
-                Summa.Core.Log.Exception(e);
+                Log.Exception(e);
             }
             
             try {
-                foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+                foreach ( Feed feed in GetFeeds() ) {
                     foreach ( string tag in feed.Tags ) {
                         if ( !list.Contains(tag) ) {
                             list.Add(tag);
@@ -134,7 +140,7 @@ namespace Summa.Data {
                     }
                 }
             } catch ( Exception e ) {
-                Summa.Core.Log.Exception(e, "There are no feeds.");
+                Log.Exception(e, "There are no feeds.");
             }
             
             return list;
@@ -144,23 +150,23 @@ namespace Summa.Data {
             int count = 0;
             
             try {
-                foreach ( Summa.Data.Feed feed in GetFeeds() ) {
+                foreach ( Feed feed in GetFeeds() ) {
                     count += feed.UnreadCount;
                 }
             } catch ( Exception e ) {
-                Summa.Core.Log.Exception(e, "There are no feeds.");
+                Log.Exception(e, "There are no feeds.");
             }
             return count;
         }
         
         public static ArrayList ImportOpml(string filename) {
-            NewsKit.OpmlParser opml = new NewsKit.OpmlParser(filename);
+            OpmlParser opml = new OpmlParser(filename);
             return opml.Uris;
         }
         
-        public static Summa.Data.Item GetItem(string itemuri) {
-            foreach ( Summa.Data.Feed feed in GetFeeds() ) {
-                foreach ( Summa.Data.Item item in feed.Items ) {
+        public static Item GetItem(string itemuri) {
+            foreach ( Feed feed in GetFeeds() ) {
+                foreach ( Item item in feed.Items ) {
                     if ( item.Uri == itemuri ) {
                         return item;
                     }

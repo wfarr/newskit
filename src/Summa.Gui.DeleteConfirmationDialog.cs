@@ -27,21 +27,25 @@
 using System;
 using Gtk;
 
+using Summa.Core;
+using Summa.Data;
+using Summa.Gui;
+
 namespace Summa.Gui {
-    public class DeleteConfirmationDialog : Gtk. Window {
-        private Summa.Data.ISource feed;
+    public class DeleteConfirmationDialog :  Window {
+        private ISource feed;
         
-        private Gtk.VBox vbox;
-        private Gtk.HBox hbox;
-        private Gtk.Image image;
-        private Gtk.Table table;
-        private Gtk.Label label;
-        private Gtk.Label warn_label;
-        private Gtk.ButtonBox bbox;
-        private Gtk.Button cancel_button;
-        private Gtk.Button delete_button;
+        private VBox vbox;
+        private HBox hbox;
+        private Image image;
+        private Table table;
+        private Label label;
+        private Label warn_label;
+        private ButtonBox bbox;
+        private Button cancel_button;
+        private Button delete_button;
         
-        public DeleteConfirmationDialog(Summa.Data.ISource delfeed) : base(Gtk.WindowType.Toplevel) {
+        public DeleteConfirmationDialog(ISource delfeed) : base(WindowType.Toplevel) {
             feed = delfeed;
             
             Title = "Delete feed?";
@@ -52,40 +56,40 @@ namespace Summa.Gui {
             Resizable = false;
             BorderWidth = 6;
             
-            vbox = new Gtk.VBox(false, 6);
+            vbox = new VBox(false, 6);
             Add(vbox);
-            hbox = new Gtk.HBox(false, 6);
+            hbox = new HBox(false, 6);
             
             vbox.PackStart(hbox);
             
-            image = new Gtk.Image(Gtk.Stock.Delete, Gtk.IconSize.Dialog);
+            image = new Image(Stock.Delete, IconSize.Dialog);
             hbox.PackStart(image);
             
-            table = new Gtk.Table(2, 3, false);
+            table = new Table(2, 3, false);
             table.RowSpacing = 6;
             hbox.PackEnd(table);
             
-            label = new Gtk.Label();
+            label = new Label();
             label.Wrap = true;
             label.Markup = "<b><big>Delete feed "+feed.Name+"?</big></b>";
             table.Attach(label, 1, 2, 0, 1);
             
-            warn_label = new Gtk.Label();
+            warn_label = new Label();
             warn_label.Wrap = true;
             warn_label.Markup = "This cannot be undone.";
             warn_label.SetAlignment(0.0F, 0.5F);
             table.Attach(warn_label, 1, 2, 1, 2);
             
-            bbox = new Gtk.HButtonBox();
-            bbox.Layout = Gtk.ButtonBoxStyle.End;
+            bbox = new HButtonBox();
+            bbox.Layout = ButtonBoxStyle.End;
             bbox.Spacing = 6;
             vbox.PackEnd(bbox);
                 
-            cancel_button = new Gtk.Button(Gtk.Stock.Cancel);
+            cancel_button = new Button(Stock.Cancel);
             cancel_button.Clicked += new EventHandler(OnCancel);
             bbox.PackStart(cancel_button);
             
-            delete_button = new Gtk.Button(Gtk.Stock.Delete);
+            delete_button = new Button(Stock.Delete);
             delete_button.Clicked += new EventHandler(OnDelete);
             bbox.PackEnd(delete_button);
         }
@@ -95,7 +99,7 @@ namespace Summa.Gui {
         }
         
         private void OnDelete(object obj, EventArgs args) {
-            Summa.Data.Core.DeleteFeed(feed.Url);
+            Feeds.DeleteFeed(feed.Url);
             
             Destroy();
         }

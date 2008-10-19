@@ -26,6 +26,10 @@
 using System;
 using Gtk;
 
+using Summa.Core;
+using Summa.Data;
+using Summa.Gui;
+
 namespace Summa.Gui {
     public class StatusIcon : Gtk.StatusIcon {
         private int Unread;
@@ -33,12 +37,12 @@ namespace Summa.Gui {
         public StatusIcon() {
             FromIconName = "summa";
             
-            Unread = Summa.Data.Core.GetUnreadCount();
+            Unread = Feeds.GetUnreadCount();
             
             Activate += new EventHandler(ToggleBrowserStatus);
-            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
-            Summa.Core.Application.Database.ItemAdded += OnItemAdded;
-            Summa.Core.Application.Database.ItemDeleted += OnItemDeleted;
+            Database.ItemChanged += OnItemChanged;
+            Database.ItemAdded += OnItemAdded;
+            Database.ItemDeleted += OnItemDeleted;
             
             UpdateTooltip();
             CheckVisibility();
@@ -51,10 +55,10 @@ namespace Summa.Gui {
         }
         
         public void CheckVisibility() {
-            if ( Summa.Core.Config.ShowStatusIcon ) {
+            if ( Config.ShowStatusIcon ) {
                 bool found = false;
-                foreach ( string url in Summa.Core.Config.IconFeedUris ) {
-                    Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed(url);
+                foreach ( string url in Config.IconFeedUris ) {
+                    Feed feed = Feeds.RegisterFeed(url);
                     
                     if ( feed.HasUnread ) {
                         Visible = true;
@@ -74,7 +78,7 @@ namespace Summa.Gui {
             Summa.Core.Application.ToggleShown();
         }
         
-        private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
+        private void OnItemChanged(object obj, ChangedEventArgs args) {
             if ( args.ItemProperty == "read" ) {
                 if ( args.Value == "True" ) {
                     Unread--;
@@ -88,14 +92,14 @@ namespace Summa.Gui {
             }
         }
         
-        private void OnItemAdded(object obj, Summa.Core.AddedEventArgs args) {
+        private void OnItemAdded(object obj, AddedEventArgs args) {
             Unread++;
             UpdateTooltip();
             CheckVisibility();
         }
         
-        private void OnItemDeleted(object obj, Summa.Core.AddedEventArgs args) {
-            Unread = Summa.Data.Core.GetUnreadCount();
+        private void OnItemDeleted(object obj, AddedEventArgs args) {
+            Unread = Feeds.GetUnreadCount();
             UpdateTooltip();
             CheckVisibility();
         }

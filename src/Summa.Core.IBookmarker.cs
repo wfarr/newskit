@@ -26,6 +26,8 @@
 using System;
 using System.Collections;
 
+using Summa.Core;
+
 namespace Summa.Core {
     public interface IBookmarker {
         void ShowBookmarkWindow(string title, string url, string content, string tags);

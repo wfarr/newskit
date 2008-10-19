@@ -23,7 +23,7 @@ SUMMA_CSDISTFILES = \
     Summa.Data.Search.cs \
     NewsKit.AtomParser.cs \
     Summa.Gui.AboutDialog.cs \
-    NewsKit.Core.cs \
+    NewsKit.Parsing.cs \
     Summa.Gui.Actions.cs \
     NewsKit.Exceptions.cs \
     Summa.Gui.AddFeedDialog.cs \
@@ -70,12 +70,13 @@ SUMMA_CSDISTFILES = \
     Summa.Gui.WebKitView.cs \
     Summa.Core.Updater.cs \
     Summa.Net.ConnectionState.cs \
-    Summa.Data.Core.cs \
+    Summa.Data.Feeds.cs \
     Summa.Net.INetworkManager.cs \
     Summa.Data.Feed.cs \
     Summa.Net.NetworkManager.cs \
     Notifications.Global.cs \
-    Notifications.Notification.cs
+    Notifications.Notification.cs \
+    Summa.Core.StringCatalog.cs
 
 summalibdir = $(prefix)/lib/summa
 all:

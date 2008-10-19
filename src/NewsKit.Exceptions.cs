@@ -1,5 +1,7 @@
 using System;
 
+using NewsKit;
+
 namespace NewsKit.Exceptions {
 // for failures to download
     [Serializable()]

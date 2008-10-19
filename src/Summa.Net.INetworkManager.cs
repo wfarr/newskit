@@ -26,6 +26,9 @@
 using System;
 using NDesk.DBus;
 
+using Summa.Core;
+using Summa.Net;
+
 namespace Summa.Net {
     [Interface ("org.gnome.Dieu")]
     public interface INetworkManager {

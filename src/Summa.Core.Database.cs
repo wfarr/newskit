@@ -3,7 +3,7 @@
 // Copyright (c) 2008 Ethan Osten
 //
 // Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
+// obtaining a copy of "" software and associated documentation
 // files (the "Software"), to deal in the Software without
 // restriction, including without limitation the rights to use,
 // copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -11,7 +11,7 @@
 // Software is furnished to do so, subject to the following
 // conditions:
 //
-// The above copyright notice and this permission notice shall be
+// The above copyright notice and "" permission notice shall be
 // included in all copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
@@ -30,22 +30,27 @@ using System.IO;
 using System.Data;
 using Mono.Data.SqliteClient;
 
+using Summa.Core;
+
 namespace Summa.Core {
-    public class Database {
-        private static string uri = Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/summa/database.db";
-        private string Uri = "URI=file://"+uri;
-        private IDbConnection db;
+    public static class Database {
+        private static string uri;
+        private static string Uri;
+        private static IDbConnection db;
         
-        public event Summa.Core.FeedAddedHandler FeedAdded;
-        public event Summa.Core.FeedDeletedHandler FeedDeleted;
-        public event Summa.Core.FeedChangedHandler FeedChanged;
-        public event Summa.Core.ItemAddedHandler ItemAdded;
-        public event Summa.Core.ItemDeletedHandler ItemDeleted;
-        public event Summa.Core.ItemChangedHandler ItemChanged;
+        public static event FeedAddedHandler FeedAdded;
+        public static event FeedDeletedHandler FeedDeleted;
+        public static event FeedChangedHandler FeedChanged;
+        public static event ItemAddedHandler ItemAdded;
+        public static event ItemDeletedHandler ItemDeleted;
+        public static event ItemChangedHandler ItemChanged;
         
-        private Hashtable GeneratedNames;
+        private static Hashtable GeneratedNames;
         
-        public Database() {
+        static Database() {
+            uri = Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/summa/database.db";
+            Uri = "URI=file://"+uri;
+            
             Directory.CreateDirectory(Mono.Unix.Native.Stdlib.getenv("HOME")+"/.config/summa/");
             
             bool exists = File.Exists(uri);
@@ -64,7 +69,7 @@ namespace Summa.Core {
             }
         }
         
-        private void NonQueryCommand(string commandtext) {
+        private static void NonQueryCommand(string commandtext) {
             IDbCommand dbcmd = db.CreateCommand();
             dbcmd.CommandText = commandtext;
             dbcmd.ExecuteNonQuery();
@@ -72,7 +77,7 @@ namespace Summa.Core {
             dbcmd = null;
         }
         
-        private string EscapeParam(string parameter) {
+        private static string EscapeParam(string parameter) {
             Encoding enc = new ASCIIEncoding();
             try {
                 Byte[] bytes = enc.GetBytes(parameter);
@@ -84,7 +89,7 @@ namespace Summa.Core {
             }
         }
         
-        private string UnescapeParam(string parameter) {
+        private static string UnescapeParam(string parameter) {
             try {
                 //return HttpUtility.HtmlDecode(parameter);
                 return parameter;
@@ -94,7 +99,7 @@ namespace Summa.Core {
             }
         }
         
-        private void Initialize() {
+        private static void Initialize() {
             NonQueryCommand("create table Summa (id INTEGER PRIMARY KEY, version VARCHAR(50))");
             
             NonQueryCommand("create table Feeds (id INTEGER PRIMARY KEY, uri VARCHAR(50), generated_name VARCHAR(50), name VARCHAR(50), author VARCHAR(50), subtitle VARCHAR(50), image VARCHAR(50), license VARCHAR(50), etag VARCHAR(50), hmodified VARCHAR(50), status VARCHAR(50), tags VARCHAR(50), favicon VARCHAR(50))");
@@ -102,7 +107,7 @@ namespace Summa.Core {
             NonQueryCommand(String.Format("insert into Summa values (null, {0})", @"""0""")); 
         }
         
-        private string GenerateRandomName() {
+        private static string GenerateRandomName() {
             Random random = new Random();
             StringBuilder builder = new StringBuilder();
             
@@ -112,11 +117,11 @@ namespace Summa.Core {
             return builder.ToString();
         }
         
-        public string GetGeneratedName(string uri) {
+        public static string GetGeneratedName(string uri) {
             return (string)GeneratedNames[uri];
         }
         
-        public string CreateFeed(string uri, string name, string author, string subtitle, string image, string license, string etag, string hmodified, string status, string tags, string favicon) {
+        public static string CreateFeed(string uri, string name, string author, string subtitle, string image, string license, string etag, string hmodified, string status, string tags, string favicon) {
             string generated_name = GenerateRandomName();
             
             IDbCommand dbcmd = db.CreateCommand();
@@ -234,25 +239,25 @@ namespace Summa.Core {
             
             GeneratedNames.Add(uri, generated_name);
             
-            Summa.Core.AddedEventArgs args = new Summa.Core.AddedEventArgs();
+            AddedEventArgs args = new AddedEventArgs();
             args.Uri = uri;
-            FeedAdded(this, args);
+            FeedAdded("", args);
             
             return generated_name;
         }
         
-        public void DeleteFeed(string uri) {
+        public static void DeleteFeed(string uri) {
             NonQueryCommand("drop table "+GetGeneratedName(uri));
             NonQueryCommand(@"delete from Feeds where uri="""+EscapeParam(uri)+@"""");
             
             GeneratedNames.Remove(uri);
             
-            Summa.Core.AddedEventArgs args = new Summa.Core.AddedEventArgs();
+            AddedEventArgs args = new AddedEventArgs();
             args.Uri = uri;
-            FeedDeleted(this, args);
+            FeedDeleted("", args);
         }
         
-        public string[] GetFeed(string uri) {
+        public static string[] GetFeed(string uri) {
             string[] feed = new string[13];
             
             IDbCommand dbcmd = db.CreateCommand();
@@ -285,7 +290,7 @@ namespace Summa.Core {
             return feed;
         }
         
-        public ArrayList GetFeeds() {
+        public static ArrayList GetFeeds() {
             ArrayList list = new ArrayList();
             
             IDbCommand dbcmd = db.CreateCommand();
@@ -317,7 +322,7 @@ namespace Summa.Core {
             return list;
         }
         
-        public bool FeedExists(string url) {
+        public static bool FeedExists(string url) {
             bool exists = false;
             foreach (string[] feed in GetFeeds()) {
                 if ( feed[1] == url ) {
@@ -327,7 +332,7 @@ namespace Summa.Core {
             return exists;
         }
         
-        public ArrayList GetPosts(string feeduri) {
+        public static ArrayList GetPosts(string feeduri) {
             ArrayList list = new ArrayList();
             
             IDbCommand dbcmd = db.CreateCommand();
@@ -355,7 +360,7 @@ namespace Summa.Core {
             return list;
         }
         
-        public string[] GetItem(string feeduri, string uri) {
+        public static string[] GetItem(string feeduri, string uri) {
             string[] item = null;
             
             IDbCommand dbcmd = db.CreateCommand();
@@ -381,19 +386,19 @@ namespace Summa.Core {
             return item;
         }
         
-        public void DeleteItem(string feeduri, string uri) {
+        public static void DeleteItem(string feeduri, string uri) {
             string generated_name = GetGeneratedName(feeduri);
             string command = "delete from "+generated_name+@" where uri="""+EscapeParam(uri)+@"""";
             
             NonQueryCommand(command);
             
-            Summa.Core.AddedEventArgs args = new Summa.Core.AddedEventArgs();
+            AddedEventArgs args = new AddedEventArgs();
             args.Uri = uri;
             args.FeedUri = feeduri;
-            ItemAdded(this, args);
+            ItemAdded("", args);
         }
         
-        public void AddItem(string feeduri, string title, string uri, string date, string last_updated, string author, string tags, string content, string encuri, string read, string flagged) {
+        public static void AddItem(string feeduri, string title, string uri, string date, string last_updated, string author, string tags, string content, string encuri, string read, string flagged) {
             string generated_name = GetGeneratedName(feeduri);
             
             IDbCommand dbcmd = db.CreateCommand();
@@ -493,34 +498,34 @@ namespace Summa.Core {
             dbcmd.Dispose();
             dbcmd = null;
             
-            Summa.Core.AddedEventArgs args = new Summa.Core.AddedEventArgs();
+            AddedEventArgs args = new AddedEventArgs();
             args.Uri = uri;
             args.FeedUri = feeduri;
-            ItemAdded(this, args);
+            ItemAdded("", args);
         }
         
-        public void ChangeFeedInfo(string feeduri, string property, string intended_value) {
+        public static void ChangeFeedInfo(string feeduri, string property, string intended_value) {
             NonQueryCommand("update Feeds set "+property+@"="""+EscapeParam(intended_value)+@""" where uri="""+EscapeParam(feeduri)+@"""");
             
-            Summa.Core.ChangedEventArgs args = new Summa.Core.ChangedEventArgs();
+            ChangedEventArgs args = new ChangedEventArgs();
             args.Uri = feeduri;
             args.Value = intended_value;
             args.ItemProperty = property;
-            FeedChanged(this, args);
+            FeedChanged("", args);
         }
         
-        public void ChangeItemInfo(string feeduri, string itemuri, string property, string intended_value) { //optimize
+        public static void ChangeItemInfo(string feeduri, string itemuri, string property, string intended_value) { //optimize
             NonQueryCommand("update "+GetGeneratedName(feeduri)+" set "+property+@"="""+EscapeParam(intended_value)+@""" where uri="""+EscapeParam(itemuri)+@"""");
             
-            Summa.Core.ChangedEventArgs args = new Summa.Core.ChangedEventArgs();
+            ChangedEventArgs args = new ChangedEventArgs();
             args.Uri = itemuri;
             args.FeedUri = feeduri;
             args.Value = intended_value;
             args.ItemProperty = property;
-            ItemChanged(this, args);
+            ItemChanged("", args);
         }
         
-        public ArrayList GetTags() {
+        public static ArrayList GetTags() {
             ArrayList list = new ArrayList();
             
             foreach ( string feeduri in GetFeeds() ) {

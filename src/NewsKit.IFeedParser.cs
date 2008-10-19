@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 
+using NewsKit;
+
 namespace NewsKit {
     public interface IFeedParser {
         string Name {get; set;}

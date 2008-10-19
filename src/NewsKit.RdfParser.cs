@@ -28,8 +28,10 @@ using System.Collections;
 using System.Xml;
 using System.Text;
 
+using NewsKit;
+
 namespace NewsKit {
-    public class RdfParser : NewsKit.IFeedParser {
+    public class RdfParser : IFeedParser {
         private XmlDocument document;
         private XmlNamespaceManager mgr;
         
@@ -39,7 +41,7 @@ namespace NewsKit {
                 try {
                     return name;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -51,7 +53,7 @@ namespace NewsKit {
                 try {
                     return subtitle;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -63,7 +65,7 @@ namespace NewsKit {
                 try {
                     return uri;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -75,7 +77,7 @@ namespace NewsKit {
                 try {
                     return author;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -87,7 +89,7 @@ namespace NewsKit {
                 try {
                     return image;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -99,7 +101,7 @@ namespace NewsKit {
                 try {
                     return license;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -111,7 +113,7 @@ namespace NewsKit {
                 try {
                     return etag;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -123,7 +125,7 @@ namespace NewsKit {
                 try {
                     return modified;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -135,7 +137,7 @@ namespace NewsKit {
                 try {
                     return favicon;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -157,7 +159,7 @@ namespace NewsKit {
                 try {
                     return items;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return new ArrayList();
                 }
             }
@@ -171,7 +173,7 @@ namespace NewsKit {
             try {
                 document.LoadXml(xml);
             } catch (XmlException e) {
-                NewsKit.Globals.Exception(e);
+                Globals.Exception(e);
                 bool have_stripped_control = false;
                 StringBuilder sb = new StringBuilder ();
 
@@ -198,18 +200,8 @@ namespace NewsKit {
             mgr = new XmlNamespaceManager(document.NameTable);
             mgr.AddNamespace("rss10", "http://purl.org/rss/1.0/");
             mgr.AddNamespace("content", "http://purl.org/rss/1.0/modules/content/");
-            Parse();
-        }
-        
-        public RdfParser(string uri, XmlDocument doc) {
-            this.uri = uri;
-            this.document = doc;
-            this.mgr.AddNamespace("rss10", "http://purl.org/rss/1.0/");
-            this.mgr.AddNamespace("content", "http://purl.org/rss/1.0/modules/content/");
-            Parse();
-        }
-        
-        private void Parse() {
+            mgr.AddNamespace("dc", "http://purl.org/dc/elements/1.1/");
+            
             XmlNodeList channodes = document.SelectNodes("//rss10:channel", mgr);
             foreach ( XmlNode node in channodes ) {
                 Name = GetXmlNodeText(node, "rss10:title");
@@ -224,25 +216,25 @@ namespace NewsKit {
             }
         }
         
-        private NewsKit.Item ParseItem(XmlNode node) {
-            NewsKit.Item item = new NewsKit.Item();
+        private Item ParseItem(XmlNode node) {
+            Item item = new Item();
             
             item.Title = GetXmlNodeText(node, "rss10:title");
             item.Author = GetXmlNodeText(node, "rss10:author");
             item.Uri = GetXmlNodeText(node, "rss10:link");
             item.Contents = GetXmlNodeText(node, "rss10:description");
+            Console.WriteLine(item.Contents);
             try {
                 if ( item.Contents.Length < GetXmlNodeText(node, "content:encoded").Length ) {
                     item.Contents = GetXmlNodeText(node, "content:encoded");
                 }
             } catch ( Exception ) {
-                item.Contents = GetXmlNodeText(node, "content:encoded");
+                if ( String.IsNullOrEmpty(item.Contents) ) {
+                    item.Contents = GetXmlNodeText(node, "content:encoded");
+                }
             }
-            item.Date = GetRfc822DateTime(node, "rss10:pubDate").ToString();
-            /*if ( item.Date == DateTime.MinValue.ToString() ) {
-                item.Date = GetRfc822DateTime(node, "dc:date").ToString();
-            }*/
-            // should look for dc:date
+            item.Date = Convert.ToDateTime(GetXmlNodeText(node, "dc:date")).ToString();
+            
             item.LastUpdated = GetRfc822DateTime(node, "dcterms:modified").ToString();
             
             
@@ -259,7 +251,7 @@ namespace NewsKit {
             string result = GetXmlNodeText(node, tag);
 
             if (!String.IsNullOrEmpty(result)) {
-                ret = NewsKit.RssCommon.Parse(result);
+                ret = RssCommon.Parse(result);
             }
                     
             return ret;              

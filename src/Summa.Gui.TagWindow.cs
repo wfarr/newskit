@@ -25,38 +25,41 @@
 
 using System;
 using System.Collections;
-
 using Gtk;
 
+using Summa.Core;
+using Summa.Data;
+using Summa.Gui;
+
 namespace Summa.Gui {
-    public class TagWindow : Gtk.Window {private Gtk.VBox vbox;
-        private Gtk.Table table;
-        private Gtk.ButtonBox bbox;
+    public class TagWindow : Window {private VBox vbox;
+        private Table table;
+        private ButtonBox bbox;
         
-        private Gtk.CellRendererToggle crt;
-        private Gtk.ListStore store;
-        private Gtk.TreeView treeview;
+        private CellRendererToggle crt;
+        private ListStore store;
+        private TreeView treeview;
         
-        public Gtk.ComboBox ComboBox;
+        public ComboBox ComboBox;
         
-        private Gtk.TreeIter iter;
+        private TreeIter iter;
         
         private ArrayList Tags;
         
-        public Summa.Data.Feed Selected {
+        public Feed Selected {
             get {
                 if ( treeview.Selection.CountSelectedRows() != 0 ) {
-                    Gtk.TreeModel selectmodel;
+                    TreeModel selectmodel;
                     treeview.Selection.GetSelected(out selectmodel, out iter);
                 } else { store.GetIterFirst(out iter); }
                 
                 string val = (string)store.GetValue(iter, 2);
                 
-                return Summa.Data.Core.RegisterFeed(val);
+                return Feeds.RegisterFeed(val);
             }
         }
         
-        public TagWindow() : base(Gtk.WindowType.Toplevel) {
+        public TagWindow() : base(WindowType.Toplevel) {
             Tags = new ArrayList();
             
             Title = "Manage your tags";
@@ -64,26 +67,26 @@ namespace Summa.Gui {
             DeleteEvent += OnClose;
             Resizable = false;
             
-            vbox = new Gtk.VBox();
+            vbox = new VBox();
             vbox.Spacing = 6;
             Add(vbox);
             
-            table = new Gtk.Table(2, 2, false);
+            table = new Table(2, 2, false);
             table.RowSpacing = 6;
             vbox.PackStart(table, false, false, 0);
             
-            bbox = new Gtk.HButtonBox();
-            bbox.Layout = Gtk.ButtonBoxStyle.End;
+            bbox = new HButtonBox();
+            bbox.Layout = ButtonBoxStyle.End;
             
             AddTagsCombobox();
             AddFeedTreeView();
             AddButtons();
             vbox.PackStart(bbox, false, false, 0);
             
-            Summa.Core.Application.Database.FeedChanged += OnFeedChanged;
+            Database.FeedChanged += OnFeedChanged;
         }
         
-        private void OnFeedChanged(object obj, Summa.Core.ChangedEventArgs args ) {
+        private void OnFeedChanged(object obj, ChangedEventArgs args ) {
             if ( args.ItemProperty == "tags" ) {
                 foreach ( string tag in args.Value.Split(',') ) {
                     if ( !Tags.Contains(tag) ) {
@@ -97,8 +100,8 @@ namespace Summa.Gui {
         }
         
         private void AddTagsCombobox() {
-            ComboBox = Gtk.ComboBox.NewText();
-            foreach ( string tag in Summa.Data.Core.GetTags() ) {
+            ComboBox = ComboBox.NewText();
+            foreach ( string tag in Feeds.GetTags() ) {
                 if ( tag != "All" ) {
                     ComboBox.AppendText(tag);
                     Tags.Add(tag);
@@ -107,7 +110,7 @@ namespace Summa.Gui {
             
             ComboBox.Changed += new EventHandler(OnCbUpdateIntervalChanged);
             
-            table.Attach(ComboBox, 0, 1, 0, 1, Gtk.AttachOptions.Fill, Gtk.AttachOptions.Fill, 0, 0);
+            table.Attach(ComboBox, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, 0, 0);
         }
         
         private void OnCbUpdateIntervalChanged(object obj, EventArgs args) {
@@ -115,31 +118,31 @@ namespace Summa.Gui {
         }
         
         private void AddFeedTreeView() {
-            store = new Gtk.ListStore(typeof(bool), typeof(string), typeof(string), typeof(Gdk.Pixbuf));
+            store = new ListStore(typeof(bool), typeof(string), typeof(string), typeof(Gdk.Pixbuf));
             
-            crt = new Gtk.CellRendererToggle();
+            crt = new CellRendererToggle();
             crt.Activatable = true;
-            crt.Toggled += new Gtk.ToggledHandler(OnCrtToggled);
+            crt.Toggled += new ToggledHandler(OnCrtToggled);
             
-            CellRendererText trender = new Gtk.CellRendererText();
+            CellRendererText trender = new CellRendererText();
             trender.Ellipsize = Pango.EllipsizeMode.End;
             
-            treeview = new Gtk.TreeView();
+            treeview = new TreeView();
             treeview.Model = store;
             
-            ScrolledWindow treeview_swin = new Gtk.ScrolledWindow(new Gtk.Adjustment(0, 0, 0, 0, 0, 0), new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
+            ScrolledWindow treeview_swin = new ScrolledWindow(new Adjustment(0, 0, 0, 0, 0, 0), new Adjustment(0, 0, 0, 0, 0, 0));
             treeview_swin.Add(treeview);
             treeview_swin.SetSizeRequest(200, 300);
-            treeview_swin.ShadowType = Gtk.ShadowType.In;
-            treeview_swin.SetPolicy(Gtk.PolicyType.Automatic, Gtk.PolicyType.Automatic);
+            treeview_swin.ShadowType = ShadowType.In;
+            treeview_swin.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
             
-            TreeViewColumn column_Use = new Gtk.TreeViewColumn("Use", crt, "active", 0);
+            TreeViewColumn column_Use = new TreeViewColumn("Use", crt, "active", 0);
             treeview.AppendColumn(column_Use);
             
-            TreeViewColumn column_Icon = new Gtk.TreeViewColumn("Icon", new Gtk.CellRendererPixbuf(), "pixbuf", 3);
+            TreeViewColumn column_Icon = new TreeViewColumn("Icon", new CellRendererPixbuf(), "pixbuf", 3);
             treeview.AppendColumn(column_Icon);
             
-            TreeViewColumn column_Name = new Gtk.TreeViewColumn("Title", trender, "text", 1);
+            TreeViewColumn column_Name = new TreeViewColumn("Title", trender, "text", 1);
             treeview.AppendColumn(column_Name);
             
             table.Attach(treeview_swin, 0, 1, 1, 2);
@@ -147,28 +150,28 @@ namespace Summa.Gui {
         
         private void OnCrtToggled(object obj, ToggledArgs args) {
             TreeIter iter;
-            store.GetIter(out iter, new Gtk.TreePath(args.Path));
+            store.GetIter(out iter, new TreePath(args.Path));
             
             if ( (bool)store.GetValue(iter, 0) ) {
                 store.SetValue(iter, 0, false);
-                Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed((string)store.GetValue(iter, 2));
+                Feed feed = Feeds.RegisterFeed((string)store.GetValue(iter, 2));
                 
                 feed.RemoveTag(ComboBox.ActiveText);
             } else {
                 store.SetValue(iter, 0, true);
-                Summa.Data.Feed feed = Summa.Data.Core.RegisterFeed((string)store.GetValue(iter, 2));
+                Feed feed = Feeds.RegisterFeed((string)store.GetValue(iter, 2));
                 
                 feed.AppendTag(ComboBox.ActiveText);
             }
-            Summa.Gui.Browser b = (Summa.Gui.Browser)Summa.Core.Application.Browsers[0];
+            Browser b = (Browser)Summa.Core.Application.Browsers[0];
             b.TagView.Update();
         }
         
         private void Populate(string tag) {
             store.Clear();
             
-            foreach ( Summa.Data.Feed feed in Summa.Data.Core.GetFeeds() ) {
-                Gtk.TreeIter iter = store.Append();
+            foreach ( Feed feed in Feeds.GetFeeds() ) {
+                TreeIter iter = store.Append();
                 
                 store.SetValue(iter, 0, feed.Tags.Contains(ComboBox.ActiveText));
                 store.SetValue(iter, 1, feed.Name);
@@ -178,17 +181,17 @@ namespace Summa.Gui {
         }
         
         private void AddButtons() {
-            Button add_button = new Gtk.Button(Gtk.Stock.Add);
+            Button add_button = new Button(Stock.Add);
             add_button.Clicked += new EventHandler(OnAdd);
             bbox.PackStart(add_button);
             
-            Button close_button = new Gtk.Button(Gtk.Stock.Close);
+            Button close_button = new Button(Stock.Close);
             close_button.Clicked  += new EventHandler(OnClose);
             bbox.PackStart(close_button);
         }
         
         private void OnAdd(object obj, EventArgs args) {
-            Window t = new Summa.Gui.AddTagDialog(this);
+            Window t = new AddTagDialog(this);
             t.ShowAll();
         }
         

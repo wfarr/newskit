@@ -27,6 +27,9 @@ using System;
 using Gtk;
 using Gdk;
 
+using Summa.Core;
+using Summa.Gui;
+
 namespace Summa.Gui {
     public class AboutDialog : Gtk.AboutDialog {
         public AboutDialog() {
@@ -41,16 +44,16 @@ namespace Summa.Gui {
             authors[1] = "Will Farrington";
             
             Authors = authors;
-            Comments = "Aggregate and read RSS feeds";
+            Comments = StringCatalog.AboutComments;
             
-            IconTheme i = Gtk.IconTheme.Default;
+            IconTheme i = IconTheme.Default;
             
-            Gdk.Pixbuf image_window = i.LoadIcon("add", 0, Gtk.IconLookupFlags.NoSvg);
+            Pixbuf image_window = i.LoadIcon("add", 0, IconLookupFlags.NoSvg);
             
             LogoIconName = "summa";
             Icon = image_window;
             
-            Response += new Gtk.ResponseHandler(OnHide);
+            Response += new ResponseHandler(OnHide);
         }
         
         private void OnHide(object obj, ResponseArgs args) {

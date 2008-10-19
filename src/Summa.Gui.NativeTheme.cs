@@ -26,6 +26,9 @@
 using System;
 using System.Collections;
 
+using Summa.Core;
+using Summa.Gui;
+
 namespace Summa.Gui {
     public class NativeTheme : Summa.Core.ITheme {
         public string Name {

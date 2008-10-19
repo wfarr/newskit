@@ -24,10 +24,14 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics;
+
+using Summa.Core;
+using Summa.Gui;
 
 namespace Summa.Gui {
-    public class TotemMediaPlayer : Summa.Core.IMediaPlayer {
-        private System.Diagnostics.Process process;
+    public class TotemMediaPlayer : IMediaPlayer {
+        private Process process;
         private bool still_alive;
         private bool playing;
         
@@ -45,16 +49,16 @@ namespace Summa.Gui {
         
         public void Play(string uri) {
             if ( !playing && still_alive ) {
-                System.Diagnostics.Process.Start("totem --play-pause");
+                Process.Start("totem --play-pause");
             } else {
                 still_alive = true;
-                process = System.Diagnostics.Process.Start(String.Format("totem {0}", uri));
+                process = Process.Start(String.Format("totem {0}", uri));
                 process.Exited += new EventHandler(OnExited);
             }
         }
         
         public bool Pause() {
-            System.Diagnostics.Process.Start("totem --pause");
+            Process.Start("totem --pause");
             playing = false;
             return true;
         }

@@ -29,15 +29,19 @@ using System.Linq;
 using Gtk;
 using Gdk;
 
+using Summa.Core;
+using Summa.Data;
+using Summa.Gui;
+
 namespace Summa.Gui {
-    public class TagView : Gtk.TreeView {
+    public class TagView : TreeView {
         public ArrayList Tags;
         
-        private Gtk.TreeIter tagiter;
+        private TreeIter tagiter;
         
         public string Selected {
             get {
-                Gtk.TreeModel selectmodel;
+                TreeModel selectmodel;
                 Selection.GetSelected(out selectmodel, out tagiter);
                 string val = (string)Summa.Core.Application.TagStore.GetValue(tagiter, 1);
                 return val;
@@ -49,21 +53,21 @@ namespace Summa.Gui {
             Model = Summa.Core.Application.TagStore;
             
             // set up the columns for the view, and hide them. 
-            InsertColumn(-1, "Pix", new Gtk.CellRendererPixbuf(), "pixbuf", 0);
-            InsertColumn(-1, "Tag", new Gtk.CellRendererText(), "text", 1);
+            InsertColumn(-1, "Pix", new CellRendererPixbuf(), "pixbuf", 0);
+            InsertColumn(-1, "Tag", new CellRendererText(), "text", 1);
             HeadersVisible = false;
             
             // set up for NewsKit
-            Tags = Summa.Data.Core.GetTags();
+            Tags = Feeds.GetTags();
             
             if ( Summa.Core.Application.Browsers.Count == 0 ) {
-                Gtk.TreeIter tagiter;
+                TreeIter tagiter;
                 tagiter = Summa.Core.Application.TagStore.Append();
-                Summa.Core.Application.TagStore.SetValue(tagiter, 0, Gtk.IconTheme.Default.LookupIcon("feed-presence", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon());
+                Summa.Core.Application.TagStore.SetValue(tagiter, 0, IconTheme.Default.LookupIcon("feed-presence", 16, IconLookupFlags.NoSvg).LoadIcon());
                 Summa.Core.Application.TagStore.SetValue(tagiter, 1, "All feeds");
                 
                 tagiter = Summa.Core.Application.TagStore.Append();
-                Summa.Core.Application.TagStore.SetValue(tagiter, 0, Gtk.IconTheme.Default.LookupIcon("system-search", (int)Gtk.IconSize.Menu, Gtk.IconLookupFlags.NoSvg).LoadIcon());
+                Summa.Core.Application.TagStore.SetValue(tagiter, 0, IconTheme.Default.LookupIcon("system-search", (int)IconSize.Menu, IconLookupFlags.NoSvg).LoadIcon());
                 Summa.Core.Application.TagStore.SetValue(tagiter, 1, "Searches");
             
                 foreach ( string tag in Tags ) {
@@ -73,7 +77,7 @@ namespace Summa.Gui {
                 }
             }
             
-            Summa.Core.Application.Database.FeedChanged += OnFeedChanged;
+            Database.FeedChanged += OnFeedChanged;
             
             TreeIter iter;
             Summa.Core.Application.TagStore.GetIterFirst(out iter);
@@ -85,7 +89,7 @@ namespace Summa.Gui {
         }
         
         public void Update() {
-            ArrayList utags = Summa.Data.Core.GetTags();
+            ArrayList utags = Feeds.GetTags();
             
             foreach ( string tag in utags ) {
                 if ( tag != "All" ) {
@@ -94,13 +98,13 @@ namespace Summa.Gui {
                     }
                 }
             }
-            Tags = Summa.Data.Core.GetTags();
+            Tags = Feeds.GetTags();
         }
         
         public void AppendTag(string tag) {
-            Gtk.TreeIter iter;
+            TreeIter iter;
             iter = Summa.Core.Application.TagStore.Append();
-            Summa.Core.Application.TagStore.SetValue(iter, 0, Gtk.IconTheme.Default.LookupIcon("tag", 16, Gtk.IconLookupFlags.NoSvg).LoadIcon());
+            Summa.Core.Application.TagStore.SetValue(iter, 0, IconTheme.Default.LookupIcon("tag", 16, IconLookupFlags.NoSvg).LoadIcon());
             Summa.Core.Application.TagStore.SetValue(iter, 1, tag);
         }
     }

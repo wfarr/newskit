@@ -24,9 +24,12 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using Gtk;
 using System.Net;
 using System.Collections;
+using Gtk;
+
+using Summa.Core;
+using Summa.Gui;
 
 namespace Summa.Gui {
     public class NativeBookmarker : Summa.Core.IBookmarker {

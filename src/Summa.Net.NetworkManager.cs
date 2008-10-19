@@ -26,19 +26,22 @@
 using System;
 using NDesk.DBus;
 
+using Summa.Core;
+using Summa.Net;
+
 namespace Summa.Net {
     public static class NetworkManager {
-        public static Summa.Net.ConnectionState Status() {
+        public static ConnectionState Status() {
             try {
-                Summa.Net.INetworkManager nm = NDesk.DBus.Bus.Session.GetObject<Summa.Net.INetworkManager>("org.freedesktop.NetworkManager", new ObjectPath("/org/freedesktop/NetworkManager"));
+                INetworkManager nm = Bus.Session.GetObject<INetworkManager>("org.freedesktop.NetworkManager", new ObjectPath("/org/freedesktop/NetworkManager"));
                 
                 if ( nm.state() == 3 ) {
-                    return Summa.Net.ConnectionState.Connected;
+                    return ConnectionState.Connected;
                 } else {
-                    return Summa.Net.ConnectionState.Offline;
+                    return ConnectionState.Offline;
                 }
             } catch ( Exception ) {
-                return Summa.Net.ConnectionState.Connected;
+                return ConnectionState.Connected;
             }
         }
     }

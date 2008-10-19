@@ -1,4 +1,4 @@
-// NewsKit.RssCommon.cs
+// RssCommon.cs
 //
 // Mostly from Banshee's Migo.Syndication library
 // Copyright (c) 2006-2008 Michael C. Urbanski
@@ -26,6 +26,8 @@
 
 using System;
 using System.Text.RegularExpressions;
+
+using NewsKit;
 
 namespace NewsKit {
     public static class RssCommon {
@@ -124,8 +126,7 @@ namespace NewsKit {
                     offsetMinutes *= -1;
                 }
             } else {
-                switch ( offset )
-                {
+                switch ( offset ) {
                     case "GMT": case "UT": break;						
                     case "EDT": offsetHours = -4; break;
                     case "EST": case "CDT": offsetHours = -5; break;

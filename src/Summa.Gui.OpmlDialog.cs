@@ -27,15 +27,15 @@ using System;
 using Gtk;
 
 namespace Summa.Gui {
-    public class OpmlDialog : Gtk.FileChooserDialog {
+    public class OpmlDialog : FileChooserDialog {
         public OpmlDialog() {
             Title = "Select an OPML file";
-            Action = Gtk.FileChooserAction.Open;
+            Action = FileChooserAction.Open;
             
-            AddButton(Gtk.Stock.Cancel, Gtk.ResponseType.Cancel);
-            AddButton(Gtk.Stock.Open, Gtk.ResponseType.Ok);
+            AddButton(Stock.Cancel, ResponseType.Cancel);
+            AddButton(Stock.Open, ResponseType.Ok);
 
-            DefaultResponse = Gtk.ResponseType.Ok;
+            DefaultResponse = ResponseType.Ok;
         }
     }
 }

@@ -1,7 +1,10 @@
 using System;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.IO;
+
+using NewsKit;
 
 namespace NewsKit {
     public class Request {
@@ -20,11 +23,11 @@ namespace NewsKit {
         public Request(string uri, string last_modified) {
             Uri = uri;
             
-            if ( NewsKit.Globals.Connected ) {
+            if ( Globals.Connected ) {
                 try {
                     webrequest = (HttpWebRequest)WebRequest.Create(uri);
                     webrequest.AllowAutoRedirect = true;
-                    webrequest.UserAgent = NewsKit.Globals.UserAgent;
+                    webrequest.UserAgent = Globals.UserAgent;
                     webrequest.MaximumAutomaticRedirections = 4;
                     webrequest.MaximumResponseHeadersLength = 4;
                     
@@ -34,7 +37,7 @@ namespace NewsKit {
                             webrequest.IfModifiedSince = m;
                         }
                     } catch ( Exception e ) {
-                        NewsKit.Globals.Exception(e);
+                        Globals.Exception(e);
                     }
                     
                     webresponse = (HttpWebResponse)webrequest.GetResponse();
@@ -44,7 +47,7 @@ namespace NewsKit {
                     StringBuilder sb = new StringBuilder();
                     
                     if ( Status == HttpStatusCode.NotModified ) {
-                        throw new NewsKit.Exceptions.NotUpdated();
+                        throw new Exceptions.NotUpdated();
                     } else {
                         stream = webresponse.GetResponseStream();
                         string tempString = null;
@@ -62,28 +65,28 @@ namespace NewsKit {
                         while (count > 0);
                         
                         Xml = sb.ToString();
-                        Xml = System.Text.RegularExpressions.Regex.Replace(Xml, "<( [a-z]+)=([a-zA-Z0-9:/._%;?=&-]+)", "$1=\"$2\"");
+                        Xml = Regex.Replace(Xml, "<( [a-z]+)=([a-zA-Z0-9:/._%;?=&-]+)", "$1=\"$2\"");
                         
                         LastModified = webresponse.LastModified.ToString();
                         try {
                             Etag = webresponse.Headers.GetValues("ETag")[0];
                         } catch ( Exception e ) {
-                            NewsKit.Globals.Exception(e);
+                            Globals.Exception(e);
                         }
                     }
                     webresponse.Close();
                 } catch ( System.Net.WebException e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     
                     try {
                         webresponse.Close();
                         stream.Close();
                     } catch ( Exception ) {}
                     
-                    throw new NewsKit.Exceptions.NotFound();
+                    throw new Exceptions.NotFound();
                 }
             } else {
-                throw new NewsKit.Exceptions.NotFound();
+                throw new Exceptions.NotFound();
             }
         }
     }

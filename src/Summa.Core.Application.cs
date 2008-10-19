@@ -33,47 +33,46 @@ using NDesk.DBus;
 
 using Gtk;
 
+using Summa.Core;
+using Summa.Data;
+using Summa.Gui;
+
 namespace Summa.Core {
     public static class Application {
-        public static LogList Log;
-        public static Summa.Core.Database Database;
         public static Gtk.ListStore TagStore;
         public static ArrayList Browsers;
         public static Summa.Gui.StatusIcon StatusIcon;
-        public static Summa.Core.Updater Updater;
-        public static Summa.Core.DBusInterface DBus;
+        public static Updater Updater;
+        public static DBusInterface DBus;
         public static bool WindowsShown;
         
         public static void Main() {
             //GLib.Thread.Init();
             Gdk.Threads.Init();
             
-            Log = new LogList();
-            
             Gtk.Application.Init();
             SetProcessName("summa");
             
-            GLib.Log.SetLogHandler(null, GLib.LogLevelFlags.All, new GLib.LogFunc(Summa.Core.Log.LogFunc)); //FIXME
+            GLib.Log.SetLogHandler(null, GLib.LogLevelFlags.All, new GLib.LogFunc(Log.LogFunc)); //FIXME
             
             /*
-             * the ListStore for all Summa.Gui.TagViews, since tags don't
+             * the ListStore for all TagViews, since tags don't
              * vary by context.
              */
             TagStore = new Gtk.ListStore(typeof(Gdk.Pixbuf), typeof(string));
             
-            Database = new Summa.Core.Database();
-            Updater = new Summa.Core.Updater();
-            DBus = new Summa.Core.DBusInterface();
+            Updater = new Updater();
+            DBus = new DBusInterface();
             /*
              * a list of browser instances - when a browser is created, it
              * should be added to this list, and when it is destroyed, it
              * should be removed.
              */
             Browsers = new ArrayList();
-            Browsers.Add(new Summa.Gui.Browser());
+            Browsers.Add(new Browser());
             StatusIcon = new Summa.Gui.StatusIcon();
             
-            foreach ( Summa.Gui.Browser browser in Browsers ) {
+            foreach ( Browser browser in Browsers ) {
                 browser.ShowAll();
             }
             WindowsShown = true;
@@ -84,9 +83,14 @@ namespace Summa.Core {
         }
         
         private static void DebugTest() {
+            /*foreach ( ISource source in Feeds.GetFeeds() ) {
+                foreach ( Item item in source.Items ) {
+                    item.Read = true;
+                }
+            }*/
         }
         
-        public static void CloseWindow(Summa.Gui.Browser browser) {
+        public static void CloseWindow(Browser browser) {
             if ( Browsers.Count == 1 ) {
                 /* get dimensions */
                 int width;
@@ -94,8 +98,8 @@ namespace Summa.Core {
                 
                 browser.GetSize(out width, out height);
                 
-                Summa.Core.Config.WindowWidth = width;
-                Summa.Core.Config.WindowHeight = height;
+                Config.WindowWidth = width;
+                Config.WindowHeight = height;
                 
                 /* get pane positions */
                 int main_size;
@@ -106,9 +110,9 @@ namespace Summa.Core {
                 left_size = browser.left_paned.Position;
                 right_size = browser.right_paned.Position;
                 
-                Summa.Core.Config.MainPanePosition = main_size;
-                Summa.Core.Config.LeftPanePosition = left_size;
-                Summa.Core.Config.RightPanePosition = right_size;
+                Config.MainPanePosition = main_size;
+                Config.LeftPanePosition = left_size;
+                Config.RightPanePosition = right_size;
                 
                 Bus.Session.Unregister(new ObjectPath(DBus.ObjPath));
                 Bus.Session.ReleaseName(DBus.BusName);
@@ -122,12 +126,12 @@ namespace Summa.Core {
         
         public static void ToggleShown() {
             if ( WindowsShown ) {
-                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                foreach ( Browser browser in Application.Browsers ) {
                     browser.Hide();
                 }
                 WindowsShown = false;
             } else {
-                foreach ( Summa.Gui.Browser browser in Summa.Core.Application.Browsers ) {
+                foreach ( Browser browser in Application.Browsers ) {
                     browser.Show();
                 }
                 WindowsShown = true;
@@ -143,7 +147,7 @@ namespace Summa.Core {
 
 		public static void SetProcessName(string name) {
 			if (prctl (PR_SET_NAME, Encoding.ASCII.GetBytes (name + '\0'), 0, 0, 0) < 0) {
-				Summa.Core.Log.Message(String.Format("Couldn't set process name to '{0}': {1}", name, Mono.Unix.Native.Stdlib.GetLastError()));
+				Log.Message(String.Format("Couldn't set process name to '{0}': {1}", name, Mono.Unix.Native.Stdlib.GetLastError()));
 			}
 		}
     }

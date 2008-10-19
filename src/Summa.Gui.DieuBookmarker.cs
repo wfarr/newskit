@@ -27,13 +27,16 @@ using System;
 using System.Collections;
 using NDesk.DBus;
 
+using Summa.Core;
+using Summa.Gui;
+
 namespace Summa.Gui {
     public class DieuBookmarker : Summa.Core.IBookmarker {
-        private Summa.Gui.IDieu dieu;
+        private IDieu dieu;
         private bool possible;
         
         public DieuBookmarker() {
-            dieu = Bus.Session.GetObject<Summa.Gui.IDieu>("org.gnome.Dieu", new ObjectPath("/org/gnome/Dieu"));
+            dieu = Bus.Session.GetObject<IDieu>("org.gnome.Dieu", new ObjectPath("/org/gnome/Dieu"));
             possible = true;
         }
         

@@ -26,20 +26,23 @@
 using System;
 using Gtk;
 
+using Summa.Core;
+using Summa.Gui;
+
 namespace Summa.Gui {
-    public class AddFeedDialog : Gtk.Window {
-        private Gtk.VBox vbox;
-        private Gtk.HBox hbox;
-        private Gtk.HButtonBox bbox;
-        private Gtk.Image image;
-        private Gtk.Table table;
-        private Gtk.Label label;
-        private Gtk.Entry entry;
-        private Gtk.Button cancel_button;
-        private Gtk.Button add_button;
+    public class AddFeedDialog : Window {
+        private VBox vbox;
+        private HBox hbox;
+        private HButtonBox bbox;
+        private Image image;
+        private Table table;
+        private Label label;
+        private Entry entry;
+        private Button cancel_button;
+        private Button add_button;
         
-        public AddFeedDialog() : base(Gtk.WindowType.Toplevel) {
-            Title = "Add subscription";
+        public AddFeedDialog() : base(WindowType.Toplevel) {
+            Title = StringCatalog.AddFeedTitle;
             IconName = "add";
             
             DeleteEvent += OnCancel;
@@ -47,37 +50,37 @@ namespace Summa.Gui {
             Resizable = false;
             BorderWidth = 6;
             
-            vbox = new Gtk.VBox(false, 6);
+            vbox = new VBox(false, 6);
             Add(vbox);
-            hbox = new Gtk.HBox(false, 6);
+            hbox = new HBox(false, 6);
             
             vbox.PackStart(hbox);
             
-            image = new Gtk.Image(Gtk.Stock.Add, Gtk.IconSize.Dialog);
+            image = new Image(Stock.Add, IconSize.Dialog);
             hbox.PackStart(image);
             
-            table = new Gtk.Table(2, 3, false);
+            table = new Table(2, 3, false);
             table.RowSpacing = 6;
             hbox.PackEnd(table);
             
-            label = new Gtk.Label();
-            label.Markup = "<b>Enter the URL of the feed:</b>";
+            label = new Label();
+            label.Markup = StringCatalog.AddFeedMessage;
             table.Attach(label, 1, 2, 0, 1);
             
-            entry = new Gtk.Entry();
+            entry = new Entry();
             entry.Activated += OnActivated;
             table.Attach(entry, 1, 2, 1, 2);
             
-            bbox = new Gtk.HButtonBox();
-            bbox.Layout = Gtk.ButtonBoxStyle.End;
+            bbox = new HButtonBox();
+            bbox.Layout = ButtonBoxStyle.End;
             bbox.Spacing = 6;
             vbox.PackEnd(bbox);
                 
-            cancel_button = new Gtk.Button(Gtk.Stock.Cancel);
+            cancel_button = new Button(Stock.Cancel);
             cancel_button.Clicked += new EventHandler(OnCancel);
             bbox.PackStart(cancel_button);
             
-            add_button = new Gtk.Button(Gtk.Stock.Add);
+            add_button = new Button(Stock.Add);
             add_button.Clicked += new EventHandler(OnAdd);
             add_button.GrabFocus();
             bbox.PackEnd(add_button);

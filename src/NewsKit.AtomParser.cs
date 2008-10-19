@@ -28,8 +28,10 @@ using System.Collections;
 using System.Xml;
 using System.Text;
 
+using NewsKit;
+
 namespace NewsKit {
-    public class AtomParser : NewsKit.IFeedParser {
+    public class AtomParser : IFeedParser {
         private XmlDocument document;
         private XmlNamespaceManager mgr;
         
@@ -39,7 +41,7 @@ namespace NewsKit {
                 try {
                     return name;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -51,7 +53,7 @@ namespace NewsKit {
                 try {
                     return subtitle;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -63,7 +65,7 @@ namespace NewsKit {
                 try {
                     return uri;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -75,7 +77,7 @@ namespace NewsKit {
                 try {
                     return author;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -87,7 +89,7 @@ namespace NewsKit {
                 try {
                     return image;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -99,7 +101,7 @@ namespace NewsKit {
                 try {
                     return license;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -111,7 +113,7 @@ namespace NewsKit {
                 try {
                     return etag;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -123,7 +125,7 @@ namespace NewsKit {
                 try {
                     return modified;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -135,7 +137,7 @@ namespace NewsKit {
                 try {
                     return favicon;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return "";
                 }
             }
@@ -157,7 +159,7 @@ namespace NewsKit {
                 try {
                     return items;
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                     return new ArrayList();
                 }
             }
@@ -165,30 +167,19 @@ namespace NewsKit {
         }
         
         public AtomParser(string uri, string xml) {
-            this.uri = uri;
-            this.document = new XmlDocument();
+            Uri = uri;
+            document = new XmlDocument();
             xml = xml.TrimStart();
             
             document.LoadXml(xml);
             
             mgr = new XmlNamespaceManager(document.NameTable);
             if ( xml.Contains("xmlns=\"http://purl.org/atom/ns#\"") ) {
-                this.mgr.AddNamespace("atom", "http://purl.org/atom/ns#");
+                mgr.AddNamespace("atom", "http://purl.org/atom/ns#");
             } else {
-                this.mgr.AddNamespace("atom", "http://www.w3.org/2005/Atom");
+                mgr.AddNamespace("atom", "http://www.w3.org/2005/Atom");
             }
-            Parse();
-        }
-        
-        public AtomParser(string uri, XmlDocument doc) {
-            this.uri = uri;
-            this.document = doc;
-            this.mgr = new XmlNamespaceManager(document.NameTable);
-			this.mgr.AddNamespace("atom", "http://www.w3.org/2005/Atom");
-            Parse();
-        }
-        
-        private void Parse() {
+            
             Name = GetXmlNodeText(document, "/atom:feed/atom:title");
             Subtitle = GetXmlNodeText(document, "/atom:feed/atom:subtitle");
             License = GetXmlNodeText(document, "/atom:feed/atom:license");
@@ -203,17 +194,16 @@ namespace NewsKit {
             }
         }
         
-        private NewsKit.Item ParseItem(XmlNode node) {
-            NewsKit.Item item = new NewsKit.Item();
+        private Item ParseItem(XmlNode node) {
+            Item item = new Item();
             
             item.Title = GetXmlNodeText(node, "atom:title");
             item.Author = GetXmlNodeText(node, "atom:author/atom:name");
             XmlNodeList linknodes = node.SelectNodes("atom:link", mgr);
             ProcessXmlNodeLinks(linknodes, item);
-            //item.Uri = GetXmlNodeUrl(node, "atom:link");
-            item.Contents = GetXmlNodeContent(node);
+            item.Contents = GetXmlNodeText(node, "atom:content");
             if ( item.Contents == null ) {
-                item.Contents = GetXmlNodeSummary(node);
+                item.Contents = GetXmlNodeText(node, "atom:summary");
             }
             item.Date = GetRfc822DateTime(node, "atom:updated").ToString();
             item.LastUpdated = "";
@@ -227,21 +217,13 @@ namespace NewsKit {
             return (n == null) ? null : n.InnerText.Trim();
         }
         
-        public string GetXmlNodeContent(XmlNode node) {
-            XmlNode n = node.SelectSingleNode("atom:content", mgr);
-            return (n == null) ? null : n.InnerXml.Trim().Replace("\n", "<br/>\n");
-        }
-        public string GetXmlNodeSummary(XmlNode node) {
-            XmlNode n = node.SelectSingleNode("atom:summary", mgr);
-            return (n == null) ? null : n.InnerXml.Trim().Replace("\n", "<br/>\n");
-        }
-        
-        public void ProcessXmlNodeLinks(XmlNodeList node, NewsKit.Item item) {
+        public void ProcessXmlNodeLinks(XmlNodeList node, Item item) {
             string possible_self = null;
             
             foreach ( XmlNode n in node ) {
                 bool has_rel = false;
                 bool is_self = false;
+                bool is_alternate = false;
                 bool is_enclosure = false;
                 foreach ( XmlAttribute val in n.Attributes ) {
                     if ( (string)val.Name == "rel" ) {
@@ -250,6 +232,8 @@ namespace NewsKit {
                             is_self = true;
                         } else if ( (string)val.Value == "enclosure" ) {
                             is_enclosure = true;
+                        } else if ( (string)val.Value == "alternate" ) {
+                            is_alternate = true;
                         }
                     }
                     
@@ -259,6 +243,10 @@ namespace NewsKit {
                                 item.Uri = (string)val.Value;
                             } else if ( is_enclosure ){
                                 item.EncUri = (string)val.Value;
+                            } if ( is_alternate ) {
+                                if ( String.IsNullOrEmpty(item.Uri) ) {
+                                    item.Uri = (string)val.Value;
+                                }
                             }
                         } else {
                             possible_self = (string)val.Value;

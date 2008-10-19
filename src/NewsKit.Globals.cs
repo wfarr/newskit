@@ -1,5 +1,7 @@
 using System;
 
+using NewsKit;
+
 namespace NewsKit {
     internal static class Globals {
         // you want to customize this class to your program, so that you can
@@ -41,7 +43,7 @@ namespace NewsKit {
         }
         
         public static void Exception(Exception e) {
-            Summa.Core.Log.Exception(e);
+            //Summa.Core.Log.Exception(e);
         }
     }
 }

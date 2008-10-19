@@ -27,6 +27,8 @@ using System;
 using System.Xml;
 using System.Collections;
 
+using NewsKit;
+
 namespace NewsKit {
     public class OpmlParser {
         public ArrayList Uris;

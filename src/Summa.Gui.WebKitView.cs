@@ -27,7 +27,10 @@ using System;
 using System.Text;
 using Gtk;
 using WebKit;
-using Gnome;
+
+using Summa.Core;
+using Summa.Data;
+using Summa.Gui;
 
 namespace Summa.Gui {
     public class WebSettings : WebKit.WebSettings {
@@ -39,11 +42,11 @@ namespace Summa.Gui {
         }
     }
 
-    public class WebKitView : WebKit.WebView {
+    public class WebKitView : WebView {
         private StringBuilder content = new StringBuilder();
         public Summa.Data.Item SelectedItem;
-        public Summa.Data.ISource SelectedFeed;
-        public Summa.Gui.ItemNotebook notebook;
+        public ISource SelectedFeed;
+        public ItemNotebook notebook;
         
         public WebKitView() {
             NavigationRequested += new NavigationRequestedHandler(OnNavigationRequested);
@@ -52,12 +55,12 @@ namespace Summa.Gui {
             string starting_content = "Welcome to <b>Summa</b>, a GNOME feed reader.<br /><br />This is a preview release, not intended to be used by anyone. Exercise caution.";
             Render(starting_content);
             
-            ZoomTo(Summa.Core.Config.DefaultZoomLevel);
-            Summa.Core.Notifier.ZoomChanged += OnZoomChanged;
+            ZoomTo(Config.DefaultZoomLevel);
+            Notifier.ZoomChanged += OnZoomChanged;
         }
         
         private void OnZoomChanged(object obj, EventArgs args) {
-            ZoomTo(Summa.Core.Config.DefaultZoomLevel);
+            ZoomTo(Config.DefaultZoomLevel);
         }
         
         public bool CanZoom() {
@@ -67,9 +70,9 @@ namespace Summa.Gui {
         public void ZoomIn() {
             Summa.Gui.WebSettings settings = new Summa.Gui.WebSettings();
             
-            if ( Summa.Core.Config.DefaultZoomLevel > 4 ) {
-                Summa.Core.Config.DefaultZoomLevel++;
-                settings.DefaultFontSize = Summa.Core.Config.DefaultZoomLevel;
+            if ( Config.DefaultZoomLevel > 4 ) {
+                Config.DefaultZoomLevel++;
+                settings.DefaultFontSize = Config.DefaultZoomLevel;
                 
                 Settings = settings;
             }
@@ -78,9 +81,9 @@ namespace Summa.Gui {
         public void ZoomOut() {
             Summa.Gui.WebSettings settings = new Summa.Gui.WebSettings();
             
-            if ( Summa.Core.Config.DefaultZoomLevel-1 > 4 ) {
-                Summa.Core.Config.DefaultZoomLevel--;
-                settings.DefaultFontSize = Summa.Core.Config.DefaultZoomLevel;
+            if ( Config.DefaultZoomLevel-1 > 4 ) {
+                Config.DefaultZoomLevel--;
+                settings.DefaultFontSize = Config.DefaultZoomLevel;
                 
                 Settings = settings;
             }
@@ -88,7 +91,7 @@ namespace Summa.Gui {
         
         public void ZoomTo(int size) {
             Summa.Gui.WebSettings settings = new Summa.Gui.WebSettings();
-            settings.DefaultFontSize = Summa.Core.Config.DefaultZoomLevel;
+            settings.DefaultFontSize = Config.DefaultZoomLevel;
             
             Settings = settings;
         }
@@ -109,7 +112,7 @@ namespace Summa.Gui {
         }
         
         private void OnNavigationRequested(object obj, NavigationRequestedArgs args) {
-            if ( Summa.Core.Config.OpenTabs ) {
+            if ( Config.OpenTabs ) {
                 try {
                     notebook.LoadUri(args.Request.Uri);
                 } catch ( Exception ) {
@@ -119,7 +122,7 @@ namespace Summa.Gui {
                 Gnome.Url.Show(args.Request.Uri);
             }
             
-            args.RetVal = WebKit.NavigationResponse.Ignore;
+            args.RetVal = NavigationResponse.Ignore;
         }
 
         private void OnHoveringOverLink(object obj, HoveringOverLinkArgs args) {
@@ -134,9 +137,9 @@ namespace Summa.Gui {
 
             if (text != String.Empty) {
                 if ( text != null ) {
-                    Summa.Core.Notifier.Notify("Click to visit " + text);
+                    Notifier.Notify("Click to visit " + text);
                 } else {
-                    Summa.Core.Notifier.Notify("");
+                    Notifier.Notify("");
                 }
             }
         }
@@ -150,32 +153,32 @@ namespace Summa.Gui {
         }
         
         public void Render(Summa.Data.Item item) {
-            Render(Summa.Core.Config.Theme.MakeHtml(item));
+            Render(Config.Theme.MakeHtml(item));
             SelectedItem = item;
-            Summa.Core.Application.Database.ItemChanged += OnItemChanged;
+            Database.ItemChanged += OnItemChanged;
         }
         
-        public void Render(Summa.Data.ISource feed) {
-            Render(Summa.Core.Config.Theme.MakeHtml(feed));
+        public void Render(ISource feed) {
+            Render(Config.Theme.MakeHtml(feed));
             SelectedFeed = feed;
-            Summa.Core.Application.Database.FeedChanged += OnFeedChanged;
+            Database.FeedChanged += OnFeedChanged;
             
             /*string all_content = "";
             
-            foreach ( Summa.Data.Item item in feed.GetItems() ) {
+            foreach ( Item item in feed.GetItems() ) {
                 all_content += MakeItemHtml(item);
                 all_content += "<br/><br/><hr/>";
             }
             Render(all_content);*/
         }
         
-        private void OnFeedChanged(object obj, Summa.Core.ChangedEventArgs args) {
+        private void OnFeedChanged(object obj, ChangedEventArgs args) {
             if ( args.Uri == SelectedFeed.Url ) {
                 Render(content.ToString());
             }
         }
         
-        private void OnItemChanged(object obj, Summa.Core.ChangedEventArgs args) {
+        private void OnItemChanged(object obj, ChangedEventArgs args) {
             if ( args.Uri == SelectedItem.Uri ) {
                 Render(SelectedItem);
             }

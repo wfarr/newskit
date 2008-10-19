@@ -25,6 +25,8 @@
 
 using System;
 
+using Summa.Core;
+
 namespace Summa.Core {
     namespace Exceptions {
         // thrown when Update() or RegisterFeed() run into problems

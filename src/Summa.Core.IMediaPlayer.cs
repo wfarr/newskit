@@ -25,6 +25,8 @@
 
 using System;
 
+using Summa.Core;
+
 namespace Summa.Core {
     public interface IMediaPlayer {
         bool GetPlaying();

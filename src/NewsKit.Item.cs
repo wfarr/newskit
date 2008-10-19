@@ -1,5 +1,7 @@
 using System;
 
+using NewsKit;
+
 namespace NewsKit {
     public class Item {
         public string Title;

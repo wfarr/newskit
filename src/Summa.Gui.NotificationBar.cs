@@ -26,16 +26,19 @@
 using System;
 using Gtk;
 
+using Summa.Core;
+using Summa.Gui;
+
 namespace Summa.Gui {
     public class NotificationBar : Gtk.Statusbar {
         private uint cid;
         
         public NotificationBar() {
             cid = 0;
-            Summa.Core.Notifier.NewMessage += OnNotification;
+            Notifier.NewMessage += OnNotification;
         }
         
-        private void OnNotification(object obj, Summa.Core.NotificationEventArgs args) {
+        private void OnNotification(object obj, NotificationEventArgs args) {
             ShowMessage(args.Message);
         }
         

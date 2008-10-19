@@ -4,19 +4,21 @@ using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
 
+using NewsKit;
+
 namespace NewsKit {
-    public static class Core {
-        public static bool ParseUri(string uri, string last_modified, out NewsKit.IFeedParser parser) {
+    public static class Parsing {
+        public static bool ParseUri(string uri, string last_modified, out IFeedParser parser) {
             // if no last_modified, put ""
             try {
-                Request request = new NewsKit.Request(uri, last_modified);
+                Request request = new Request(uri, last_modified);
                 
-                if ( request.Status != System.Net.HttpStatusCode.NotFound ) {
+                if ( request.Status != HttpStatusCode.NotFound ) {
                     parser = Sniff(request);
                     try {
                         parser.Request = request;
                     } catch ( NullReferenceException e ) {
-                        NewsKit.Globals.Exception(e);
+                        Globals.Exception(e);
                         return false;
                     }
                 } else {
@@ -24,37 +26,37 @@ namespace NewsKit {
                     return false;
                 }
                 return true;
-            } catch ( NewsKit.Exceptions.NotFound e ) {
-                NewsKit.Globals.Exception(e);
+            } catch ( Exceptions.NotFound e ) {
+                Globals.Exception(e);
                 parser = null;
                 return false;
-            } catch ( NewsKit.Exceptions.NotUpdated e ) {
-                NewsKit.Globals.Exception(e);
+            } catch ( Exceptions.NotUpdated e ) {
+                Globals.Exception(e);
                 parser = null;
                 return false;
             }
         }
         
-        internal static NewsKit.IFeedParser Sniff(NewsKit.Request request) {
-            NewsKit.IFeedParser parser = null;
+        internal static IFeedParser Sniff(Request request) {
+            IFeedParser parser = null;
             
             if ( request.Xml.Contains("<rdf:RDF") ) {
                 try {
-                    parser = new NewsKit.RdfParser(request.Uri, request.Xml);
+                    parser = new RdfParser(request.Uri, request.Xml);
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                 }
             } else if ( request.Xml.Contains("<rss") ) {
                 try {
-                    parser = new NewsKit.RssParser(request.Uri, request.Xml);
+                    parser = new RssParser(request.Uri, request.Xml);
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                 }
             } else if ( request.Xml.Contains("<feed") ) {
                 try {
-                    parser = new NewsKit.AtomParser(request.Uri, request.Xml);
+                    parser = new AtomParser(request.Uri, request.Xml);
                 } catch ( Exception e ) {
-                    NewsKit.Globals.Exception(e);
+                    Globals.Exception(e);
                 }
             }
             
@@ -84,18 +86,18 @@ namespace NewsKit {
                     
                     try {
                         System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
-                        Directory.CreateDirectory(NewsKit.Globals.ImageDirectory);
+                        Directory.CreateDirectory(Globals.ImageDirectory);
                         
-                        feed_uri = NewsKit.Globals.ImageDirectory + unique_name;
+                        feed_uri = Globals.ImageDirectory + unique_name;
                         //feed_url = "";
                         img.Save(feed_uri, System.Drawing.Imaging.ImageFormat.Png);
                         return true;
                     } catch ( ArgumentException e ) {
-                        NewsKit.Globals.Exception(e);
+                        Globals.Exception(e);
                     }
                 }
             } catch ( WebException e ) {
-                NewsKit.Globals.Exception(e);
+                Globals.Exception(e);
             }  
             feed_uri = "";
             return false;

@@ -27,9 +27,11 @@ using System;
 using System.Collections;
 using GConf;
 
+using Summa.Core;
+
 namespace Summa.Core {
     public static class Config {
-        private static GConf.Client client = new GConf.Client();
+        private static Client client = new Client();
         
         //TODO: put these in a schema file.
         private static string KEY_LIBNOTIFY = "/apps/summa/show_notifications";
@@ -47,13 +49,14 @@ namespace Summa.Core {
         private static string KEY_THEME = "/apps/summa/theme";
         private static string KEY_STATUS_ICON = "/apps/summa/show_status_icon";
         private static string KEY_ICON_FEEDS = "/apps/summa/show_status_icon_for";
+        private static string KEY_NUMBER_OF_ITEMS = "/apps/summa/save_number_of_items";
         
         public static bool ShowNotifications {
             get {
                 try {
                     return (bool)client.Get(KEY_LIBNOTIFY);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_LIBNOTIFY, true);
                     return true;
                 }
@@ -67,8 +70,8 @@ namespace Summa.Core {
             get {
                 try {
                     return (int)client.Get(KEY_WIN_HEIGHT);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_WIN_HEIGHT, 400);
                     return 400;
                 }
@@ -82,8 +85,8 @@ namespace Summa.Core {
             get {
                 try {
                     return (int)client.Get(KEY_WIN_WIDTH);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_WIN_WIDTH, 700);
                     return 700;
                 }
@@ -97,8 +100,8 @@ namespace Summa.Core {
             get {
                 try {
                     return (int)client.Get(KEY_MAIN_PANE_POSITION);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_MAIN_PANE_POSITION, 170);
                     return 170;
                 }
@@ -112,8 +115,8 @@ namespace Summa.Core {
             get {
                 try {
                     return (int)client.Get(KEY_LEFT_PANE_POSITION);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_LEFT_PANE_POSITION, 170);
                     return 170;
                 }
@@ -127,8 +130,8 @@ namespace Summa.Core {
             get {
                 try {
                     return (int)client.Get(KEY_RIGHT_PANE_POSITION);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_RIGHT_PANE_POSITION, 170);
                     return 170;
                 }
@@ -142,8 +145,8 @@ namespace Summa.Core {
             get {
                 try {
                     return (bool)client.Get(KEY_SHOULD_SORT_FEEDVIEW);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_SHOULD_SORT_FEEDVIEW, false);
                     return false;
                 }
@@ -157,15 +160,15 @@ namespace Summa.Core {
             get {
                 try {
                     return (int)client.Get(KEY_DEFAULT_ZOOM_LEVEL);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_DEFAULT_ZOOM_LEVEL, 10);
                     return 10;
                 }
             }
             set {
                 client.Set(KEY_DEFAULT_ZOOM_LEVEL, value);
-                Summa.Core.Notifier.ChangeZoom();
+                Notifier.ChangeZoom();
             }
         }
         
@@ -174,8 +177,8 @@ namespace Summa.Core {
                 try {
                     int a = (int)client.Get(KEY_GLOBAL_UPDATE_INTERVAL);
                     return (uint)a;
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_GLOBAL_UPDATE_INTERVAL, 3600000);
                     return 3600000;
                 }
@@ -189,8 +192,8 @@ namespace Summa.Core {
             get {
                 try {
                     return (string)client.Get(KEY_BOOKMARKER);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_BOOKMARKER, "Native");
                     return "Native";
                 }
@@ -204,8 +207,8 @@ namespace Summa.Core {
             get {
                 try {
                     return (bool)client.Get(KEY_TABS);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_TABS, false);
                     return false;
                 }
@@ -219,15 +222,15 @@ namespace Summa.Core {
             get {
                 try {
                     return (bool)client.Get(KEY_WIDESCREEN);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_WIDESCREEN, false);
                     return false;
                 }
             }
             set {
                 client.Set(KEY_WIDESCREEN, value);
-                Summa.Core.Notifier.ChangeView();
+                Notifier.ChangeView();
             }
         }
         
@@ -247,11 +250,11 @@ namespace Summa.Core {
             }
         }
         
-        public static Summa.Core.ITheme Theme {
+        public static ITheme Theme {
             get {
                 try {
                     string name = (string)client.Get(KEY_THEME);
-                    foreach ( Summa.Core.ITheme theme in Summa.Core.ThemeManager.Themes ) {
+                    foreach ( ITheme theme in ThemeManager.Themes ) {
                         if ( theme.Name == name ) {
                             return theme;
                         }
@@ -263,7 +266,7 @@ namespace Summa.Core {
                 }
             }
             set {
-                Summa.Core.ITheme theme = (Summa.Core.ITheme)value;
+                ITheme theme = (ITheme)value;
                 client.Set(KEY_THEME, theme.Name);
             }
         }
@@ -272,15 +275,15 @@ namespace Summa.Core {
             get {
                 try {
                     return (bool)client.Get(KEY_STATUS_ICON);
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_STATUS_ICON, false);
                     return false;
                 }
             }
             set {
                 client.Set(KEY_STATUS_ICON, value);
-                Summa.Core.Notifier.ShowIcon();
+                Notifier.ShowIcon();
             }
         }
         
@@ -296,8 +299,8 @@ namespace Summa.Core {
                         }
                     }
                     return returls;
-                } catch ( GConf.NoSuchKeyException e ) {
-                    Summa.Core.Log.Exception(e);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
                     client.Set(KEY_ICON_FEEDS, "");
                     return new ArrayList();
                 }
@@ -306,6 +309,21 @@ namespace Summa.Core {
                 string[] array = (string[])value.ToArray(typeof(string));
                 string retstring = String.Join(",", array);
                 client.Set(KEY_ICON_FEEDS, retstring);
+            }
+        }
+        
+        public static int NumberOfItems {
+            get {
+                try {
+                    return (int)client.Get(KEY_NUMBER_OF_ITEMS);
+                } catch ( NoSuchKeyException e ) {
+                    Log.Exception(e);
+                    client.Set(KEY_NUMBER_OF_ITEMS, 100);
+                    return 100;
+                }
+            }
+            set {
+                client.Set(KEY_NUMBER_OF_ITEMS, value);
             }
         }
     }
